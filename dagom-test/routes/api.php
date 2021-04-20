@@ -22,8 +22,19 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function(){
     Route::namespace('User')->group(function(){
         Route::namespace('Admin')->group(function(){
-            Route::post('/admin/register','AdminController@store');
-            Route::post('/logout/{user}','AdminController@logout');
+            Route::prefix('admin')->group(function(){
+                Route::get('/admins','AdminController@index');
+                Route::post('/register','AdminController@store');
+                Route::put('/update/{user}','AdminController@update');
+                Route::delete('/delete/{user}','AdminController@destroy');
+                Route::post('/logout/{user}','AdminController@logout');
+            });
+            Route::prefix('category')->group(function(){
+
+            });
+            Route::prefix('products')->group(function(){
+
+            });
         });
         Route::namespace('Customer')->group(function(){
 

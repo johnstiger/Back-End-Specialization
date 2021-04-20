@@ -17,7 +17,22 @@ class AdminController extends Controller
      */
     public function index()
     {
-        //
+        $response = [];
+        try {
+            $admins = User::where('is_admin',1)->get();
+            if(!$admins){
+                $response["message"] = "No admins yet!";
+            }else{
+                $response["message"] = "Success";
+                $response["data"] = $admins;
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return response()->json($response);
     }
 
     /**

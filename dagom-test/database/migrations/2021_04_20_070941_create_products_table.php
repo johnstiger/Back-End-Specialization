@@ -20,9 +20,9 @@ class CreateProductsTable extends Migration
             $table->float('unit_measure');
             $table->float('avail_unit_measure');
             $table->float('price');
-            $table->boolean('status');
-            $table->longText('description');
-            $table->longText('image');
+            $table->boolean('status')->default(true);
+            $table->longText('description')->nullable();
+            $table->longText('image')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

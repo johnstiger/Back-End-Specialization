@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -16,21 +17,20 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
         try {
-            $credentials = request(['email', 'password']);
             if($rules->fails()){
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                if(Auth::attempt($credentials)){
-                    $user = Auth::user();
-                    $token = $user->createToken("token");
-                    $response["message"] = "Successfully login";
-                    $response["data"] = Auth::user();
-                    $response["access_token"] = $token->plainTextToken;
-                    $response["error"] = false;
-                }else{
+                $user = User::where('email',$request->email)->first();
+                if(!$user || !Hash::check($request->password, $user->password)){
                     $response["message"] = "Email or Password is incorrect!";
                     $response["error"] = true;
+                }else{
+                    $token = $user->createToken('token');
+                    $response["message"] = "Successfully login";
+                    $response["data"] = $user;
+                    $response["access_token"] = $token->plainTextToken;
+                    $response["error"] = false;
                 }
             }
         } catch (\Exception $error) {
@@ -40,10 +40,18 @@ class AuthController extends Controller
         return response()->json($response);
     }
 
-
-    public function logout()
+    public function logout(User $user)
     {
-        $user = Auth::user();
-        $user->tokens()->delete();
+        $response = [];
+        try {
+            $user->tokens()->where('tokenable_id',$user->id)->delete();
+            $response["message"] = "Logout Successfully";
+            $response["error"] = false;
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error;
+            $response["error"] = true;
+        }
+
+        return response()->json($response);
     }
 }

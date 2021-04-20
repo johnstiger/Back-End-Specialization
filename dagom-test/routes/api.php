@@ -20,7 +20,19 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::post('/logout/{user}','AuthController@logout');
+    Route::namespace('User')->group(function(){
+        Route::namespace('Admin')->group(function(){
+            Route::post('/admin/register','AdminController@store');
+            Route::post('/logout/{user}','AdminController@logout');
+        });
+        Route::namespace('Customer')->group(function(){
+
+        });
+    });
 });
-Route::post('/login','AuthController@login');
+
+Route::namespace('Guest')->group(function(){
+    Route::post('/login','AuthController@login');
+    Route::post('/register','AuthController@register');
+});
 

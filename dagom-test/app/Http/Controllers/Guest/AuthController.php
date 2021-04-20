@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Guest;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -34,21 +35,39 @@ class AuthController extends Controller
                 }
             }
         } catch (\Exception $error) {
-            $response["message"] = "Error ".$error;
+            $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
         return response()->json($response);
     }
 
-    public function logout(User $user)
+    public function register(Request $request)
     {
         $response = [];
+        $rules = Validator::make($request->all(),[
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
+            'email' => 'required|unique:users|email',
+            'password' => 'required|min:8',
+        ]);
+
         try {
-            $user->tokens()->where('tokenable_id',$user->id)->delete();
-            $response["message"] = "Logout Successfully";
-            $response["error"] = false;
+            if($rules->fails()){
+                $response["message"] = $rules->errors();
+                $response["error"] = true;
+            }else{
+                $customer = $request->all();
+                $customer["password"] = Hash::make($request->password);
+                $data = User::create($customer);
+                $token = $data->createToken('token');
+                $response["message"] = "Successfully Registered!";
+                $response["data"] = $data;
+                $response["access_token"] = $token->plainTextToken;
+                $response["error"] = false;
+            }
         } catch (\Exception $error) {
-            $response["message"] = "Error ".$error;
+            $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
 

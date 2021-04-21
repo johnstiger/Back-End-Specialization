@@ -18,6 +18,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::namespace('Guest')->group(function(){
+    Route::post('/login','AuthController@login');
+    Route::post('/register','AuthController@register');
+});
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::namespace('User')->group(function(){
@@ -29,11 +33,18 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::delete('/delete/{user}','AdminController@destroy');
                 Route::post('/logout/{user}','AdminController@logout');
             });
-            Route::prefix('category')->group(function(){
-
-            });
-            Route::prefix('products')->group(function(){
-
+            Route::namespace('Item')->group(function(){
+                Route::prefix('category')->group(function(){
+                    Route::get('/all','CategoryController@index');
+                    Route::post('/newCategory','CategoryController@store');
+                    Route::post('/newCategoryProduct/{category}','CategoryController@storeProduct');
+                });
+                Route::prefix('product')->group(function(){
+                    Route::get('/all','ProductController@index');
+                    Route::post('/newProduct','ProductController@store');
+                    Route::put('/update/{product}','ProductController@update');
+                    Route::delete('/delete/{product}','ProductController@destroy');
+                });
             });
         });
         Route::namespace('Customer')->group(function(){
@@ -42,8 +53,5 @@ Route::middleware('auth:sanctum')->group(function(){
     });
 });
 
-Route::namespace('Guest')->group(function(){
-    Route::post('/login','AuthController@login');
-    Route::post('/register','AuthController@register');
-});
+
 

@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\User\Admin;
+namespace App\Http\Controllers\User\Admin\Item;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class AdminController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,12 +18,12 @@ class AdminController extends Controller
     {
         $response = [];
         try {
-            $admins = User::where('is_admin',1)->get();
-            if(!$admins){
-                $response["message"] = "No admins yet!";
+            $categories = Category::with('products')->get();
+            if(!$categories){
+                $response["message"] = "No category yet!";
             }else{
                 $response["message"] = "Success";
-                $response["data"] = $admins;
+                $response["data"] = $categories;
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
@@ -54,24 +53,44 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $response = [];
-        $rules = Validator::make($request->all(),[
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
-            'email' => 'required|unique:users|email',
-            'password' => 'required|min:8',
-        ]);
 
+        $rules = $this->validation($request->all());
         try {
             if($rules->fails()){
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $customer = $request->all();
-                $customer["password"] = Hash::make($request->password);
-                $customer["is_admin"] = true;
-                $data = User::create($customer);
-                $response["message"] = "Successfully Added ".$data->firstname." ".$data->lastname."in Admin.";
+                $data = Category::create($request->all());
+                $response["message"] = "Successfully Added ".$data->name." in Category!";
+                $response["data"] = $data;
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+        return response()->json($response);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeProduct(Request $request, Category $category)
+    {
+        $response = [];
+        $rules = $this->productValidation($request->all());
+        try {
+            if($rules->fails()){
+                $response["message"] = $rules->errors();
+                $response["error"] = true;
+            }else{
+                $product = $request->all();
+                $product["avail_unit_measure"] = $product["unit_measure"];
+                $data = $category->products()->create($product);
+                $response["message"] = "Successfully Added ".$data->name." in Product!";
                 $response["data"] = $data;
                 $response["error"] = false;
             }
@@ -88,15 +107,15 @@ class AdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(User $admin)
+    public function show(Category $category)
     {
         $response = [];
         try {
-            if(!$admin){
-                $response["message"] = $admin->firstname." is not found!";
+            if(!$category){
+                $response["message"] = "No category found!";
             }else{
-                $response["message"] = "Successfully showing Admin";
-                $response["data"] = $admin;
+                $response["message"] = "Successfully showing the category";
+                $response["data"] = $category->with('products');
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
@@ -122,34 +141,22 @@ class AdminController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $user
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $admin)
+    public function update(Request $request, Category $category)
     {
         $response = [];
 
-        $rules = [
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
-            'password' => 'required|min:8',
-        ];
-
-        if($admin->email != $request->email){
-            $rules["email"] = 'required|email|unique:users';
-        }
-
-        $validation = Validator::make($request->all(),$rules);
-
+        $rules = $this->validation($request->all());
         try {
-            if($validation->fails()){
-                $response["message"] = $validation->errors();
+            if($rules->fails()){
+                $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $admin->update($request->all());
-                $response["message"] = "Successfully Updated ".$admin->firstname." ".$admin->lastname;
-                $response["data"] = $admin;
+                $category->update($request->all());
+                $response["message"] = "Successfully Updated ".$category->name;
+                $response["data"] = $category;
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
@@ -162,15 +169,16 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $user
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $admin)
+    public function destroy(Category $category)
     {
         $response = [];
         try {
-            $response["message"] = "Successfully Deleted ".$admin->firstname." ".$admin->lastname;
-            $admin->delete();
+            $response["message"] = "Successfully Deleted ".$category->name;
+            $category->products()->delete();
+            $category->delete();
             $response["error"] = false;
         } catch (\Exception $error) {
             $response["message"] = "Error ".$error->getMessage();
@@ -180,23 +188,27 @@ class AdminController extends Controller
     }
 
     /**
-     * Remove the specified access token from storage.
+     * Validate the request provided.
      *
-     * @param  int  $user
+     * @param  int  $data
      * @return \Illuminate\Http\Response
      */
-    public function logout(User $user)
+    public function validation($data)
     {
-        $response = [];
-        try {
-            $user->tokens()->where('tokenable_id',$user->id)->delete();
-            $response["message"] = "Logout Successfully";
-            $response["error"] = false;
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
+        $rules = Validator::make($data,[
+            'name' => 'required',
+        ]);
+        return $rules;
+    }
 
-        return response()->json($response);
+    public function productValidation($data)
+    {
+        $rules = Validator::make($data,[
+            'name' => 'required',
+            'unit_measure' => 'required',
+            'price' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg'
+        ]);
+        return $rules;
     }
 }

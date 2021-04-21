@@ -10,6 +10,7 @@ class Product extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
+        'category_id',
         'name',
         'unit_measure',
         'avail_unit_measure',

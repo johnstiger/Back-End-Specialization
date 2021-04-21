@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Item\Product;
+namespace App\Http\Controllers\User\Admin\Item;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
@@ -54,13 +54,7 @@ class ProductController extends Controller
     {
         $response = [];
 
-        $rules = Validator::make($request->all(),[
-            'name' => 'required',
-            'unit_measure' => 'required',
-            'price' => 'required',
-            'status' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg'
-        ]);
+        $rules = $this->validation($request->all());
 
         try {
             if($rules->fails()){
@@ -70,7 +64,7 @@ class ProductController extends Controller
                 $product = $request->all();
                 $product["avail_unit_measure"] = $product["unit_measure"];
                 $data = Product::create($product);
-                $response["message"] = "Successfully Added New Product!";
+                $response["message"] = "Successfully Added ".$data->name." in Product!";
                 $response["data"] = $data;
                 $response["error"] = false;
             }
@@ -87,9 +81,23 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Product $product)
     {
-        //
+        $response = [];
+        try {
+            if(!$product){
+                $response["message"] = "Product is not found!";
+            }else{
+                $response["message"] = "Successfully showing product";
+                $response["data"] = $product;
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return response()->json($response);
     }
 
     /**
@@ -110,9 +118,27 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Product $product)
     {
-        //
+        $response = [];
+
+        $rules = $this->validation($request->all());
+
+        try {
+            if($rules->fails()){
+                $response["message"] = $rules->errors();
+                $response["error"] = true;
+            }else{
+                $product->update($request->all());
+                $response["message"] = "Successfully Updated ".$product->name;
+                $response["data"] = $product;
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+        return response()->json($response);
     }
 
     /**
@@ -121,8 +147,38 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        //
+        $response = [];
+        try {
+            $response["message"] = "Successfully Deleted ".$product->name;
+            $product->delete();
+            $response["error"] = false;
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+        return response()->json($response);
+    }
+
+    /**
+     * Validate the request provided.
+     *
+     * @param  int  $data
+     * @return \Illuminate\Http\Response
+     */
+    public function validation($data)
+    {
+        $rules = Validator::make($data,[
+            'name' => 'required',
+            'unit_measure' => 'required',
+            'price' => 'required',
+            'category_id' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg'
+        ],[
+            'category_id.required' => 'Category name field is required'
+        ]);
+
+        return $rules;
     }
 }

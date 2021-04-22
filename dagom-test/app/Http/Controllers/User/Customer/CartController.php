@@ -55,7 +55,7 @@ class CartController extends Controller
                         'status'=>1
                         ]
                     ]);
-                $response["message"] = "Success";
+                $response["message"] = "Successfully Added New Product in Cart";
                 $response["data"] = $customer->cart->products;
                 $response["error"] = false;
             }
@@ -72,9 +72,27 @@ class CartController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $customer)
     {
-        //
+        $response = [];
+        try {
+            if(!$customer->cart){
+                $customer->cart()->create();
+                $response["message"] = "There is no product yet!";
+            }elseif ($customer->cart->products->isEmpty()) {
+                $response["message"] = "There is no product yet!";
+            }
+            else{
+                $response["message"] = "Success";
+                $response["data"] = $customer->cart->products;
+                $response["error"] = false;
+            }
+        } catch (\Exception $e) {
+            $response["message"] = "Error ".$e->getMessage();
+            $response["error"] = true;
+        }
+
+        return response()->json($response);
     }
 
     /**
@@ -95,9 +113,27 @@ class CartController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $customer, Product $product)
     {
-        //
+        $response = [];
+        try {
+            $item = $request->all();
+            $customer->cart->products()->syncWithoutDetaching([
+                $product->id=>[
+                    'quantity'=>$item["quantity"],
+                    'total'=>$product->price * $item["quantity"],
+                    'status'=>1
+                    ]
+                ]);
+            $response["message"] = "Successfully Updated the Product";
+            $response["data"] = $customer->cart->products;
+            $response["error"] = false;
+        } catch (\Exception $e) {
+            $response["message"] = "Error ".$e->getMessage();
+            $response["error"] = true;
+        }
+
+        return response()->json($response);
     }
 
     /**
@@ -106,8 +142,18 @@ class CartController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $customer, Product $product)
     {
-        //
+        $response = [];
+        try {
+            $customer->cart->products->where('product_code',$product->product_code)
+            ->first()->pivot->delete();
+            $response["message"] = "Successfully Remove Product";
+            $response["error"] = false;
+        } catch (\Exception $e) {
+            $response["message"] = "Error ".$e->getMessage();
+            $response["error"] = true;
+        }
+        return response()->json($response);
     }
 }

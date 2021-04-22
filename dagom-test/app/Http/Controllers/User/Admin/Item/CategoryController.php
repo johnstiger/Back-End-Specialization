@@ -115,7 +115,8 @@ class CategoryController extends Controller
                 $response["message"] = "No category found!";
             }else{
                 $response["message"] = "Successfully showing the category";
-                $response["data"] = $category->with('products');
+                $response["data"] = $category;
+                $response["products"] = $category->products;
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
@@ -196,7 +197,7 @@ class CategoryController extends Controller
     public function validation($data)
     {
         $rules = Validator::make($data,[
-            'name' => 'required',
+            'name' => 'required|regex:/^[\pL\s\-]+$/u',
         ]);
         return $rules;
     }
@@ -204,9 +205,9 @@ class CategoryController extends Controller
     public function productValidation($data)
     {
         $rules = Validator::make($data,[
-            'name' => 'required',
-            'unit_measure' => 'required',
-            'price' => 'required',
+            'name' => 'required|regex:/^[\pL\s\-]+$/u',
+            'unit_measure' => 'required|numeric',
+            'price' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpeg,png,jpg'
         ]);
         return $rules;

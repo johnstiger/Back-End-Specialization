@@ -55,8 +55,8 @@ class AdminController extends Controller
     {
         $response = [];
         $rules = Validator::make($request->all(),[
-            'firstname' => 'required',
-            'lastname' => 'required',
+            'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
+            'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
             'email' => 'required|unique:users|email',
             'password' => 'required|min:8',
@@ -130,8 +130,8 @@ class AdminController extends Controller
         $response = [];
 
         $rules = [
-            'firstname' => 'required',
-            'lastname' => 'required',
+            'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
+            'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
             'password' => 'required|min:8',
         ];

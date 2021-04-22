@@ -28,6 +28,9 @@ class AuthController extends Controller
                     $response["error"] = true;
                 }else{
                     $token = $user->createToken('token');
+                    if(!$user->cart){
+                        $user->cart()->create();
+                    }
                     $response["message"] = "Successfully login";
                     $response["data"] = $user;
                     $response["access_token"] = $token->plainTextToken;
@@ -45,8 +48,8 @@ class AuthController extends Controller
     {
         $response = [];
         $rules = Validator::make($request->all(),[
-            'firstname' => 'required',
-            'lastname' => 'required',
+            'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
+            'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
             'email' => 'required|unique:users|email',
             'password' => 'required|min:8',
@@ -61,6 +64,7 @@ class AuthController extends Controller
                 $customer["password"] = Hash::make($request->password);
                 $data = User::create($customer);
                 $token = $data->createToken('token');
+                $data->cart()->create();
                 $response["message"] = "Successfully Registered!";
                 $response["data"] = $data;
                 $response["access_token"] = $token->plainTextToken;

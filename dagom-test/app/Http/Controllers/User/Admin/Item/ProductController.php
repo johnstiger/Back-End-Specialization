@@ -170,9 +170,9 @@ class ProductController extends Controller
     public function validation($data)
     {
         $rules = Validator::make($data,[
-            'name' => 'required',
-            'unit_measure' => 'required',
-            'price' => 'required',
+            'name' => 'required|regex:/^[\pL\s\-]+$/u',
+            'unit_measure' => 'required|numeric',
+            'price' => 'required|numeric',
             'category_id' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg'
         ],[

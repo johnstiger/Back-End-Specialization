@@ -62,7 +62,7 @@ class AuthController extends Controller
             }else{
                 $customer = $request->all();
                 $customer["password"] = Hash::make($request->password);
-                $data = User::create($customer);
+                $data = User::create($customer)->sendEmailVerificationNotification();
                 $token = $data->createToken('token');
                 $data->cart()->create();
                 $response["message"] = "Successfully Registered!";

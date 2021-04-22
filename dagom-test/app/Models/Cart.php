@@ -10,17 +10,16 @@ class Cart extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'customer_id',
-        'status'
+        'user_id',
     ];
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Product::class);
     }
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(User::class);
     }
 }

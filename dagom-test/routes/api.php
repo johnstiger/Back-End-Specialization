@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,9 +22,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::namespace('Guest')->group(function(){
     Route::post('/login','AuthController@login');
     Route::post('/register','AuthController@register');
+
     Route::post('/search/products','SearchEngineController@Products');
     Route::post('/search/products/{category}','SearchEngineController@productByCategory');
 });
+
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('/search/customers','Guest\SearchEngineController@Customers');

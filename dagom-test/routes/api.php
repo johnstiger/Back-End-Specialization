@@ -22,9 +22,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::namespace('Guest')->group(function(){
     Route::post('/login','AuthController@login');
     Route::post('/register','AuthController@register');
-
-    Route::post('/search/products','SearchEngineController@Products');
-    Route::post('/search/products/{category}','SearchEngineController@productByCategory');
+    Route::prefix('search')->group(function(){
+        Route::post('/products','SearchEngineController@Products');
+        Route::post('/products/{category}','SearchEngineController@productByCategory');
+    });
 });
 
 
@@ -33,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/search/admin','Guest\SearchEngineController@Admins');
     Route::post('/search/category','Guest\SearchEngineController@Category');
     Route::namespace('User')->group(function(){
+
         Route::namespace('Admin')->group(function(){
             Route::prefix('admin')->group(function(){
                 Route::get('/admins','AdminController@index');

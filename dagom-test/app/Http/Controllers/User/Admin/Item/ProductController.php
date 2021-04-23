@@ -62,6 +62,9 @@ class ProductController extends Controller
                 $response["error"] = true;
             }else{
                 $product = $request->all();
+                if($request->hasFile('image')){
+                   $product["image"] = $this->uploadImage($request->file('image'));
+                }
                 $product["avail_unit_measure"] = $product["unit_measure"];
                 $data = Product::create($product);
                 $response["message"] = "Successfully Added ".$data->name." in Product!";
@@ -130,6 +133,9 @@ class ProductController extends Controller
                 $response["error"] = true;
             }else{
                 $product->update($request->all());
+                if($request->hasFile('image')){
+                    $product["image"] = $this->uploadImage($request->file('image'));
+                }
                 $response["message"] = "Successfully Updated ".$product->name;
                 $response["data"] = $product;
                 $response["error"] = false;
@@ -167,18 +173,32 @@ class ProductController extends Controller
      * @param  int  $data
      * @return \Illuminate\Http\Response
      */
-    public function validation($data)
+    public function validation($request)
     {
-        $rules = Validator::make($data,[
+        $rules = Validator::make($request,[
             'name' => 'required|regex:/^[\pL\s\-]+$/u',
             'unit_measure' => 'required|numeric',
             'price' => 'required|numeric',
             'category_id' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg'
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ],[
             'category_id.required' => 'Category name field is required'
         ]);
 
         return $rules;
+    }
+
+    /**
+     * Validate the request provided.
+     *
+     * @param  int  $data
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadImage($request)
+    {
+        $path = public_path().'upload/images/store';
+        $request->move($path,$request->getClientOriginalName());
+
+        return $path;
     }
 }

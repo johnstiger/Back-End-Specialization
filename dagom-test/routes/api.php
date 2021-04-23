@@ -61,7 +61,12 @@ Route::middleware('auth:sanctum')->group(function(){
             });
         });
         Route::namespace('Customer')->group(function(){
-
+            Route::prefix('cart')->group(function(){
+                Route::get('/show/{customer}','CartController@show');
+                Route::post('/add/{customer}/{product}','CartController@store');
+                Route::put('/update{customer}/{product}','CartController@update');
+                Route::delete('/delete/{customer}/{product}','CategoryController@destroy');
+            });
         });
     });
 });

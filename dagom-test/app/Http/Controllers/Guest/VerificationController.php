@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
-    public function verifyEmail(Request $request, User $user)
+    public function verifyEmail(Request $request)
     {
 
     }

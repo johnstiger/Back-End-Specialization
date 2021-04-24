@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +23,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::namespace('Guest')->group(function(){
     Route::post('/login','AuthController@login');
-    Route::post('/register','AuthController@register');
+    Route::post('/register','AuthController@register')->name('verification.send');
+    Route::get('/email/verify/{id}/{hash}',function(EmailVerificationRequest $request){
+        $request->fulfill();
+        return response()->json("Verified");
+    })->middleware(['auth:sanctum','signed'])->name('verification.verify');
+
     Route::prefix('search')->group(function(){
         Route::post('/products','SearchEngineController@Products');
         Route::post('/products/{category}','SearchEngineController@productByCategory');
@@ -72,6 +79,5 @@ Route::middleware('auth:sanctum')->group(function(){
         });
     });
 });
-
 
 

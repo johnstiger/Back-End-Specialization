@@ -36,9 +36,14 @@ Route::namespace('Guest')->group(function(){
 });
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::post('/search/customers','Guest\SearchEngineController@Customers');
-    Route::post('/search/admin','Guest\SearchEngineController@Admins');
-    Route::post('/search/category','Guest\SearchEngineController@Category');
+    Route::namespace('Guest')->group(function(){
+        Route::prefix('search')->group(function(){
+            Route::post('/customers','SearchEngineController@Customers');
+            Route::post('/admin','SearchEngineController@Admins');
+            Route::post('/category','SearchEngineController@Category');
+        });
+        Route::post('/logout','AuthController@logout');
+    });
     Route::namespace('User')->group(function(){
         Route::namespace('Admin')->middleware('admin')->group(function(){
             Route::prefix('admin')->group(function(){
@@ -48,7 +53,6 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::post('/register','AdminController@store');
                 Route::put('/update/{user}','AdminController@update');
                 Route::delete('/delete/{user}','AdminController@destroy');
-                Route::post('/logout','AdminController@logout');
             });
             Route::namespace('Item')->group(function(){
                 Route::prefix('category')->group(function(){

@@ -3,12 +3,19 @@
 namespace App\Http\Controllers\User\Admin\Item;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\User\Admin\ServiceController;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+    protected $service;
+
+    public function __construct(ServiceController $service)
+    {
+        $this->service = $service;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,21 +23,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $response = [];
-        try {
-            $categories = Category::with('products')->get();
-            if(!$categories){
-                $response["message"] = "No category yet!";
-            }else{
-                $response["message"] = "Success";
-                $response["data"] = $categories;
-                $response["error"] = false;
-            }
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
-
+        $categories = Category::with('products')->get();
+        $response = $this->service->index($categories);
         return response()->json($response);
     }
 
@@ -109,21 +103,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        $response = [];
-        try {
-            if(!$category){
-                $response["message"] = "No category found!";
-            }else{
-                $response["message"] = "Successfully showing the category";
-                $response["data"] = $category;
-                $response["products"] = $category->products;
-                $response["error"] = false;
-            }
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
-
+        $response = $this->service->show($category);
         return response()->json($response);
     }
 
@@ -175,16 +155,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $response = [];
-        try {
-            $response["message"] = "Successfully Deleted ".$category->name;
-            $category->products()->delete();
-            $category->delete();
-            $response["error"] = false;
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
+        $response = $this->service->destroy($category);
+
         return response()->json($response);
     }
 

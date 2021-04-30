@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
+    protected $service;
+
+    public function __construct(ServiceController $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,22 +25,12 @@ class AdminController extends Controller
      */
     public function customers()
     {
-        $response = [];
-        try {
-            $customer = User::where('is_admin',0)->get();
-            if(!$customer){
-                $response["message"] = "No customers yet!";
-            }else{
-                $response["message"] = "Success";
-                $response["data"] = $customer;
-                $response["error"] = false;
-            }
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
+        $customer = User::where('is_admin',0)->get();
+
+        $response = $this->service->index($customer);
 
         return response()->json($response);
+
     }
     /**
      * Display a listing of the resource.
@@ -42,20 +39,9 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $response = [];
-        try {
-            $admins = User::where('is_admin',1)->get();
-            if(!$admins){
-                $response["message"] = "No admins yet!";
-            }else{
-                $response["message"] = "Success";
-                $response["data"] = $admins;
-                $response["error"] = false;
-            }
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
+        $admins = User::where('is_admin',1)->get();
+
+        $response = $this->service->index($admins);
 
         return response()->json($response);
     }
@@ -79,13 +65,7 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $response = [];
-        $rules = Validator::make($request->all(),[
-            'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
-            'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
-            'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
-            'email' => 'required|unique:users|email',
-            'password' => 'required|min:8',
-        ]);
+        $rules = $this->validation($request->all());
 
         try {
             if($rules->fails()){
@@ -115,20 +95,7 @@ class AdminController extends Controller
      */
     public function show(User $admin)
     {
-        $response = [];
-        try {
-            if(!$admin){
-                $response["message"] = $admin->firstname." is not found!";
-            }else{
-                $response["message"] = "Successfully showing Admin";
-                $response["data"] = $admin;
-                $response["error"] = false;
-            }
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
-
+        $response = $this->service->show($admin);
         return response()->json($response);
     }
 
@@ -192,36 +159,28 @@ class AdminController extends Controller
      */
     public function destroy(User $admin)
     {
-        $response = [];
-        try {
-            $response["message"] = "Successfully Deleted ".$admin->firstname." ".$admin->lastname;
-            $admin->delete();
-            $response["error"] = false;
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
+        $response = $this->service->destroy($admin);
+
         return response()->json($response);
     }
 
     /**
-     * Remove the specified access token from storage.
+     * Validate the specified access token from storage.
      *
-     * @param  int  $user
+     * @param  int  $data
      * @return \Illuminate\Http\Response
      */
-    public function logout(User $user)
+    public function validation($data)
     {
-        $response = [];
-        try {
-            Auth::user()->currentAccessToken()->delete();
-            $response["message"] = "Logout Successfully";
-            $response["error"] = false;
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
+       $rules = Validator::make($data,[
+            'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
+            'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
+            'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
+            'email' => 'required|unique:users|email',
+            'password' => 'required|min:8',
+        ]);
 
-        return response()->json($response);
+        return $rules;
     }
+
 }

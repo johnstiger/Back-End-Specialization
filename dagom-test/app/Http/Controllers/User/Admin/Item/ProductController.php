@@ -3,12 +3,20 @@
 namespace App\Http\Controllers\User\Admin\Item;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\User\Admin\ServiceController;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
+    protected $service;
+
+    public function __construct(ServiceController $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,20 +24,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $response = [];
-        try {
-            $products = Product::where('status',1)->get();
-            if(!$products){
-                $response["message"] = "No products available!";
-            }else{
-                $response["message"] = "Success";
-                $response["data"] = $products;
-                $response["error"] = false;
-            }
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
+        $products = Product::where('status',1)->get();
+
+        $response = $this->service->index($products);
 
         return response()->json($response);
     }
@@ -86,19 +83,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $response = [];
-        try {
-            if(!$product){
-                $response["message"] = "Product is not found!";
-            }else{
-                $response["message"] = "Successfully showing product";
-                $response["data"] = $product;
-                $response["error"] = false;
-            }
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
+        $response = $this->service->show($product);
 
         return response()->json($response);
     }
@@ -155,15 +140,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $response = [];
-        try {
-            $response["message"] = "Successfully Deleted ".$product->name;
-            $product->delete();
-            $response["error"] = false;
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
+        $response = $this->service->destroy($product);
+
         return response()->json($response);
     }
 

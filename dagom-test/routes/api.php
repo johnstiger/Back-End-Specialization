@@ -22,6 +22,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::namespace('Guest')->group(function(){
+    Route::get('/UnAuthorized','AuthController@Unauthorized')->name('unauthorized');
     Route::post('/login','AuthController@login');
     Route::post('/register','AuthController@register')->name('verification.send');
     Route::get('/email/verify/{id}/{hash}',function(EmailVerificationRequest $request){
@@ -35,15 +36,14 @@ Route::namespace('Guest')->group(function(){
     });
 });
 
-
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('/search/customers','Guest\SearchEngineController@Customers');
     Route::post('/search/admin','Guest\SearchEngineController@Admins');
     Route::post('/search/category','Guest\SearchEngineController@Category');
     Route::namespace('User')->group(function(){
-
         Route::namespace('Admin')->middleware('admin')->group(function(){
             Route::prefix('admin')->group(function(){
+                Route::get('/customers','AdminController@customers');
                 Route::get('/admins','AdminController@index');
                 Route::get('/show/{admin}','AdminController@show');
                 Route::post('/register','AdminController@store');
@@ -80,6 +80,4 @@ Route::middleware('auth:sanctum')->group(function(){
     });
 });
 
-Route::get('/UnAuthorized',function(){
-    return response()->json('Unauthorized',401);
-})->name('login');
+

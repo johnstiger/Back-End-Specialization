@@ -29,7 +29,6 @@ Route::namespace('Guest')->group(function(){
         $request->fulfill();
         return response()->json("Verified");
     })->middleware(['auth:sanctum','signed'])->name('verification.verify');
-
     Route::prefix('search')->group(function(){
         Route::post('/products','SearchEngineController@Products');
         Route::post('/products/{category}','SearchEngineController@productByCategory');
@@ -49,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::post('/register','AdminController@store');
                 Route::put('/update/{user}','AdminController@update');
                 Route::delete('/delete/{user}','AdminController@destroy');
-                Route::post('/logout/{user}','AdminController@logout');
+                Route::post('/logout','AdminController@logout');
             });
             Route::namespace('Item')->group(function(){
                 Route::prefix('category')->group(function(){

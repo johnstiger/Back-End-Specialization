@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -213,7 +214,7 @@ class AdminController extends Controller
     {
         $response = [];
         try {
-            $user->tokens()->where('tokenable_id',$user->id)->delete();
+            Auth::user()->currentAccessToken()->delete();
             $response["message"] = "Logout Successfully";
             $response["error"] = false;
         } catch (\Exception $error) {

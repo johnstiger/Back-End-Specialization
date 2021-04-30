@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/search/category','Guest\SearchEngineController@Category');
     Route::namespace('User')->group(function(){
 
-        Route::namespace('Admin')->group(function(){
+        Route::namespace('Admin')->middleware('admin')->group(function(){
             Route::prefix('admin')->group(function(){
                 Route::get('/admins','AdminController@index');
                 Route::get('/show/{admin}','AdminController@show');
@@ -80,4 +80,6 @@ Route::middleware('auth:sanctum')->group(function(){
     });
 });
 
-
+Route::get('/UnAuthorized',function(){
+    return response()->json('Unauthorized',401);
+})->name('login');

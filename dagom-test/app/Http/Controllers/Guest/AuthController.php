@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Guest;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -84,4 +85,26 @@ class AuthController extends Controller
     {
         return response()->json('Unauthorized',401);
     }
+
+    /**
+     * Logout the specified access token from storage.
+     *
+     * @param  int  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function logout()
+    {
+        $response = [];
+        try {
+            Auth::user()->currentAccessToken()->delete();
+            $response["message"] = "Logout Successfully";
+            $response["error"] = false;
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return response()->json($response);
+    }
+
 }

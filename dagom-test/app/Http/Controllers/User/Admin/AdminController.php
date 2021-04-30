@@ -183,24 +183,4 @@ class AdminController extends Controller
         return $rules;
     }
 
-    /**
-     * Remove the specified access token from storage.
-     *
-     * @param  int  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function logout(User $user)
-    {
-        $response = [];
-        try {
-            Auth::user()->currentAccessToken()->delete();
-            $response["message"] = "Logout Successfully";
-            $response["error"] = false;
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
-
-        return response()->json($response);
-    }
 }

@@ -15,6 +15,30 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function customers()
+    {
+        $response = [];
+        try {
+            $customer = User::where('is_admin',0)->get();
+            if(!$customer){
+                $response["message"] = "No customers yet!";
+            }else{
+                $response["message"] = "Success";
+                $response["data"] = $customer;
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return response()->json($response);
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $response = [];

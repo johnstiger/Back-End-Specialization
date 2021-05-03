@@ -1,9 +1,6 @@
 <?php
 
-use App\Models\User;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,19 +19,26 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::namespace('Guest')->group(function(){
+    // Unauthorized
     Route::get('/UnAuthorized','AuthController@Unauthorized')->name('unauthorized');
+
+    //LogIn and Register Verification
     Route::post('/login','AuthController@login');
     Route::post('/register','AuthController@register')->name('verification.send');
-    Route::get('/email/verify/{id}/{hash}',function(EmailVerificationRequest $request){
-        $request->fulfill();
-        return response()->json("Verified");
-    })->middleware(['auth:sanctum','signed'])->name('verification.verify');
+    Route::get('/email/verify/{id}/{hash}','VerificationController@verifyEmail')->middleware(['auth:sanctum','signed'])->name('verification.verify');
+
+    // Showing Products
+    Route::get('/home','ProductController@index');
+    Route::get('/dagom/{product}','ProductController@show');
+
+    // Search Products or Category
     Route::prefix('search')->group(function(){
         Route::post('/products','SearchEngineController@Products');
         Route::post('/products/{category}','SearchEngineController@productByCategory');
     });
 });
 
+// User
 Route::middleware('auth:sanctum')->group(function(){
     Route::namespace('Guest')->group(function(){
         Route::prefix('search')->group(function(){
@@ -78,6 +82,9 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::post('/add/{customer}/{product}','CartController@store');
                 Route::put('/update{customer}/{product}','CartController@update');
                 Route::delete('/delete/{customer}/{product}','CategoryController@destroy');
+            });
+            Route::prefix('comment')->group(function(){
+                Route::post('/create/{customer}/{product}','CommentController@store');
             });
         });
     });

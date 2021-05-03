@@ -180,7 +180,6 @@ class ProductController extends Controller
     {
         $path = public_path().'upload/images/store';
         $request->move($path,$request->getClientOriginalName());
-
         return $path;
     }
 }

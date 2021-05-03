@@ -83,6 +83,10 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::put('/update{customer}/{product}','CartController@update');
                 Route::delete('/delete/{customer}/{product}','CategoryController@destroy');
             });
+            Route::prefix('customer')->group(function(){
+                Route::put('/information/{customer}','CustomerController@update');
+                Route::post('/address/{customer}','CustomerController@address');
+            });
             Route::prefix('comment')->group(function(){
                 Route::post('/create/{customer}/{product}','CommentController@store');
                 Route::post('/delete/{customer}/{product}','CommentController@destroy');

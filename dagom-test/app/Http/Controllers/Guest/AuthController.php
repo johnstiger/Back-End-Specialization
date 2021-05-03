@@ -67,7 +67,7 @@ class AuthController extends Controller
                 $token = $data->createToken('token');
                 $data->sendEmailVerificationNotification();
                 $data->cart()->create();
-                $response["message"] = "Successfully Send Link For To Your Email";
+                $response["message"] = "Successfully Send Link To Your Email";
                 $response["data"] = $data;
                 $response["access_token"] = $token->plainTextToken;
                 $response["error"] = false;

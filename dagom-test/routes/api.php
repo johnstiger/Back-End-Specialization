@@ -46,7 +46,7 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::post('/admin','SearchEngineController@Admins');
             Route::post('/category','SearchEngineController@Category');
         });
-        Route::post('/logout','AuthController@logout');
+        Route::any('/logout','AuthController@logout');
     });
     Route::namespace('User')->group(function(){
         Route::namespace('Admin')->middleware('admin')->group(function(){
@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function(){
             });
             Route::prefix('comment')->group(function(){
                 Route::post('/create/{customer}/{product}','CommentController@store');
+                Route::post('/delete/{customer}/{product}','CommentController@destroy');
             });
         });
     });

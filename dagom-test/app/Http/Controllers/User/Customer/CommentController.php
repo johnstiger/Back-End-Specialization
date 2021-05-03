@@ -111,7 +111,7 @@ class CommentController extends Controller
                 $response["message"] = "No Product Found!";
             }else{
                 $customer->comments->where('product_id',$product->id)->first()->delete();
-                $response["message"] = "Successfully Deleted";
+                $response["message"] = "Successfully Deleted Comment";
                 $response["error"] = false;
             }
         } catch (\Exception $error) {

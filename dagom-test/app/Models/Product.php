@@ -29,4 +29,9 @@ class Product extends Model
     {
         return $this->belongsToMany(Cart::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
@@ -38,6 +39,7 @@ class CartController extends Controller
      */
     public function store(Request $request, User $customer, Product $product)
     {
+
         $validation = Validator::make($request->all(),[
             'quantity' => 'required',
         ]);

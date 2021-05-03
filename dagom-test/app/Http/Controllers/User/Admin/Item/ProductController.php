@@ -85,6 +85,8 @@ class ProductController extends Controller
     {
         $response = $this->service->show($product);
 
+        $response["comments"] = $product->comments;
+
         return response()->json($response);
     }
 
@@ -158,9 +160,11 @@ class ProductController extends Controller
             'unit_measure' => 'required|numeric',
             'price' => 'required|numeric',
             'category_id' => 'required',
+            'part' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ],[
-            'category_id.required' => 'Category name field is required'
+            'category_id.required' => 'Category name field is required',
+            'part.required' => 'This field is required, please enter valid value'
         ]);
 
         return $rules;

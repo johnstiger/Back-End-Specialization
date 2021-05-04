@@ -18,19 +18,20 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+// Showing Products
+Route::get('/home','User\Admin\Item\ProductController@index');
+Route::get('/dagom/{product}','User\Admin\Item\ProductController@show');
+
+
 Route::namespace('Guest')->group(function(){
     // Unauthorized
     Route::get('/UnAuthorized','AuthController@Unauthorized')->name('unauthorized');
-
+    Route::get('/NotVerified','VerificationController@notVerifyEmail')->name('verification.notice');
     //LogIn and Register Verification
     Route::post('/login','AuthController@login');
     Route::post('/register','AuthController@register')->name('verification.send');
-    Route::get('/email/verify/{id}/{hash}','VerificationController@verifyEmail')->middleware(['auth:sanctum','signed'])->name('verification.verify');
-
-    // Showing Products
-    Route::get('/home','ProductController@index');
-    Route::get('/dagom/{product}','ProductController@show');
-
+    Route::get('/email/verification/{id}','VerificationController@verifyEmail')->name('verified');
     // Search Products or Category
     Route::prefix('search')->group(function(){
         Route::post('/products','SearchEngineController@Products');
@@ -76,12 +77,16 @@ Route::middleware('auth:sanctum')->group(function(){
                 });
             });
         });
-        Route::namespace('Customer')->group(function(){
+        Route::namespace('Customer')->middleware('verified')->group(function(){
             Route::prefix('cart')->group(function(){
                 Route::get('/show/{customer}','CartController@show');
                 Route::post('/add/{customer}/{product}','CartController@store');
                 Route::put('/update{customer}/{product}','CartController@update');
                 Route::delete('/delete/{customer}/{product}','CategoryController@destroy');
+            });
+            Route::prefix('customer')->group(function(){
+                Route::put('/information/{customer}','CustomerController@update');
+                Route::post('/address/{customer}','CustomerController@address');
             });
             Route::prefix('comment')->group(function(){
                 Route::post('/create/{customer}/{product}','CommentController@store');

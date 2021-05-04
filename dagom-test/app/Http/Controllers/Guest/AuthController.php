@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\EmailVerfication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -53,7 +54,8 @@ class AuthController extends Controller
             'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
             'email' => 'required|unique:users|email',
-            'password' => 'required|min:8',
+            // 'password' => 'required|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
+            // 'confirm_password' => 'confirm_password|required'
         ]);
 
         try {
@@ -65,9 +67,10 @@ class AuthController extends Controller
                 $customer["password"] = Hash::make($request->password);
                 $data = User::create($customer);
                 $token = $data->createToken('token');
-                $data->sendEmailVerificationNotification();
+                // $data->sendEmailVerificationNotification();
+                $data->notify(new EmailVerfication($data));
                 $data->cart()->create();
-                $response["message"] = "Successfully Send Link To Your Email";
+                $response["message"] = "Please Verify Your Email Account";
                 $response["data"] = $data;
                 $response["access_token"] = $token->plainTextToken;
                 $response["error"] = false;

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
-    public function verifyEmail(User $id)
+    public function verifyEmail(User $id, $token)
     {
         $id->email_verified_at = now();
         $id->save();
@@ -20,4 +20,5 @@ class VerificationController extends Controller
     {
         return response()->json('Please Verify Your Email');
     }
+
 }

@@ -28,15 +28,23 @@ Route::namespace('Guest')->group(function(){
     // Unauthorized
     Route::get('/UnAuthorized','AuthController@Unauthorized')->name('unauthorized');
     Route::get('/NotVerified','VerificationController@notVerifyEmail')->name('verification.notice');
+
     //LogIn and Register Verification
     Route::post('/login','AuthController@login');
     Route::post('/register','AuthController@register')->name('verification.send');
-    Route::get('/email/verification/{id}','VerificationController@verifyEmail')->name('verified');
+    Route::get('/email/verification/{id}/{token}','VerificationController@verifyEmail')->name('verified');
+
+    //Forgot Password using Verification Code
+    Route::post('/forgot-password','AuthController@forgotPassword');
+    Route::post('/reset-password/{user}','AuthController@verificationCodeCheck');
+    Route::post('/new-password/{user}','AuthController@resetPassword');
+
     // Search Products or Category
     Route::prefix('search')->group(function(){
         Route::post('/products','SearchEngineController@Products');
         Route::post('/products/{category}','SearchEngineController@productByCategory');
     });
+
 });
 
 // User

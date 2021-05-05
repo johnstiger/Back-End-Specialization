@@ -7,20 +7,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class EmailVerfication extends Notification
+class ResetPassword extends Notification
 {
     use Queueable;
+    private $code;
     private $user;
-    private $token;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($user, $token)
+    public function __construct($code, $user)
     {
+        $this->code = $code;
         $this->user = $user;
-        $this->token = $token;
     }
 
     /**
@@ -42,7 +42,9 @@ class EmailVerfication extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->view('email',['customer' => $this->user, 'token'=>$this->token]);
+        return (new MailMessage)->view('resetpassword',[
+            'customer' => $this->user,
+            'code' =>$this->code]);
     }
 
     /**

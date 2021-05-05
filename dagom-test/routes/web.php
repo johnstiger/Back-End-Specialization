@@ -16,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('email');
 });
+
+Route::get('/https://santafe-dagom.herokuapp.com/{id}/{token}','VerificationController@verifyEmail')->name('validate');

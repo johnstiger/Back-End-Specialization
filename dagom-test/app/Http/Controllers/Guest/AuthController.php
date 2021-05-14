@@ -9,10 +9,7 @@ use App\Notifications\ResetPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class AuthController extends Controller
 {
@@ -59,8 +56,8 @@ class AuthController extends Controller
             'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
             'email' => 'required|unique:users|email',
-            'password' => 'required|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
-            // 'confirm_password' => 'confirm_password|required'
+            'password' => 'required|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|confirmed',
+            'password_confirmation' => 'required'
         ]);
 
         try {
@@ -166,6 +163,7 @@ class AuthController extends Controller
         if($request->code == $code){
             $response["message"] = "Authorized!";
             $response["error"] = false;
+            $user->verificationCode()->delete();
         }else{
             $response["message"] = "Code is mismatch!";
             $response["error"] = true;

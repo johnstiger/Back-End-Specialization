@@ -24,7 +24,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::where('status',1)->get();
+        $products = Product::where('status',1)->with('sizes')->get();
 
         $response = $this->service->index($products);
 
@@ -47,6 +47,8 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    //Add sizes
     public function store(Request $request)
     {
         $response = [];
@@ -58,12 +60,18 @@ class ProductController extends Controller
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $product = $request->all();
+                $product = $request->only(['name', 'price','status','description','image']);
+                $size = $request->only(
+                    [
+                        'size',
+                        'unit_measure',
+                    ]
+                );
                 if($request->hasFile('image')){
                    $product["image"] = $this->uploadImage($request->file('image'));
                 }
-                $product["avail_unit_measure"] = $product["unit_measure"];
                 $data = Product::create($product);
+                $data->sizes()->create($size);
                 $response["message"] = "Successfully Added ".$data->name." in Product!";
                 $response["data"] = $data;
                 $response["error"] = false;
@@ -119,10 +127,26 @@ class ProductController extends Controller
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $product->update($request->all());
+                $item = $request->only(
+                    [
+                        'name',
+                        'price',
+                        'status',
+                        'description',
+                        'image'
+                    ]
+                );
                 if($request->hasFile('image')){
-                    $product["image"] = $this->uploadImage($request->file('image'));
+                    $item["image"] = $this->uploadImage($request->file('image'));
                 }
+                $size = $request->only(
+                    [
+                        'size'
+                        ,'unit_measure'
+                    ]
+                );
+                $product->update($item);
+                $product->sizes()->update($size);
                 $response["message"] = "Successfully Updated ".$product->name;
                 $response["data"] = $product;
                 $response["error"] = false;
@@ -161,6 +185,7 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'category_id' => 'required',
             'part' => 'required',
+            'size' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ],[
             'category_id.required' => 'Category name field is required',

@@ -3,31 +3,18 @@
 namespace App\Http\Controllers\User\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Managers\Users\Customers\CommentManager;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+    protected $manager;
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function __construct(CommentManager $manager)
     {
-        //
+        $this->manager = $manager;
     }
 
     /**
@@ -38,63 +25,8 @@ class CommentController extends Controller
      */
     public function store(Request $request, User $customer, Product $product)
     {
-        $validation = Validator::make($request->all(),[
-            'message' => 'required'
-        ]);
-        $response = [];
-        try {
-            if($validation->fails()){
-                $response["message"] = $validation->errors();
-                $response["error"] = true;
-            }else{
-                $comment = $customer->comments()->create([
-                    "product_id"=>$product->id,
-                    "message"=>$request->message
-                    ]);
-                $response["message"] = "Successfully Added Comment";
-                $response["data"] = $comment;
-                $response["error"] = false;
-            }
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
-
+       $response = $this->manager->store($request, $customer, $product);
         return response()->json($response);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
@@ -105,18 +37,7 @@ class CommentController extends Controller
      */
     public function destroy(User $customer, Product $product)
     {
-        $response = [];
-        try {
-            if($product->isEmpty()){
-                $response["message"] = "No Product Found!";
-            }else{
-                $customer->comments->where('product_id',$product->id)->first()->delete();
-                $response["message"] = "Successfully Deleted Comment";
-                $response["error"] = false;
-            }
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
+        $response = $this->manager->destroy($customer, $product);
+        return response()->json($response);
     }
 }

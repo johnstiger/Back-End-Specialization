@@ -20,8 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 // Showing Products
-Route::get('/home','User\Admin\Item\ProductController@index');
-Route::get('/dagom/{product}','User\Admin\Item\ProductController@show');
+Route::get('/home','Items\ProductController@index');
+Route::get('/dagom/{product}','Items\ProductController@show');
 
 
 Route::namespace('Guest')->group(function(){
@@ -67,23 +67,6 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::put('/update/{user}','AdminController@update');
                 Route::delete('/delete/{user}','AdminController@destroy');
             });
-            Route::namespace('Item')->group(function(){
-                Route::prefix('category')->group(function(){
-                    Route::get('/all','CategoryController@index');
-                    Route::get('/show/{category}','CategoryController@show');
-                    Route::post('/newCategory','CategoryController@store');
-                    Route::post('/newCategoryProduct/{category}','CategoryController@storeProduct');
-                    Route::put('/update/{category}','CategoryController@update');
-                    Route::delete('/delete/{category}','CategoryController@destroy');
-                });
-                Route::prefix('product')->group(function(){
-                    Route::get('/all','ProductController@index');
-                    Route::get('/show/{product}','ProductController@show');
-                    Route::post('/newProduct','ProductController@store');
-                    Route::put('/update/{product}','ProductController@update');
-                    Route::delete('/delete/{product}','ProductController@destroy');
-                });
-            });
         });
         Route::namespace('Customer')->middleware('verified')->group(function(){
             Route::prefix('cart')->group(function(){
@@ -100,6 +83,23 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::post('/create/{customer}/{product}','CommentController@store');
                 Route::post('/delete/{customer}/{product}','CommentController@destroy');
             });
+        });
+    });
+    Route::namespace('Items')->group(function(){
+        Route::prefix('category')->group(function(){
+            Route::get('/all','CategoryController@index');
+            Route::get('/show/{category}','CategoryController@show');
+            Route::post('/newCategory','CategoryController@store');
+            Route::post('/newCategoryProduct/{category}','CategoryController@storeProduct');
+            Route::put('/update/{category}','CategoryController@update');
+            Route::delete('/delete/{category}','CategoryController@destroy');
+        });
+        Route::prefix('product')->group(function(){
+            Route::get('/all','ProductController@index');
+            Route::get('/show/{product}','ProductController@show');
+            Route::post('/newProduct','ProductController@store');
+            Route::put('/update/{product}','ProductController@update');
+            Route::delete('/delete/{product}','ProductController@destroy');
         });
     });
 });

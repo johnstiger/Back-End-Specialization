@@ -1,21 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\User\Admin\Item;
+namespace App\Managers\Items;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\User\Admin\ServiceController;
+use App\Managers\Template\Template;
+use App\Validations\Items\CategoryValidation;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class CategoryManager
 {
-    protected $service;
+    protected $template;
+    protected $check;
 
-    public function __construct(ServiceController $service)
+    public function __construct(Template $template, CategoryValidation $check)
     {
-        $this->service = $service;
+        $this->template = $template;
+        $this->check = $check;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -24,18 +25,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::with('products')->get();
-        $response = $this->service->index($categories);
-        return response()->json($response);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return $this->template->index($categories);
     }
 
     /**
@@ -44,11 +34,11 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($request)
     {
         $response = [];
 
-        $rules = $this->validation($request->all());
+        $rules = $this->check->validation($request->all());
         try {
             if($rules->fails()){
                 $response["message"] = $rules->errors();
@@ -63,7 +53,7 @@ class CategoryController extends Controller
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
-        return response()->json($response);
+        return $response;
     }
 
     /**
@@ -72,10 +62,10 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeProduct(Request $request, Category $category)
+    public function storeProduct($request, $category)
     {
         $response = [];
-        $rules = $this->productValidation($request->all());
+        $rules = $this->check->productValidation($request->all());
         try {
             if($rules->fails()){
                 $response["message"] = $rules->errors();
@@ -92,7 +82,7 @@ class CategoryController extends Controller
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
-        return response()->json($response);
+        return $response;
     }
 
     /**
@@ -101,21 +91,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show($category)
     {
-        $response = $this->service->show($category);
-        return response()->json($response);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return $this->template->show($category);
     }
 
     /**
@@ -125,11 +103,11 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update($request, $category)
     {
         $response = [];
 
-        $rules = $this->validation($request->all());
+        $rules = $this->check->validation($request->all());
         try {
             if($rules->fails()){
                 $response["message"] = $rules->errors();
@@ -144,7 +122,7 @@ class CategoryController extends Controller
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
-        return response()->json($response);
+        return $response;
     }
 
     /**
@@ -153,38 +131,14 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy($product)
     {
-        $response = $this->service->destroy($category);
-
-        return response()->json($response);
+        return $this->template->destroy($product);
     }
 
-    /**
-     * Validate the request provided.
-     *
-     * @param  int  $data
-     * @return \Illuminate\Http\Response
-     */
-    public function validation($data)
-    {
-        $rules = Validator::make($data,[
-            'name' => 'required|regex:/^[\pL\s\-]+$/u',
-        ]);
-        return $rules;
-    }
 
-    public function productValidation($data)
-    {
-        $rules = Validator::make($data,[
-            'name' => 'required|regex:/^[\pL\s\-]+$/u',
-            'unit_measure' => 'required|numeric',
-            'price' => 'required|numeric',
-            'part' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg'
-        ],[
-            'part.required' => 'This field is required, please enter valid value'
-        ]);
-        return $rules;
-    }
 }
+
+
+
+?>

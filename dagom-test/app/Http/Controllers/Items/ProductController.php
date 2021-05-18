@@ -1,22 +1,32 @@
 <?php
 
-namespace App\Http\Controllers\User\Customer;
+namespace App\Http\Controllers\Items;
 
 use App\Http\Controllers\Controller;
-use App\Managers\Users\Customers\CartManager;
+use App\Managers\Items\ProductManager;
 use App\Models\Product;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-class CartController extends Controller
+class ProductController extends Controller
 {
     protected $manager;
 
-    public function __construct(CartManager $manager)
+    public function __construct(ProductManager $manager)
     {
         $this->manager = $manager;
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $response = $this->manager->index();
+        return response()->json($response);
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -24,9 +34,11 @@ class CartController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, User $customer, Product $product)
+
+    //Add sizes
+    public function store(Request $request)
     {
-        $response = $this->manager->store($request, $customer, $product);
+        $response = $this->manager->store($request);
         return response()->json($response);
     }
 
@@ -36,11 +48,12 @@ class CartController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(User $customer)
+    public function show(Product $product)
     {
-        $response = $this->manager->show($customer);
+        $response = $this->manager->show($product);
         return response()->json($response);
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -49,9 +62,9 @@ class CartController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $customer, Product $product)
+    public function update(Request $request, Product $product)
     {
-        $response = $this->manager->update($request, $customer, $product);
+        $response = $this->manager->update($request, $product);
         return response()->json($response);
     }
 
@@ -61,9 +74,11 @@ class CartController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $customer, Product $product)
+    public function destroy(Product $product)
     {
-        $response = $this->manager->destroy($customer, $product);
+        $response = $this->manager->destroy($product);
         return response()->json($response);
     }
+
+
 }

@@ -1,9 +1,6 @@
 <?php
 
-use App\Models\User;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,25 +18,44 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+// Showing Products
+Route::get('/home','User\Admin\Item\ProductController@index');
+Route::get('/dagom/{product}','User\Admin\Item\ProductController@show');
+
+
 Route::namespace('Guest')->group(function(){
+    // Unauthorized
     Route::get('/UnAuthorized','AuthController@Unauthorized')->name('unauthorized');
+    Route::get('/NotVerified','VerificationController@notVerifyEmail')->name('verification.notice');
+
+    //LogIn and Register Verification
     Route::post('/login','AuthController@login');
     Route::post('/register','AuthController@register')->name('verification.send');
-    Route::get('/email/verify/{id}/{hash}',function(EmailVerificationRequest $request){
-        $request->fulfill();
-        return response()->json("Verified");
-    })->middleware(['auth:sanctum','signed'])->name('verification.verify');
+    Route::get('/email/verification/{id}/{token}','VerificationController@verifyEmail')->name('verified');
+
+    //Forgot Password using Verification Code
+    Route::post('/forgot-password','AuthController@forgotPassword');
+    Route::post('/reset-password/{user}','AuthController@verificationCodeCheck');
+    Route::post('/new-password/{user}','AuthController@resetPassword');
+
+    // Search Products or Category
     Route::prefix('search')->group(function(){
         Route::post('/products','SearchEngineController@Products');
         Route::post('/products/{category}','SearchEngineController@productByCategory');
     });
+
 });
 
+// User
 Route::middleware('auth:sanctum')->group(function(){
-    Route::namespace('Guest')->prefix('search')->group(function(){
-        Route::post('/customers','SearchEngineController@Customers');
-        Route::post('/admin','SearchEngineController@Admins');
-        Route::post('/category','SearchEngineController@Category');
+    Route::namespace('Guest')->group(function(){
+        Route::prefix('search')->group(function(){
+            Route::post('/customers','SearchEngineController@Customers');
+            Route::post('/admin','SearchEngineController@Admins');
+            Route::post('/category','SearchEngineController@Category');
+        });
+        Route::any('/logout','AuthController@logout');
     });
     Route::namespace('User')->group(function(){
         Route::namespace('Admin')->middleware('admin')->group(function(){
@@ -50,7 +66,6 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::post('/register','AdminController@store');
                 Route::put('/update/{user}','AdminController@update');
                 Route::delete('/delete/{user}','AdminController@destroy');
-                Route::post('/logout','AdminController@logout');
             });
             Route::namespace('Item')->group(function(){
                 Route::prefix('category')->group(function(){
@@ -70,12 +85,20 @@ Route::middleware('auth:sanctum')->group(function(){
                 });
             });
         });
-        Route::namespace('Customer')->group(function(){
+        Route::namespace('Customer')->middleware('verified')->group(function(){
             Route::prefix('cart')->group(function(){
                 Route::get('/show/{customer}','CartController@show');
                 Route::post('/add/{customer}/{product}','CartController@store');
                 Route::put('/update{customer}/{product}','CartController@update');
                 Route::delete('/delete/{customer}/{product}','CategoryController@destroy');
+            });
+            Route::prefix('customer')->group(function(){
+                Route::put('/information/{customer}','CustomerController@update');
+                Route::post('/address/{customer}','CustomerController@address');
+            });
+            Route::prefix('comment')->group(function(){
+                Route::post('/create/{customer}/{product}','CommentController@store');
+                Route::post('/delete/{customer}/{product}','CommentController@destroy');
             });
         });
     });

@@ -17,9 +17,8 @@ class CreateProductsTable extends Migration
             $table->id()->from(1000);
             $table->unsignedBigInteger('category_id');
             $table->string('name');
-            $table->float('unit_measure');
-            $table->float('avail_unit_measure');
             $table->float('price');
+            $table->string('part')->nullable();
             $table->boolean('status')->default(true);
             $table->longText('description')->nullable();
             $table->longText('image')->nullable();

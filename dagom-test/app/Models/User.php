@@ -24,7 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'contact_number',
         'email',
         'password',
-        'is_admin'
+        'is_admin',
+        'image'
     ];
 
     /**
@@ -54,5 +55,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function cart()
     {
         return $this->hasOne(Cart::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function verificationCode()
+    {
+        return $this->hasOne(VerificationCode::class);
     }
 }

@@ -12,8 +12,6 @@ class Product extends Model
     protected $fillable = [
         'category_id',
         'name',
-        'unit_measure',
-        'avail_unit_measure',
         'price',
         'status',
         'description',
@@ -28,5 +26,15 @@ class Product extends Model
      public function cart()
     {
         return $this->belongsToMany(Cart::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function sizes()
+    {
+        return $this->hasMany(Sizes::class);
     }
 }

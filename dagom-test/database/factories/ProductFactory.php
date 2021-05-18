@@ -21,12 +21,9 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
-        $unit = $this->faker->randomDigit();
         return [
             'category_id' => $this->faker->randomElement(['1','2','3','4']),
             'name' => $this->faker->name,
-            'unit_measure' => $unit,
-            'avail_unit_measure' => $unit,
             'price' => $this->faker->randomFloat(2,0,1000),
             'status' => true,
             'description' => $this->faker->text,

@@ -13,7 +13,7 @@ class SearchEngineController extends Controller
     public function Customers(Request $request)
     {
 
-            $customers = User::where('is_admin',0)->where('lastname','like',"%{$request->get('data')}%")
+        $customers = User::where('is_admin',0)->where('lastname','like',"%{$request->get('data')}%")
                                                     ->orWhere('firstname','like',"%{$request->get('data')}%")
                                                     ->where('is_admin',0)
                                                     ->orWhere('email','like',"%{$request->get('data')}%")

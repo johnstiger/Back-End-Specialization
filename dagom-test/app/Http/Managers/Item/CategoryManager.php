@@ -1,22 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\User\Admin\Item;
+namespace App\Http\Managers\Item;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\User\Admin\ServiceController;
+use App\Http\Validation\Item\CategoryValidation;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class CategoryManager
 {
-    protected $service;
 
-    public function __construct(ServiceController $service)
+    protected $check;
+
+    public function __construct(CategoryValidation $check)
     {
-        $this->service = $service;
+        $this->check = $check;
     }
-    /**
+ /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -24,8 +22,22 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::with('products')->get();
-        $response = $this->service->index($categories);
-        return response()->json($response);
+        $response = [];
+        try {
+            if(!$categories){
+                $response["message"] = "No data yet!";
+                $response["error"] = false;
+            }else{
+                $response["message"] = "Success";
+                $response["data"] = $categories;
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
     }
 
     /**
@@ -44,11 +56,12 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($request)
     {
         $response = [];
 
-        $rules = $this->validation($request->all());
+        $rules = $this->check->validation($request->all());
+
         try {
             if($rules->fails()){
                 $response["message"] = $rules->errors();
@@ -63,8 +76,10 @@ class CategoryController extends Controller
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
-        return response()->json($response);
+
+        return $response;
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -72,10 +87,10 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeProduct(Request $request, Category $category)
+    public function storeProduct($request, $category)
     {
         $response = [];
-        $rules = $this->productValidation($request->all());
+        $rules = $this->check->productValidation($request->all());
         try {
             if($rules->fails()){
                 $response["message"] = $rules->errors();
@@ -92,8 +107,11 @@ class CategoryController extends Controller
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
-        return response()->json($response);
+        return $response;
     }
+
+
+
 
     /**
      * Display the specified resource.
@@ -101,10 +119,23 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show($data)
     {
-        $response = $this->service->show($category);
-        return response()->json($response);
+        $response = [];
+        try {
+            if(!$data){
+                $response["message"] = "No data found!";
+            }else{
+                $response["message"] = "Success";
+                $response["data"] = $data;
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
     }
 
     /**
@@ -125,11 +156,11 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update($request, $category)
     {
         $response = [];
 
-        $rules = $this->validation($request->all());
+        $rules = $this->check->validation($request->all());
         try {
             if($rules->fails()){
                 $response["message"] = $rules->errors();
@@ -144,7 +175,8 @@ class CategoryController extends Controller
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
-        return response()->json($response);
+
+        return $response;
     }
 
     /**
@@ -153,35 +185,24 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy($data)
     {
-        $response = $this->service->destroy($category);
-
-        return response()->json($response);
+        $response = [];
+        try {
+            $data->delete();
+            $response["message"] = "Successfully Deleted";
+            $response["error"] = false;
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+        return $response;
     }
 
-    /**
-     * Validate the request provided.
-     *
-     * @param  int  $data
-     * @return \Illuminate\Http\Response
-     */
-    public function validation($data)
-    {
-        $rules = Validator::make($data,[
-            'name' => 'required|regex:/^[\pL\s\-]+$/u',
-        ]);
-        return $rules;
-    }
 
-    public function productValidation($data)
-    {
-        $rules = Validator::make($data,[
-            'name' => 'required|regex:/^[\pL\s\-]+$/u',
-            'unit_measure' => 'required|numeric',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg'
-        ]);
-        return $rules;
-    }
 }
+
+
+
+
+?>

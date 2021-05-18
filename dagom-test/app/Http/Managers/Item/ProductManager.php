@@ -1,23 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\User\Admin\Item;
+namespace App\Http\Managers\Item;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\User\Admin\ServiceController;
+use App\Http\Validation\Item\ProductValidation;
 use App\Models\Product;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-class ProductController extends Controller
+class ProductManager
 {
-    protected $service;
 
-    public function __construct(ServiceController $service)
+    protected $check;
+
+    public function __construct(ProductValidation $check)
     {
-        $this->service = $service;
+        $this->check = $check;
     }
-
-    /**
+ /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -25,10 +22,22 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::where('status',1)->get();
+        $response = [];
+        try {
+            if(!$products){
+                $response["message"] = "No data yet!";
+                $response["error"] = false;
+            }else{
+                $response["message"] = "Success";
+                $response["data"] = $products;
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
 
-        $response = $this->service->index($products);
-
-        return response()->json($response);
+        return $response;
     }
 
     /**
@@ -47,11 +56,11 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($request)
     {
         $response = [];
 
-        $rules = $this->validation($request->all());
+        $rules = $this->check->validation($request->all());
 
         try {
             if($rules->fails()){
@@ -72,7 +81,8 @@ class ProductController extends Controller
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
-        return response()->json($response);
+
+        return $response;
     }
 
     /**
@@ -81,11 +91,23 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($data)
     {
-        $response = $this->service->show($product);
+        $response = [];
+        try {
+            if(!$data){
+                $response["message"] = "No data found!";
+            }else{
+                $response["message"] = "Success";
+                $response["data"] = $data;
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
 
-        return response()->json($response);
+        return $response;
     }
 
     /**
@@ -106,11 +128,11 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update($request, $product)
     {
         $response = [];
 
-        $rules = $this->validation($request->all());
+        $rules = $this->check->validation($request->all());
 
         try {
             if($rules->fails()){
@@ -129,7 +151,8 @@ class ProductController extends Controller
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
-        return response()->json($response);
+
+        return $response;
     }
 
     /**
@@ -138,35 +161,21 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($data)
     {
-        $response = $this->service->destroy($product);
-
-        return response()->json($response);
+        $response = [];
+        try {
+            $data->delete();
+            $response["message"] = "Successfully Deleted";
+            $response["error"] = false;
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+        return $response;
     }
 
-    /**
-     * Validate the request provided.
-     *
-     * @param  int  $data
-     * @return \Illuminate\Http\Response
-     */
-    public function validation($request)
-    {
-        $rules = Validator::make($request,[
-            'name' => 'required|regex:/^[\pL\s\-]+$/u',
-            'unit_measure' => 'required|numeric',
-            'price' => 'required|numeric',
-            'category_id' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
-        ],[
-            'category_id.required' => 'Category name field is required'
-        ]);
-
-        return $rules;
-    }
-
-    /**
+     /**
      * Validate the request provided.
      *
      * @param  int  $data
@@ -179,4 +188,15 @@ class ProductController extends Controller
 
         return $path;
     }
+
+
+
 }
+
+
+
+
+
+
+
+?>

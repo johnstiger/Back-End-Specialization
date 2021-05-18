@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\User\Admin\Item;
+namespace App\Managers\Items;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\User\Admin\ServiceController;
+use App\Managers\Template\Template;
+use App\Validations\Items\ProductValidation as ItemsProductValidation;
 use App\Models\Product;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-class ProductController extends Controller
+class ProductManager
 {
-    protected $service;
+    protected $template;
+    protected $check;
 
-    public function __construct(ServiceController $service)
+    public function __construct(Template $template, ItemsProductValidation $check)
     {
-        $this->service = $service;
+        $this->template = $template;
+        $this->check = $check;
     }
 
     /**
@@ -25,21 +25,9 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::where('status',1)->with('sizes')->get();
-
-        $response = $this->service->index($products);
-
-        return response()->json($response);
+        return $this->template->index($products);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -49,11 +37,11 @@ class ProductController extends Controller
      */
 
     //Add sizes
-    public function store(Request $request)
+    public function store($request)
     {
         $response = [];
 
-        $rules = $this->validation($request->all());
+        $rules = $this->check->validation($request);
 
         try {
             if($rules->fails()){
@@ -80,7 +68,7 @@ class ProductController extends Controller
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
-        return response()->json($response);
+        return $response;
     }
 
     /**
@@ -89,25 +77,14 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($product)
     {
-        $response = $this->service->show($product);
-
+        $response = $this->template->show($product);
         $response["comments"] = $product->comments;
-
-        return response()->json($response);
+        return $response;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -116,11 +93,11 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update($request, $product)
     {
         $response = [];
 
-        $rules = $this->validation($request->all());
+        $rules = $this->check->validation($request);
 
         try {
             if($rules->fails()){
@@ -155,7 +132,7 @@ class ProductController extends Controller
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
-        return response()->json($response);
+        return $response;
     }
 
     /**
@@ -166,34 +143,9 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $response = $this->service->destroy($product);
-
-        return response()->json($response);
+        return $this->template->destroy($product);
     }
 
-    /**
-     * Validate the request provided.
-     *
-     * @param  int  $data
-     * @return \Illuminate\Http\Response
-     */
-    public function validation($request)
-    {
-        $rules = Validator::make($request,[
-            'name' => 'required|regex:/^[\pL\s\-]+$/u',
-            'unit_measure' => 'required|numeric',
-            'price' => 'required|numeric',
-            'category_id' => 'required',
-            'part' => 'required',
-            'size' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
-        ],[
-            'category_id.required' => 'Category name field is required',
-            'part.required' => 'This field is required, please enter valid value'
-        ]);
-
-        return $rules;
-    }
 
     /**
      * Validate the request provided.
@@ -208,3 +160,9 @@ class ProductController extends Controller
         return $path;
     }
 }
+
+
+
+
+
+?>

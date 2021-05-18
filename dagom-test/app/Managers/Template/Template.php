@@ -1,13 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\User\Admin;
+namespace App\Managers\Template;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
-class ServiceController extends Controller
+class Template
 {
-    /**
+/**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -16,7 +13,7 @@ class ServiceController extends Controller
     {
         $response = [];
         try {
-            if(!$data){
+            if($data->isEmpty()){
                 $response["message"] = "No data yet!";
                 $response["error"] = false;
             }else{
@@ -30,27 +27,6 @@ class ServiceController extends Controller
         }
 
         return $response;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-
     }
 
     /**
@@ -79,29 +55,6 @@ class ServiceController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -121,3 +74,6 @@ class ServiceController extends Controller
         return $response;
     }
 }
+
+
+?>

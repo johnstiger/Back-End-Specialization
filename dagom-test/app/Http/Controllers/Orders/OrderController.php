@@ -34,9 +34,26 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
-        //
+        $response = [];
+        try {
+            if($user->order == null){
+                $user->order->create(['total'=>0,'status'=>0,'payment_method'=>'null']);
+            }
+            $user->order->products()->syncWithoutDetaching([
+                $request->product_id => [
+                    'quantity' => $request->quantity,
+                    'subtotal' => $request->subtotal
+                ],
+                $request->product_id => [
+                    'quantity' => $request->quantity,
+                    'subtotal' => $request->subtotal
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     /**

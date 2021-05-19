@@ -15,7 +15,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -37,23 +37,31 @@ class OrderController extends Controller
     public function store(Request $request, User $user)
     {
         $response = [];
+        $total = 0;
         try {
             if($user->order == null){
                 $user->order->create(['total'=>0,'status'=>0,'payment_method'=>'null']);
             }
-            $user->order->products()->syncWithoutDetaching([
-                $request->product_id => [
-                    'quantity' => $request->quantity,
-                    'subtotal' => $request->subtotal
-                ],
-                $request->product_id => [
-                    'quantity' => $request->quantity,
-                    'subtotal' => $request->subtotal
-                ],
-            ]);
-        } catch (\Throwable $th) {
-            //throw $th;
+            foreach($request->data as $data){
+                $user->order->products()->syncWithoutDetaching([
+                    $data["product_id"] => [
+                        'quantity' => $data["quantity"],
+                        'subtotal' => $data["subtotal"]
+                    ]
+                ]);
+                $total += $data["subtotal"];
+            }
+            $user->order()->update(['total'=>$total,'payment_method'=>$request->payment_method]);
+            $response["message"] = "Success";
+            $response["data"] = $user->order->products;
+            $response["order"] = $user->order;
+            $response["error"] = false;
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
         }
+
+        return response()->json($response);
     }
 
     /**
@@ -64,7 +72,7 @@ class OrderController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return response()->json($user->order->products);
     }
 
     /**

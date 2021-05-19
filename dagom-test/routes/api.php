@@ -84,6 +84,13 @@ Route::middleware('auth:sanctum')->group(function(){
             });
         });
     });
+    Route::namespace('Orders')->group(function(){
+        Route::prefix('order')->group(function(){
+            Route::post('/store/{user}','OrderController@store');
+            Route::get('/show/{user}', 'OrderController@show');
+        });
+    });
+
     Route::namespace('Items')->group(function(){
         Route::prefix('category')->group(function(){
             Route::get('/all','CategoryController@index');

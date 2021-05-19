@@ -16,72 +16,61 @@ class AdminController extends Controller
         $this->manager = $manager;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Displaying All Customers
+    * return json type result
+    */
     public function customers()
     {
         $response = $this->manager->customers();
         return response()->json($response);
 
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    /*
+    * Displaying All Admins
+    * return json type result
+    */
     public function index()
     {
         $response = $this->manager->admins();
         return response()->json($response);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Adding new Admin User
+    * return json type result
+    */
     public function store(Request $request)
     {
         $response = $this->manager->store($request);
         return response()->json($response);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Showing Specific Admin
+    * return json type result
+    */
     public function show(User $admin)
     {
         $response = $this->manager->show($admin);
         return response()->json($response);
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $user
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Updating Specific Admin's Informations
+    * return json type result
+    */
     public function update(Request $request, User $admin)
     {
         $response = $this->manager->update($request, $admin);
         return response()->json($response);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $user
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Removing the Specific Admin with SoftDelete
+    * return json type result
+    */
     public function destroy(User $admin)
     {
         $response = $this->manager->destroy($admin);

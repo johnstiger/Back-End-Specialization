@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
+    /*
+    * Check if email is verified
+    * return json type result
+    */
     public function verifyEmail(User $id, $token)
     {
         $id->email_verified_at = now();
@@ -16,6 +20,10 @@ class VerificationController extends Controller
         return response()->json("Verified");
     }
 
+    /*
+    * If email is not verified
+    * return json type result
+    */
     public function notVerifyEmail()
     {
         return response()->json('Please Verify Your Email');

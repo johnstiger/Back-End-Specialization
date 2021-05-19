@@ -15,72 +15,61 @@ class CategoryController extends Controller
     {
         $this->manager = $manager;
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    /*
+    * Displaying all the catergories with products
+    * return json type result
+    */
     public function index()
     {
         $response = $this->manager->index();
         return response()->json($response);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Adding new Category
+    * return json type result
+    */
     public function store(Request $request)
     {
         $response = $this->manager->store($request);
         return response()->json($response);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Adding Product in Specified Category
+    * return json type result
+    */
     public function storeProduct(Request $request, Category $category)
     {
         $response = $this->manager->storeProduct($request, $category);
         return response()->json($response);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Showing Specific Category
+    * return json type result
+    */
     public function show(Category $category)
     {
         $response = $this->manager->show($category);
         return response()->json($response);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Updating the Category
+    * return json type result
+    */
     public function update(Request $request, Category $category)
     {
         $response = $this->manager->update($request, $category);
         return response()->json($response);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Removing Category with SoftDelete
+    * return json type result
+    */
     public function destroy(Category $category)
     {
         $response = $this->manager->destroy($category);

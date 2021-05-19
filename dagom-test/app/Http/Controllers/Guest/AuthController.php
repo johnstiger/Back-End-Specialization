@@ -16,73 +16,59 @@ class AuthController extends Controller
         $this->manager = $manager;
     }
 
-    /**
-     * Login the registered customer
-     *
-     * @param  int  $user
-     * return abort to not authorized
-     */
+    /*
+    * Login Users
+    * return json type result
+    */
     public function login(Request $request)
     {
         $response = $this->manager->Attempt($request);
         return response()->json($response);
     }
 
-    /**
-     * Register new Customer
-     *
-     * @param  int  $user
-     * return abort to not authorized
-     */
+    /*
+    * Registering Guest to become Customer
+    * return json type result
+    */
     public function register(Request $request)
     {
         $response = $this->manager->newCustomer($request);
         return response()->json($response);
     }
 
-    /**
-     * If no access token
-     *
-     * @param  int  $user
-     * return abort to not authorized
-     */
+    /*
+    * If there is no access token
+    * return abort to 401
+    */
     public function Unauthorized()
     {
         return response()->json('Unauthorized',401);
     }
 
-    /**
-     * Logout the specified access token from storage.
-     *
-     * @param  int  $user
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Logout the Authired user
+    * return json type result
+    */
     public function logout()
     {
         $response = $this->manager->goOut();
         return response()->json($response);
     }
 
-    /**
-     * Send Email Password Verification to
-     * the specified access token from storage.
-     *
-     * @param  int  $user
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Sending Code in Email
+    * return json type result
+    */
     public function forgotPassword(Request $request)
     {
         $response = $this->manager->SendCode($request);
         return response()->json($response);
     }
 
-    /**
-     * Verify the code
-     * the specified access token from storage.
-     *
-     * @param  int  $user
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Checking if the code is match
+    * return json type result
+    */
     public function verificationCodeCheck(Request $request, User $user)
     {
         $response = $this->manager->VerifyCode($request, $user);
@@ -90,13 +76,10 @@ class AuthController extends Controller
     }
 
 
-    /**
-     * Change new Password
-     * the specified access token from storage.
-     *
-     * @param  int  $user
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Changing new Password
+    * return json type result
+    */
     public function resetPassword(Request $request, User $user)
     {
         $response = $this->manager->newPassword($request, $user);

@@ -17,24 +17,20 @@ class CommentController extends Controller
         $this->manager = $manager;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Adding new Comment in the Product
+    * return json type result
+    */
     public function store(Request $request, User $customer, Product $product)
     {
        $response = $this->manager->store($request, $customer, $product);
         return response()->json($response);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Removing the Specific Comment
+    * return json type result
+    */
     public function destroy(User $customer, Product $product)
     {
         $response = $this->manager->destroy($customer, $product);

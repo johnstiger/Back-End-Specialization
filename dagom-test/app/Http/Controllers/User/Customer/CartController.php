@@ -18,49 +18,42 @@ class CartController extends Controller
         $this->manager = $manager;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Adding Product inside the Cart
+    * return json type result
+    */
     public function store(Request $request, User $customer, Product $product)
     {
         $response = $this->manager->store($request, $customer, $product);
         return response()->json($response);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Showing all the product inside the Cart
+    * return json type result
+    */
     public function show(User $customer)
     {
         $response = $this->manager->show($customer);
         return response()->json($response);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Updating the quantity of the Product
+    * inside the Cart
+    * return json type result
+    */
     public function update(Request $request, User $customer, Product $product)
     {
         $response = $this->manager->update($request, $customer, $product);
         return response()->json($response);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Removing Specific Product
+    * Inside the Cart
+    * return json type result
+    */
     public function destroy(User $customer, Product $product)
     {
         $response = $this->manager->destroy($customer, $product);

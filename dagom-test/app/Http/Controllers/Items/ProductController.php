@@ -16,11 +16,10 @@ class ProductController extends Controller
         $this->manager = $manager;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Displaying All the Products
+    * return json type result
+    */
     public function index()
     {
         $response = $this->manager->index();
@@ -28,26 +27,20 @@ class ProductController extends Controller
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-
-    //Add sizes
+    /*
+    * Adding new Product
+    * return json type result
+    */
     public function store(Request $request)
     {
         $response = $this->manager->store($request);
         return response()->json($response);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Showing Specific Product
+    * return json type result
+    */
     public function show(Product $product)
     {
         $response = $this->manager->show($product);
@@ -55,25 +48,20 @@ class ProductController extends Controller
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Updating Product's information
+    * return json type result
+    */
     public function update(Request $request, Product $product)
     {
         $response = $this->manager->update($request, $product);
         return response()->json($response);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Removing Specific Product with SoftDelete
+    * return json type result
+    */
     public function destroy(Product $product)
     {
         $response = $this->manager->destroy($product);

@@ -16,12 +16,10 @@ class CustomerController extends Controller
         $this->manager = $manager;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Showing Specific Customer
+    * return json type result
+    */
     public function show(User $customer)
     {
         $response = $this->manager->show($customer);
@@ -29,26 +27,21 @@ class CustomerController extends Controller
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /*
+    * Updating the Specific Customer's
+    * Informations
+    * return json type result
+    */
     public function update(Request $request, User $customer)
     {
         $response = $this->manager->update($request, $customer);
         return response()->json($response);
     }
 
-    /**
-     * Add Address the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+   /*
+    * Adding new Address of the Customer
+    * return json type result
+    */
     public function address(Request $request, User $customer)
     {
         $response = $this->manager->address($request, $customer);

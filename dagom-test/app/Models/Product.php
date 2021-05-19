@@ -15,7 +15,7 @@ class Product extends Model
         'price',
         'status',
         'description',
-        'image'
+        'image',
     ];
 
     public function category()
@@ -35,6 +35,8 @@ class Product extends Model
 
     public function sizes()
     {
-        return $this->belongsToMany(Sizes::class);
+        return $this->hasMany(Sizes::class);
     }
+
+
 }

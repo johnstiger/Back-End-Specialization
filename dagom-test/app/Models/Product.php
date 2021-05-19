@@ -23,7 +23,7 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-     public function cart()
+     public function carts()
     {
         return $this->belongsToMany(Cart::class);
     }
@@ -35,6 +35,6 @@ class Product extends Model
 
     public function sizes()
     {
-        return $this->hasMany(Sizes::class);
+        return $this->belongsToMany(Sizes::class);
     }
 }

@@ -4,8 +4,8 @@ namespace App\Managers\Guest;
 
 use App\Validations\Guest\AuthValidation as GuestAuthValidation;
 use App\Models\User;
-use App\Notifications\EmailVerfication;
-use App\Notifications\ResetPassword;
+use App\Services\AllServices\AllServices;
+use App\Services\Mail\SendEmailServices;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,10 +13,14 @@ class AuthManager
 {
 
     protected $check;
+    protected $send;
+    protected $services;
 
-    public function __construct(GuestAuthValidation $check)
+    public function __construct(GuestAuthValidation $check, SendEmailServices $send, AllServices $services)
     {
         $this->check = $check;
+        $this->send = $send;
+        $this->services = $services;
     }
 
     /**
@@ -36,7 +40,7 @@ class AuthManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $user = User::where('email',$request->email)->first();
+                $user = $this->services->getUser($request);
                 if(!$user || !Hash::check($request->password, $user->password)){
                     $response["message"] = "Email or Password is incorrect!";
                     $response["error"] = true;
@@ -80,7 +84,7 @@ class AuthManager
                 $customer["password"] = Hash::make($request->password);
                 $data = User::create($customer);
                 $token = $data->createToken('token');
-                $data->notify(new EmailVerfication($data, $token->plainTextToken));
+                $this->send->sendEmailVerification($data, $token->plainTextToken);
                 $data->cart()->create();
                 $response["message"] = "Please Verify Your Email Account";
                 $response["data"] = $data;
@@ -134,7 +138,7 @@ class AuthManager
             $response["error"] = true;
         }else{
             try {
-                $user = User::where('email',$request->email)->first();
+                $user = $this->services->getUser($request);
                 if(!$user){
                     $response["message"] = "Email is not recognize!";
                     $response["error"] = true;
@@ -143,15 +147,15 @@ class AuthManager
                     $response["error"] = true;
                     $response["need"] = "Need Verification";
                 }else{
-                    $this->code =(string) random_int(1000,90000);
-                    $user->notify(new ResetPassword($this->code, $user));
+                    $code =(string) random_int(1000,90000);
+                    $this->send->sendCode($user, $code);
                     if($user->verificationCode == null){
                         $user->verificationCode()->create([
-                            'code' => $this->code
+                            'code' => $code
                         ]);
                     }else{
                         $user->verificationCode()->update([
-                            'code' => $this->code
+                            'code' => $code
                         ]);
                     }
                     $response["message"] = "We sent reset password link in your Email";
@@ -173,7 +177,7 @@ class AuthManager
         $time = $user->verificationCode->created_at->diff(now())->format('%i');
         $code = $user->verificationCode->code;
         if($time > 5){
-            $response["message"] = "The code is already expired!";
+            $response["message"] = "This code is already expired!";
             $response["error"] = true;
         }else{
             if($request->code == $code){

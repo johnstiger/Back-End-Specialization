@@ -6,16 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Sizes extends Model
+class Order extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'product_id',
-        'size',
+        'user_id',
+        'total',
+        'status',
+        'payment_method'
     ];
 
-    public function products()
+    public function customers()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(User::class);
     }
 }

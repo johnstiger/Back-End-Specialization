@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services\AllServices;
+namespace App\Services\Data;
 
 use App\Models\User;
 
-class AllServices
+class DataServices
 {
     public function getUser($request)
     {
@@ -21,6 +21,10 @@ class AllServices
         return User::where('is_admin',1)->get();
     }
 
+    public function getAdmin($request)
+    {
+        return User::where('is_admin',1)->where('email',$request->email)->first();
+    }
 
 }
 

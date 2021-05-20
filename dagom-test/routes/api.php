@@ -89,6 +89,7 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::get('/checkout/{user}','OrderController@create');
             Route::post('/placed/{user}','OrderController@store');
             Route::get('/show/{user}', 'OrderController@show');
+            Route::get('/cancel','OrderController@cancel');
         });
     });
     Route::namespace('Items')->middleware('admin')->group(function(){

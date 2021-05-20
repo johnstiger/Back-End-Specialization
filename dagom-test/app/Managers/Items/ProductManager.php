@@ -5,6 +5,7 @@ namespace App\Managers\Items;
 use App\Managers\Template\Template;
 use App\Validations\Items\ProductValidation as ItemsProductValidation;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 class ProductManager
 {
@@ -49,6 +50,9 @@ class ProductManager
                 $response["error"] = true;
             }else{
                 $product = $request->only(['name','category_id', 'price','status','description','image']);
+                if($request->hasFile('image')){
+                   $product["image"] = $this->uploadImage($request->file('image'));
+                }
                 $data = Product::create($product);
                 foreach ($request->sizes as $size) {
                     dump($size);
@@ -57,9 +61,6 @@ class ProductManager
                     ]]);
                 }
 
-                if($request->hasFile('image')){
-                   $product["image"] = $this->uploadImage($request->file('image'));
-                }
                 $response["message"] = "Successfully Added ".$data->name." in Product!";
                 $response["data"] = $data;
                 $response["error"] = false;
@@ -96,7 +97,6 @@ class ProductManager
     public function update($request, $product)
     {
         $response = [];
-
         $rules = $this->check->validation($request);
 
         try {

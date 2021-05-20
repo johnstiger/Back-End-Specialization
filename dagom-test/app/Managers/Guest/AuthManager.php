@@ -4,7 +4,7 @@ namespace App\Managers\Guest;
 
 use App\Validations\Guest\AuthValidation as GuestAuthValidation;
 use App\Models\User;
-use App\Services\AllServices\AllServices;
+use App\Services\Data\DataServices;
 use App\Services\Mail\SendEmailServices;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,13 +14,13 @@ class AuthManager
 
     protected $check;
     protected $send;
-    protected $services;
+    protected $data;
 
-    public function __construct(GuestAuthValidation $check, SendEmailServices $send, AllServices $services)
+    public function __construct(GuestAuthValidation $check, SendEmailServices $send, DataServices $data)
     {
         $this->check = $check;
         $this->send = $send;
-        $this->services = $services;
+        $this->data = $data;
     }
 
     /**
@@ -40,7 +40,7 @@ class AuthManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $user = $this->services->getUser($request);
+                $user = $this->data->getUser($request);
                 if(!$user || !Hash::check($request->password, $user->password)){
                     $response["message"] = "Email or Password is incorrect!";
                     $response["error"] = true;
@@ -138,7 +138,7 @@ class AuthManager
             $response["error"] = true;
         }else{
             try {
-                $user = $this->services->getUser($request);
+                $user = $this->data->getUser($request);
                 if(!$user){
                     $response["message"] = "Email is not recognize!";
                     $response["error"] = true;

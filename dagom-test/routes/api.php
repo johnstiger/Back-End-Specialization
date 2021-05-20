@@ -23,7 +23,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/home','Items\ProductController@index');
 Route::get('/dagom/{product}','Items\ProductController@show');
 
-
 Route::namespace('Guest')->group(function(){
     // Unauthorized
     Route::get('/UnAuthorized','AuthController@Unauthorized')->name('unauthorized');
@@ -83,6 +82,13 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::post('/create/{customer}/{product}','CommentController@store');
                 Route::post('/delete/{customer}/{product}','CommentController@destroy');
             });
+        });
+    });
+    Route::namespace('Orders')->group(function(){
+        Route::prefix('order')->group(function(){
+            Route::get('/checkout/{user}','OrderController@create');
+            Route::post('/placed/{user}','OrderController@store');
+            Route::get('/show/{user}', 'OrderController@show');
         });
     });
     Route::namespace('Items')->group(function(){

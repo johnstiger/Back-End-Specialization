@@ -3,11 +3,17 @@
 namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
+use App\Managers\Orders\OrderManager;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    protected $manager;
+    public function __construct(OrderManager $manager)
+    {
+        $this->manager = $manager;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +21,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -23,9 +29,10 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(User $user)
     {
-        //
+        $response = $this->manager->create($user);
+        return response()->json($response);
     }
 
     /**
@@ -34,9 +41,10 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
-        //
+        $response = $this->manager->store($request, $user);
+        return response()->json($response);
     }
 
     /**
@@ -47,7 +55,7 @@ class OrderController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return response()->json($user->orders()->first()->with('products')->get());
     }
 
     /**

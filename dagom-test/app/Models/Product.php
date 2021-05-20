@@ -38,5 +38,10 @@ class Product extends Model
         return $this->hasMany(Sizes::class);
     }
 
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class);
+    }
+
 
 }

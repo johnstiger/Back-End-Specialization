@@ -55,7 +55,8 @@ class OrderController extends Controller
      */
     public function show(User $user)
     {
-        return response()->json($user->orders()->first()->with('products')->get());
+        $response = $this->manager->show($user);
+        return response()->json($response);
     }
 
     /**

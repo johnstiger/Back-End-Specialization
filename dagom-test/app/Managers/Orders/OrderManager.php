@@ -2,15 +2,18 @@
 
 namespace App\Managers\Orders;
 
+use App\Managers\Template\Template;
 use App\Validations\Orders\OrderValidation;
 
 class OrderManager
 {
 
     protected $check;
-    public function __construct(OrderValidation $check)
+    protected $template;
+    public function __construct(OrderValidation $check, Template $template)
     {
         $this->check = $check;
+        $this->template = $template;
     }
 
     public function create($user)
@@ -61,6 +64,17 @@ class OrderManager
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
+        return $response;
+    }
+
+    public function show($user)
+    {
+        if($user->orders->isEmpty()){
+            $response = $this->template->NoData();
+        }else{
+            $response = $this->template->show($user->orders()->first()->with('products')->get());
+        }
+
         return $response;
     }
 }

@@ -73,6 +73,15 @@ class Template
         }
         return $response;
     }
+
+    public function NoData()
+    {
+        $response = [];
+        $response["message"] = "No data found!";
+        $response["error"] = false;
+
+        return $response;
+    }
 }
 
 

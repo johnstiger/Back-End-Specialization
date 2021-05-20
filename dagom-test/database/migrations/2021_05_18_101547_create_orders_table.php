@@ -16,9 +16,9 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->float('total');
-            $table->boolean('status');
-            $table->string('payment_method');
+            $table->float('total')->default('0');
+            $table->boolean('status')->default(false);
+            $table->string('payment_method')->default("not yet set");
             $table->softDeletes();
             $table->timestamps();
         });

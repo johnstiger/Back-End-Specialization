@@ -3,11 +3,17 @@
 namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
+use App\Managers\Orders\OrderManager;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    protected $manager;
+    public function __construct(OrderManager $manager)
+    {
+        $this->manager = $manager;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -23,9 +29,10 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(User $user)
     {
-        //
+        $response = $this->manager->create($user);
+        return response()->json($response);
     }
 
     /**
@@ -36,31 +43,7 @@ class OrderController extends Controller
      */
     public function store(Request $request, User $user)
     {
-        $response = [];
-        $total = 0;
-        try {
-            if($user->order == null){
-                $user->order->create(['total'=>0,'status'=>0,'payment_method'=>'null']);
-            }
-            foreach($request->data as $data){
-                $user->order->products()->syncWithoutDetaching([
-                    $data["product_id"] => [
-                        'quantity' => $data["quantity"],
-                        'subtotal' => $data["subtotal"]
-                    ]
-                ]);
-                $total += $data["subtotal"];
-            }
-            $user->order()->update(['total'=>$total,'payment_method'=>$request->payment_method]);
-            $response["message"] = "Success";
-            $response["data"] = $user->order->products;
-            $response["order"] = $user->order;
-            $response["error"] = false;
-        } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
-            $response["error"] = true;
-        }
-
+        $response = $this->manager->store($request, $user);
         return response()->json($response);
     }
 
@@ -72,7 +55,7 @@ class OrderController extends Controller
      */
     public function show(User $user)
     {
-        return response()->json($user->order->products);
+        return response()->json($user->orders()->first()->with('products')->get());
     }
 
     /**

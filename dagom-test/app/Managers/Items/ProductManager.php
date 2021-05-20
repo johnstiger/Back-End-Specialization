@@ -24,7 +24,7 @@ class ProductManager
      */
     public function index()
     {
-        $products = Product::where('status',1)->with('sizes')->get();
+        $products = Product::where('status',1)->get();
         return $this->template->index($products);
     }
 
@@ -48,18 +48,18 @@ class ProductManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $product = $request->only(['name', 'price','status','description','image']);
-                $size = $request->only(
-                    [
-                        'size',
-                        'unit_measure',
-                    ]
-                );
+                $product = $request->only(['name','category_id', 'price','status','description','image']);
+                $data = Product::create($product);
+                foreach ($request->sizes as $size) {
+                    dump($size);
+                    $data->sizes()->syncWithoutDetaching([$data->id =>[
+                        'size' => $size
+                    ]]);
+                }
+
                 if($request->hasFile('image')){
                    $product["image"] = $this->uploadImage($request->file('image'));
                 }
-                $data = Product::create($product);
-                $data->sizes()->create($size);
                 $response["message"] = "Successfully Added ".$data->name." in Product!";
                 $response["data"] = $data;
                 $response["error"] = false;
@@ -116,6 +116,11 @@ class ProductManager
                 if($request->hasFile('image')){
                     $item["image"] = $this->uploadImage($request->file('image'));
                 }
+
+                foreach ($request->sizes as $sizes) {
+                    dump($sizes);
+                }
+
                 $size = $request->only(
                     [
                         'size'

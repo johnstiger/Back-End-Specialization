@@ -91,7 +91,7 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::get('/show/{user}', 'OrderController@show');
         });
     });
-    Route::namespace('Items')->group(function(){
+    Route::namespace('Items')->middleware('admin')->group(function(){
         Route::prefix('category')->group(function(){
             Route::get('/all','CategoryController@index');
             Route::get('/show/{category}','CategoryController@show');

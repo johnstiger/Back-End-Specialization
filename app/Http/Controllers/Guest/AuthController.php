@@ -42,7 +42,7 @@ class AuthController extends Controller
     */
     public function Unauthorized()
     {
-        return response()->json('Unauthorized',401);
+        return view('Unauthorized');
     }
 
     /*

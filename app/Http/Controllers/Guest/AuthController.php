@@ -42,7 +42,7 @@ class AuthController extends Controller
     */
     public function Unauthorized()
     {
-        return view('Unauthorized');
+        return view('NoAccess.Unauthorized');
     }
 
     /*

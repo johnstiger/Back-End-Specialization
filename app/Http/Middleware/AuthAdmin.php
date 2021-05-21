@@ -20,6 +20,6 @@ class AuthAdmin
         if(Auth::user()->is_admin == 1){
             return $next($request);
         }
-        return response()->json('Unauthorized',401);
+        return route('unauthorized');
     }
 }

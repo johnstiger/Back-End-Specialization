@@ -69,26 +69,26 @@ Route::middleware('auth:sanctum')->group(function(){
         });
         Route::namespace('Customer')->middleware('verified')->group(function(){
             Route::prefix('cart')->group(function(){
-                Route::get('/show/{customer}','CartController@show');
-                Route::post('/add/{customer}/{product}','CartController@store');
-                Route::put('/update{customer}/{product}','CartController@update');
-                Route::delete('/delete/{customer}/{product}','CategoryController@destroy');
+                Route::get('/show','CartController@show');
+                Route::post('/add/{product}','CartController@store');
+                Route::put('/update/{product}','CartController@update');
+                Route::delete('/delete/{product}','CategoryController@destroy');
             });
             Route::prefix('customer')->group(function(){
-                Route::put('/information/{customer}','CustomerController@update');
+                Route::put('/information','CustomerController@update');
                 Route::post('/address/{customer}','CustomerController@address');
             });
             Route::prefix('comment')->group(function(){
-                Route::post('/create/{customer}/{product}','CommentController@store');
-                Route::post('/delete/{customer}/{product}','CommentController@destroy');
+                Route::post('/create','CommentController@store');
+                Route::post('/delete','CommentController@destroy');
             });
         });
     });
     Route::namespace('Orders')->group(function(){
         Route::prefix('order')->group(function(){
-            Route::get('/checkout/{user}','OrderController@create');
-            Route::post('/placed/{user}','OrderController@store');
-            Route::get('/show/{user}', 'OrderController@show');
+            Route::get('/checkout','OrderController@create');
+            Route::post('/placed','OrderController@store');
+            Route::get('/show', 'OrderController@show');
             Route::get('/cancel','OrderController@cancel');
         });
     });

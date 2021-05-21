@@ -7,7 +7,7 @@ use App\Managers\Users\Customers\CartManager;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -22,9 +22,10 @@ class CartController extends Controller
     * Adding Product inside the Cart
     * return json type result
     */
-    public function store(Request $request, User $customer, Product $product)
+    public function store(Request $request, Product $product)
     {
-        $response = $this->manager->store($request, $customer, $product);
+        $customer = Auth::user();
+        $response = $this->manager->store($request,$customer, $product);
         return response()->json($response);
     }
 
@@ -32,8 +33,9 @@ class CartController extends Controller
     * Showing all the product inside the Cart
     * return json type result
     */
-    public function show(User $customer)
+    public function show()
     {
+        $customer = Auth::user();
         $response = $this->manager->show($customer);
         return response()->json($response);
     }
@@ -43,8 +45,9 @@ class CartController extends Controller
     * inside the Cart
     * return json type result
     */
-    public function update(Request $request, User $customer, Product $product)
+    public function update(Request $request, Product $product)
     {
+        $customer =Auth::user();
         $response = $this->manager->update($request, $customer, $product);
         return response()->json($response);
     }
@@ -54,8 +57,9 @@ class CartController extends Controller
     * Inside the Cart
     * return json type result
     */
-    public function destroy(User $customer, Product $product)
+    public function destroy(Product $product)
     {
+        $customer = Auth::user();
         $response = $this->manager->destroy($customer, $product);
         return response()->json($response);
     }

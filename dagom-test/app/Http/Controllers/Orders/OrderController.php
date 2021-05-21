@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Managers\Orders\OrderManager;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -29,8 +30,9 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(User $user)
+    public function create()
     {
+        $user = Auth::user();
         $response = $this->manager->create($user);
         return response()->json($response);
     }
@@ -41,8 +43,9 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, User $user)
+    public function store(Request $request)
     {
+        $user = Auth::user();
         $response = $this->manager->store($request, $user);
         return response()->json($response);
     }
@@ -53,8 +56,9 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show()
     {
+        $user = Auth::user();
         $response = $this->manager->show($user);
         return response()->json($response);
     }

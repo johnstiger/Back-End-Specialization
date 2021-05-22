@@ -5,7 +5,6 @@ namespace App\Managers\Items;
 use App\Managers\Template\Template;
 use App\Validations\Items\ProductValidation as ItemsProductValidation;
 use App\Models\Product;
-use Illuminate\Support\Facades\Auth;
 
 class ProductManager
 {
@@ -49,20 +48,22 @@ class ProductManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $product = $request->only(['name','category_id', 'price','status','description','image']);
+                $product = $request->only(['name','category_id','part', 'price','status','description','image']);
                 if($request->hasFile('image')){
                    $product["image"] = $this->uploadImage($request->file('image'));
                 }
-                $data = Product::create($product);
-                foreach ($request->sizes as $size) {
-                    dump($size);
-                    $data->sizes()->syncWithoutDetaching([$data->id =>[
-                        'size' => $size
-                    ]]);
+                $newProduct = Product::create($product);
+                foreach($request->sizes as $data){
+                    $newProduct->sizes()->syncWithoutDetaching([
+                        $data["size_id"] => [
+                            'unit_measure' => $data["unit_measure"],
+                            'avail_unit_measure' => $data["unit_measure"]
+                        ]
+                    ]);
                 }
 
-                $response["message"] = "Successfully Added ".$data->name." in Product!";
-                $response["data"] = $data;
+                $response["message"] = "Successfully Added ".$newProduct->name." in Product!";
+                $response["data"] = $newProduct;
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
@@ -108,6 +109,7 @@ class ProductManager
                     [
                         'name',
                         'price',
+                        'part',
                         'status',
                         'description',
                         'image'
@@ -116,19 +118,15 @@ class ProductManager
                 if($request->hasFile('image')){
                     $item["image"] = $this->uploadImage($request->file('image'));
                 }
-
-                foreach ($request->sizes as $sizes) {
-                    dump($sizes);
-                }
-
-                $size = $request->only(
-                    [
-                        'size'
-                        ,'unit_measure'
-                    ]
-                );
                 $product->update($item);
-                $product->sizes()->update($size);
+                foreach($request->sizes as $data){
+                    $product->sizes()->syncWithoutDetaching([
+                        $data["size_id"] => [
+                            'unit_measure' => $data["unit_measure"],
+                            'avail_unit_measure' => $data["unit_measure"]
+                        ]
+                    ]);
+                }
                 $response["message"] = "Successfully Updated ".$product->name;
                 $response["data"] = $product;
                 $response["error"] = false;

@@ -79,8 +79,8 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::post('/address/{customer}','CustomerController@address');
             });
             Route::prefix('comment')->group(function(){
-                Route::post('/create','CommentController@store');
-                Route::post('/delete','CommentController@destroy');
+                Route::post('/create/{product}','CommentController@store');
+                Route::post('/delete/{product}','CommentController@destroy');
             });
         });
     });

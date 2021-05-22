@@ -20,6 +20,6 @@ class AuthAdmin
         if(Auth::user()->is_admin == 1){
             return $next($request);
         }
-        return route('unauthorized');
+        return redirect()->route('unauthorized');
     }
 }

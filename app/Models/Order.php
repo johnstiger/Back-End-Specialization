@@ -16,9 +16,9 @@ class Order extends Model
         'payment_method'
     ];
 
-    public function customers()
+    public function user()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function products()

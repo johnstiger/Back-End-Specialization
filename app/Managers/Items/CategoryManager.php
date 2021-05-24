@@ -4,17 +4,18 @@ namespace App\Managers\Items;
 
 use App\Managers\Template\Template;
 use App\Validations\Items\CategoryValidation;
-use App\Models\Category;
+use App\Services\Data\DataServices;
 
 class CategoryManager
 {
     protected $template;
     protected $check;
-
-    public function __construct(Template $template, CategoryValidation $check)
+    protected $services;
+    public function __construct(Template $template, CategoryValidation $check, DataServices $services)
     {
         $this->template = $template;
         $this->check = $check;
+        $this->services = $services;
     }
 
     /**
@@ -24,7 +25,7 @@ class CategoryManager
      */
     public function index()
     {
-        $categories = Category::with('products')->get();
+        $categories = $this->services->allCategory();
         return $this->template->index($categories);
     }
 
@@ -44,7 +45,7 @@ class CategoryManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $data = Category::create($request->all());
+                $data = $this->services->createCategory($request->all());
                 $response["message"] = "Successfully Added ".$data->name." in Category!";
                 $response["data"] = $data;
                 $response["error"] = false;

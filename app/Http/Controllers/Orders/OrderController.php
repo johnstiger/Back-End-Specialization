@@ -31,8 +31,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $user = Auth::user();
-        $response = $this->manager->create($user);
+        $response = $this->manager->create();
         return response()->json($response);
     }
 
@@ -44,8 +43,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
-        $response = $this->manager->store($request, $user);
+        $response = $this->manager->store($request);
         return response()->json($response);
     }
 
@@ -57,8 +55,7 @@ class OrderController extends Controller
      */
     public function show()
     {
-        $user = Auth::user();
-        $response = $this->manager->show($user);
+        $response = $this->manager->show();
         return response()->json($response);
     }
 

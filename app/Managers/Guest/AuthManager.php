@@ -3,7 +3,6 @@
 namespace App\Managers\Guest;
 
 use App\Validations\Guest\AuthValidation as GuestAuthValidation;
-use App\Models\User;
 use App\Services\Data\DataServices;
 use App\Services\Mail\SendEmailServices;
 use Illuminate\Support\Facades\Auth;
@@ -82,7 +81,7 @@ class AuthManager
             }else{
                 $customer = $request->all();
                 $customer["password"] = Hash::make($request->password);
-                $data = User::create($customer);
+                $data = $this->data->createUser($customer);
                 $token = $data->createToken('token');
                 $this->send->sendEmailVerification($data, $token->plainTextToken);
                 $data->cart()->create();

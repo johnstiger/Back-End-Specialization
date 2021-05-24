@@ -4,17 +4,18 @@ namespace App\Managers\Items;
 
 use App\Managers\Template\Template;
 use App\Validations\Items\ProductValidation as ItemsProductValidation;
-use App\Models\Product;
+use App\Services\Data\DataServices;
 
 class ProductManager
 {
     protected $template;
     protected $check;
-
-    public function __construct(Template $template, ItemsProductValidation $check)
+    protected $services;
+    public function __construct(Template $template, ItemsProductValidation $check, DataServices $services)
     {
         $this->template = $template;
         $this->check = $check;
+        $this->services = $services;
     }
 
     /**
@@ -24,7 +25,7 @@ class ProductManager
      */
     public function index()
     {
-        $products = Product::where('status',1)->get();
+        $products = $this->services->allProducts();
         return $this->template->index($products);
     }
 
@@ -52,7 +53,7 @@ class ProductManager
                 if($request->hasFile('image')){
                    $product["image"] = $this->uploadImage($request->file('image'));
                 }
-                $newProduct = Product::create($product);
+                $newProduct = $this->services->createProduct($product);
                 foreach($request->sizes as $data){
                     $newProduct->sizes()->syncWithoutDetaching([
                         $data["size_id"] => [
@@ -144,7 +145,7 @@ class ProductManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($product)
     {
         return $this->template->destroy($product);
     }

@@ -18,6 +18,10 @@ class OrderManager
         $this->template = $template;
     }
 
+    /**
+     * Create Order from current user
+     * return json
+     */
     public function create()
     {
         $user = Auth::user();
@@ -34,6 +38,10 @@ class OrderManager
         return $response;
     }
 
+    /**
+     * Creating Order with product from current user
+     * return json
+     */
     public function store($request)
     {
         $response = [];
@@ -76,6 +84,10 @@ class OrderManager
         return $response;
     }
 
+    /**
+     * Displaying Order from current user
+     * return json
+     */
     public function show()
     {
         $user = Auth::user();
@@ -87,6 +99,11 @@ class OrderManager
         return $response;
     }
 
+    /**
+     * Confirming Order from customer
+     * Admin side
+     * return json
+     */
     public function confirmedOrder($user)
     {
         $response = [];
@@ -106,6 +123,11 @@ class OrderManager
         return $response;
     }
 
+    /**
+     * Declining Order from customer
+     * Admin side
+     * return json
+     */
     public function declinedOrder($user)
     {
         try {
@@ -125,6 +147,10 @@ class OrderManager
         return $response;
     }
 
+    /**
+     * Canceling Order from current user
+     * return json
+     */
     public function cancelledOrder()
     {
         $user = Auth::user();

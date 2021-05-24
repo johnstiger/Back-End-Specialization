@@ -90,8 +90,8 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::post('/placed','OrderController@store');
             Route::get('/show', 'OrderController@show');
             Route::get('/cancel','OrderController@cancelOrder');
-            Route::get('/declined','OrderController@declined')->middleware('admin');
-            Route::get('/confirmed','OrderController@confirmed')->middleware('admin');
+            Route::get('/declined/{user}','OrderController@declined')->middleware('admin');
+            Route::get('/confirmed/{user}','OrderController@confirmed')->middleware('admin');
         });
     });
     Route::namespace('Items')->middleware('admin')->group(function(){

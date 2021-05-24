@@ -22,8 +22,7 @@ class ProductController extends Controller
     */
     public function index()
     {
-        $response = $this->manager->index();
-        return response()->json($response);
+        return response()->json($this->manager->index());
     }
 
 
@@ -33,8 +32,7 @@ class ProductController extends Controller
     */
     public function store(Request $request)
     {
-        $response = $this->manager->store($request);
-        return response()->json($response);
+        return response()->json($this->manager->store($request));
     }
 
     /*
@@ -43,8 +41,7 @@ class ProductController extends Controller
     */
     public function show(Product $product)
     {
-        $response = $this->manager->show($product);
-        return response()->json($response);
+        return response()->json($this->manager->show($product));
     }
 
 
@@ -54,8 +51,7 @@ class ProductController extends Controller
     */
     public function update(Request $request, Product $product)
     {
-        $response = $this->manager->update($request, $product);
-        return response()->json($response);
+        return response()->json($this->manager->update($request, $product));
     }
 
     /*
@@ -64,8 +60,7 @@ class ProductController extends Controller
     */
     public function destroy(Product $product)
     {
-        $response = $this->manager->destroy($product);
-        return response()->json($response);
+        return response()->json($this->manager->destroy($product));
     }
 
 

@@ -87,10 +87,9 @@ class OrderManager
         return $response;
     }
 
-    public function confirmedOrder()
+    public function confirmedOrder($user)
     {
         $response = [];
-        $user = Auth::user();
         try {
             if($user){
                 $user->orders->last()->update(['status'=>OrderStatus::CONFIRMED]);
@@ -107,9 +106,8 @@ class OrderManager
         return $response;
     }
 
-    public function declinedOrder()
+    public function declinedOrder($user)
     {
-        $user = Auth::user();
         try {
             if($user){
                 $user->orders->last()->update(['status'=>OrderStatus::DECLINED]);

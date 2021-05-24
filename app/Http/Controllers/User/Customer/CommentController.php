@@ -23,8 +23,7 @@ class CommentController extends Controller
     public function store(Request $request, Product $product)
     {
 
-        $response = $this->manager->store($request, $product);
-        return response()->json($response);
+        return response()->json($this->manager->store($request, $product));
     }
 
     /*
@@ -33,7 +32,6 @@ class CommentController extends Controller
     */
     public function destroy(Product $product)
     {
-        $response = $this->manager->destroy($product);
-        return response()->json($response);
+        return response()->json($this->manager->destroy($product));
     }
 }

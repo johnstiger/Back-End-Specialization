@@ -21,8 +21,7 @@ class CartController extends Controller
     */
     public function store(Request $request, Product $product)
     {
-        $response = $this->manager->store($request, $product);
-        return response()->json($response);
+        return response()->json($this->manager->store($request, $product));
     }
 
     /*
@@ -31,8 +30,7 @@ class CartController extends Controller
     */
     public function show()
     {
-        $response = $this->manager->show();
-        return response()->json($response);
+        return response()->json($this->manager->show());
     }
 
     /*
@@ -42,8 +40,7 @@ class CartController extends Controller
     */
     public function update(Request $request)
     {
-        $response = $this->manager->update($request);
-        return response()->json($response);
+        return response()->json($this->manager->update($request));
     }
 
     /*
@@ -53,7 +50,6 @@ class CartController extends Controller
     */
     public function destroy(Product $product)
     {
-        $response = $this->manager->destroy($product);
-        return response()->json($response);
+        return response()->json($this->manager->destroy($product));
     }
 }

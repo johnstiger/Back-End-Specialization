@@ -22,8 +22,7 @@ class CustomerController extends Controller
     */
     public function show(User $customer)
     {
-        $response = $this->manager->show($customer);
-        return response()->json($response);
+        return response()->json($this->manager->show($customer));
     }
 
 
@@ -34,8 +33,7 @@ class CustomerController extends Controller
     */
     public function update(Request $request)
     {
-        $response = $this->manager->update($request);
-        return response()->json($response);
+        return response()->json($this->manager->update($request));
     }
 
    /*
@@ -44,8 +42,7 @@ class CustomerController extends Controller
     */
     public function address(Request $request)
     {
-        $response = $this->manager->address($request);
-        return response()->json($response);
+        return response()->json($this->manager->address($request));
     }
 
 }

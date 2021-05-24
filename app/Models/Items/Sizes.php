@@ -1,27 +1,21 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Items;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Comment extends Model
+class Sizes extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'user_id',
         'product_id',
-        'message'
+        'size',
     ];
 
-    public function product()
+    public function products()
     {
-        return $this->belongsTo(Product::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(Product::class);
     }
 }

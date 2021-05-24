@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Guest\AuthManager;
-use App\Models\User;
+use App\Models\Users\User;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller

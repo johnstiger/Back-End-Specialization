@@ -1,27 +1,23 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Users;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Cart extends Model
+class Comment extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'user_id',
+        'product_id',
+        'message'
     ];
 
-    public function products()
+    public function product()
     {
-        return $this->belongsToMany(Product::class)->withPivot(
-            [
-                'quantity',
-                'total',
-                'status'
-            ]
-        );
+        return $this->belongsTo(Product::class);
     }
 
     public function user()

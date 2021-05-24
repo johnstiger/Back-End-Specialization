@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Guest\SearchManager;
-use App\Models\Category;
+use App\Models\Items\Category;
 use Illuminate\Http\Request;
 
 class SearchEngineController extends Controller

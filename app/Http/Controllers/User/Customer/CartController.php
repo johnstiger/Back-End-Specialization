@@ -5,14 +5,12 @@ namespace App\Http\Controllers\User\Customer;
 use App\Http\Controllers\Controller;
 use App\Managers\Users\Customers\CartManager;
 use App\Models\Product;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
     protected $manager;
-
     public function __construct(CartManager $manager)
     {
         $this->manager = $manager;

@@ -4,6 +4,7 @@ namespace App\Managers\Orders;
 
 use App\Managers\Template\Template;
 use App\Validations\Orders\OrderValidation;
+use Illuminate\Support\Facades\Auth;
 
 class OrderManager
 {

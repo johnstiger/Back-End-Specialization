@@ -2,9 +2,9 @@
 
 namespace App\Services\Data;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\User;
+use App\Models\Items\Category;
+use App\Models\Items\Product;
+use App\Models\Users\User;
 
 class DataServices
 {

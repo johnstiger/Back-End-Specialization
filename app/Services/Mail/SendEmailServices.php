@@ -17,6 +17,16 @@ class SendEmailServices
         return $data->notify(new ResetPassword($code, $data));
     }
 
+    public function sendConfirmedOrder($data, $product)
+    {
+        //
+    }
+
+    public function sendPromoInfo()
+    {
+        //
+    }
+
 }
 
 

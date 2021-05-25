@@ -4,6 +4,7 @@ namespace App\Managers\Users\Customers;
 
 use App\Managers\Template\Template;
 use App\Validations\Users\Customer\CustomerValidation;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerManager
 {
@@ -34,11 +35,11 @@ class CustomerManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($request, $customer)
+    public function update($request)
     {
         $response = [];
         $rules = $this->check->validation($request);
-
+        $customer = Auth::user();
         try {
             if($rules->fails()){
                 $response["message"] = $rules->errors();
@@ -67,9 +68,10 @@ class CustomerManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function address($request, $customer)
+    public function address($request)
     {
         $response = [];
+        $customer = Auth::user();
         $rules = $this->check->addressValidation($request);
         try {
             if($rules->fails()){

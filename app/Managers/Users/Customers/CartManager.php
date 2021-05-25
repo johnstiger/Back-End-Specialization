@@ -3,6 +3,7 @@
 namespace App\Managers\Users\Customers;
 
 use App\Validations\Users\Customer\CartValidation;
+use Illuminate\Support\Facades\Auth;
 
 class CartManager
 {
@@ -19,10 +20,12 @@ class CartManager
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($request, $customer, $product)
+    public function store($request, $product)
     {
         $validation = $this->check->validation($request);
         $response = [];
+        $customer = Auth::user();
+
         try {
             if($validation->fails()){
                 $response["message"] = $validation->errors();
@@ -53,8 +56,9 @@ class CartManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($customer)
+    public function show()
     {
+        $customer = Auth::user();
         $response = [];
         try {
             if(!$customer->cart){
@@ -83,8 +87,9 @@ class CartManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($request, $customer, $product)
+    public function update($request, $product)
     {
+        $customer =Auth::user();
         $response = [];
         try {
             $item = $request->all();
@@ -112,8 +117,9 @@ class CartManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($customer, $product)
+    public function destroy( $product)
     {
+        $customer = Auth::user();
         $response = [];
         try {
             $customer->cart->products->where('product_code',$product->product_code)

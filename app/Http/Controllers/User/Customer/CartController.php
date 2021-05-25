@@ -22,9 +22,7 @@ class CartController extends Controller
     */
     public function store(Request $request, Product $product)
     {
-        $customer = Auth::user();
-        $response = $this->manager->store($request,$customer, $product);
-        return response()->json($response);
+        return response()->json($this->manager->store($request, $product));
     }
 
     /*
@@ -33,9 +31,7 @@ class CartController extends Controller
     */
     public function show()
     {
-        $customer = Auth::user();
-        $response = $this->manager->show($customer);
-        return response()->json($response);
+        return response()->json($this->manager->show());
     }
 
     /*
@@ -45,9 +41,8 @@ class CartController extends Controller
     */
     public function update(Request $request, Product $product)
     {
-        $customer =Auth::user();
-        $response = $this->manager->update($request, $customer, $product);
-        return response()->json($response);
+
+        return response()->json($this->manager->update($request,  $product));
     }
 
     /*
@@ -57,8 +52,6 @@ class CartController extends Controller
     */
     public function destroy(Product $product)
     {
-        $customer = Auth::user();
-        $response = $this->manager->destroy($customer, $product);
-        return response()->json($response);
+        return response()->json($this->manager->destroy($product));
     }
 }

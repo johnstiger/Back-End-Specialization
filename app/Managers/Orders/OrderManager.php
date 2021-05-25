@@ -17,8 +17,9 @@ class OrderManager
         $this->template = $template;
     }
 
-    public function create($user)
+    public function create()
     {
+        $user = Auth::user();
         $response = [];
         try {
             $user->orders()->create();
@@ -32,12 +33,12 @@ class OrderManager
         return $response;
     }
 
-    public function store($request, $user)
+    public function store($request)
     {
         $response = [];
         $total = 0;
         $rules = $this->check->validation($request);
-
+        $user = Auth::user();
         try {
             if($rules->fails()){
                 $response["message"] = $rules->errors();
@@ -68,8 +69,9 @@ class OrderManager
         return $response;
     }
 
-    public function show($user)
+    public function show()
     {
+        $user = Auth::user();
         if($user->orders->isEmpty()){
             $response = $this->template->NoData();
         }else{

@@ -21,8 +21,7 @@ class SearchEngineController extends Controller
     */
     public function Customers(Request $request)
     {
-        $response = $this->search->Customers($request);
-        return response()->json($response);
+        return response()->json($this->search->Customers($request));
     }
 
     /*
@@ -31,8 +30,7 @@ class SearchEngineController extends Controller
     */
     public function Products(Request $request)
     {
-        $response = $this->search->Products($request);
-        return response()->json($response);
+        return response()->json($this->search->Products($request));
     }
 
     /*
@@ -41,8 +39,7 @@ class SearchEngineController extends Controller
     */
     public function productByCategory(Request $request, Category $category)
     {
-        $response = $this->search->productByCategory($request, $category);
-        return response()->json($response);
+        return response()->json($this->search->productByCategory($request, $category));
     }
 
     /*
@@ -51,8 +48,7 @@ class SearchEngineController extends Controller
     */
     public function Admins(Request $request)
     {
-        $response = $this->search->Admins($request);
-        return response()->json($response);
+        return response()->json($this->search->Admins($request));
     }
 
     /*
@@ -61,8 +57,7 @@ class SearchEngineController extends Controller
     */
     public function Category(Request $request)
     {
-        $response = $this->search->Category($request);
-        return response()->json($response);
+        return response()->json($this->search->Category($request));
     }
 
 }

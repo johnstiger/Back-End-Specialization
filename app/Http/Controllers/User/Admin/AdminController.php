@@ -22,8 +22,7 @@ class AdminController extends Controller
     */
     public function customers()
     {
-        $response = $this->manager->customers();
-        return response()->json($response);
+        return response()->json($this->manager->customers());
 
     }
 
@@ -33,8 +32,7 @@ class AdminController extends Controller
     */
     public function index()
     {
-        $response = $this->manager->admins();
-        return response()->json($response);
+        return response()->json($this->manager->admins());
     }
 
     /*
@@ -43,8 +41,7 @@ class AdminController extends Controller
     */
     public function store(Request $request)
     {
-        $response = $this->manager->store($request);
-        return response()->json($response);
+        return response()->json($this->manager->store($request));
     }
 
     /*
@@ -53,8 +50,7 @@ class AdminController extends Controller
     */
     public function show(User $admin)
     {
-        $response = $this->manager->show($admin);
-        return response()->json($response);
+        return response()->json($this->manager->show($admin));
     }
 
     /*
@@ -63,8 +59,7 @@ class AdminController extends Controller
     */
     public function update(Request $request, User $admin)
     {
-        $response = $this->manager->update($request, $admin);
-        return response()->json($response);
+        return response()->json($this->manager->update($request, $admin));
     }
 
     /*
@@ -73,8 +68,7 @@ class AdminController extends Controller
     */
     public function destroy(User $admin)
     {
-        $response = $this->manager->destroy($admin);
-        return response()->json($response);
+        return response()->json($this->manager->destroy($admin));
     }
 
 

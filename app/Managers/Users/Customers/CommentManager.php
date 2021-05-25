@@ -4,6 +4,7 @@ namespace App\Managers\Users\Customers;
 
 use App\Managers\Template\Template;
 use App\Validations\Users\Customer\CommentValidation;
+use Illuminate\Support\Facades\Auth;
 
 class CommentManager
 {
@@ -22,10 +23,11 @@ class CommentManager
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($request, $customer,$product)
+    public function store($request,$product)
     {
         $validation = $this->check->validation($request);
         $response = [];
+        $customer = Auth::user();
         try {
             if($validation->fails()){
                 $response["message"] = $validation->errors();
@@ -54,9 +56,10 @@ class CommentManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($customer, $product)
+    public function destroy($product)
     {
         $response = [];
+        $customer = Auth::user();
         try {
             if($product->isEmpty()){
                 $response["message"] = "No Product Found!";

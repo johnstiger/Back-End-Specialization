@@ -4,6 +4,7 @@ namespace App\Managers\Users\Customers;
 
 use App\Managers\Template\Template;
 use App\Validations\Users\Customer\CommentValidation;
+use Illuminate\Support\Facades\Auth;
 
 class CommentManager
 {
@@ -22,8 +23,9 @@ class CommentManager
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($request, $customer,$product)
+    public function store($request,$product)
     {
+        $customer = Auth::user();
         $validation = $this->check->validation($request);
         $response = [];
         try {
@@ -54,8 +56,9 @@ class CommentManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($customer, $product)
+    public function destroy($product)
     {
+        $customer = Auth::user();
         $response = [];
         try {
             if($product->isEmpty()){

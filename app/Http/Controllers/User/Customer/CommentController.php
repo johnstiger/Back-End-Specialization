@@ -4,9 +4,8 @@ namespace App\Http\Controllers\User\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Users\Customers\CommentManager;
-use App\Models\Product;
+use App\Models\Items\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -23,9 +22,8 @@ class CommentController extends Controller
     */
     public function store(Request $request, Product $product)
     {
-        $customer = Auth::user();
-        $response = $this->manager->store($request, $customer, $product);
-        return response()->json($response);
+
+        return response()->json($this->manager->store($request, $product));
     }
 
     /*
@@ -34,8 +32,6 @@ class CommentController extends Controller
     */
     public function destroy(Product $product)
     {
-        $customer = Auth::user();
-        $response = $this->manager->destroy($customer, $product);
-        return response()->json($response);
+        return response()->json($this->manager->destroy($product));
     }
 }

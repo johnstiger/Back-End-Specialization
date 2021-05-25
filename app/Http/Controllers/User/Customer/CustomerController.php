@@ -4,9 +4,8 @@ namespace App\Http\Controllers\User\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Users\Customers\CustomerManager;
-use App\Models\User;
+use App\Models\Users\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -23,8 +22,7 @@ class CustomerController extends Controller
     */
     public function show(User $customer)
     {
-        $response = $this->manager->show($customer);
-        return response()->json($response);
+        return response()->json($this->manager->show($customer));
     }
 
 
@@ -35,9 +33,7 @@ class CustomerController extends Controller
     */
     public function update(Request $request)
     {
-        $customer = Auth::user();
-        $response = $this->manager->update($request, $customer);
-        return response()->json($response);
+        return response()->json($this->manager->update($request));
     }
 
    /*
@@ -46,9 +42,7 @@ class CustomerController extends Controller
     */
     public function address(Request $request)
     {
-        $customer = Auth::user();
-        $response = $this->manager->address($request, $customer);
-        return response()->json($response);
+        return response()->json($this->manager->address($request));
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Managers\Template;
 
+
 class Template
 {
 /**
@@ -82,6 +83,8 @@ class Template
 
         return $response;
     }
+
+
 }
 
 

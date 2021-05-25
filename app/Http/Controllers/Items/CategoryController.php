@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Items;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Items\CategoryManager;
-use App\Models\Category;
+use App\Models\Items\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -22,8 +22,7 @@ class CategoryController extends Controller
     */
     public function index()
     {
-        $response = $this->manager->index();
-        return response()->json($response);
+        return response()->json($this->manager->index());
     }
 
     /*
@@ -32,8 +31,7 @@ class CategoryController extends Controller
     */
     public function store(Request $request)
     {
-        $response = $this->manager->store($request);
-        return response()->json($response);
+        return response()->json($this->manager->store($request));
     }
 
     /*
@@ -42,8 +40,7 @@ class CategoryController extends Controller
     */
     public function storeProduct(Request $request, Category $category)
     {
-        $response = $this->manager->storeProduct($request, $category);
-        return response()->json($response);
+        return response()->json($this->manager->storeProduct($request, $category));
     }
 
     /*
@@ -52,8 +49,7 @@ class CategoryController extends Controller
     */
     public function show(Category $category)
     {
-        $response = $this->manager->show($category);
-        return response()->json($response);
+        return response()->json($this->manager->show($category));
     }
 
     /*
@@ -62,8 +58,7 @@ class CategoryController extends Controller
     */
     public function update(Request $request, Category $category)
     {
-        $response = $this->manager->update($request, $category);
-        return response()->json($response);
+        return response()->json($this->manager->update($request, $category));
     }
 
     /*
@@ -72,8 +67,7 @@ class CategoryController extends Controller
     */
     public function destroy(Category $category)
     {
-        $response = $this->manager->destroy($category);
-        return response()->json($response);
+        return response()->json($this->manager->destroy($category));
     }
 
 

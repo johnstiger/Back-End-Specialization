@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Guest\AuthManager;
-use App\Models\User;
+use App\Models\Users\User;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -22,8 +22,7 @@ class AuthController extends Controller
     */
     public function login(Request $request)
     {
-        $response = $this->manager->Attempt($request);
-        return response()->json($response);
+        return response()->json($this->manager->Attempt($request));
     }
 
     /*
@@ -32,8 +31,7 @@ class AuthController extends Controller
     */
     public function register(Request $request)
     {
-        $response = $this->manager->newCustomer($request);
-        return response()->json($response);
+        return response()->json($this->manager->newCustomer($request));
     }
 
     /*
@@ -51,8 +49,7 @@ class AuthController extends Controller
     */
     public function logout()
     {
-        $response = $this->manager->goOut();
-        return response()->json($response);
+        return response()->json($this->manager->goOut());
     }
 
     /*
@@ -61,8 +58,7 @@ class AuthController extends Controller
     */
     public function forgotPassword(Request $request)
     {
-        $response = $this->manager->SendCode($request);
-        return response()->json($response);
+        return response()->json($this->manager->SendCode($request));
     }
 
     /*
@@ -71,8 +67,7 @@ class AuthController extends Controller
     */
     public function verificationCodeCheck(Request $request, User $user)
     {
-        $response = $this->manager->VerifyCode($request, $user);
-        return response()->json($response);
+        return response()->json($this->manager->VerifyCode($request, $user));
     }
 
 
@@ -82,8 +77,7 @@ class AuthController extends Controller
     */
     public function resetPassword(Request $request, User $user)
     {
-        $response = $this->manager->newPassword($request, $user);
-        return response()->json($response);
+        return response()->json($this->manager->newPassword($request, $user));
     }
 
 }

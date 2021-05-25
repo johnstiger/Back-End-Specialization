@@ -2,7 +2,9 @@
 
 namespace App\Managers\Users\Customers;
 
+use App\Services\Status\CartStatus;
 use App\Validations\Users\Customer\CartValidation;
+use Illuminate\Support\Facades\Auth;
 
 class CartManager
 {
@@ -19,8 +21,9 @@ class CartManager
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($request, $customer, $product)
+    public function store($request, $product)
     {
+        $customer = Auth::user();
         $validation = $this->check->validation($request);
         $response = [];
         try {
@@ -33,7 +36,7 @@ class CartManager
                     $product->id=>[
                         'quantity'=>$item["quantity"],
                         'total'=>$product->price * $item["quantity"],
-                        'status'=>1
+                        'status'=> CartStatus::ACTIVE,
                         ]
                     ]);
                 $response["message"] = "Successfully Added New Product in Cart";
@@ -53,9 +56,10 @@ class CartManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($customer)
+    public function show()
     {
         $response = [];
+        $customer = Auth::user();
         try {
             if(!$customer->cart){
                 $customer->cart()->create();
@@ -83,18 +87,20 @@ class CartManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($request, $customer, $product)
+    public function update($request)
     {
         $response = [];
+        $customer = Auth::user();
         try {
-            $item = $request->all();
-            $customer->cart->products()->syncWithoutDetaching([
-                $product->id=>[
-                    'quantity'=>$item["quantity"],
-                    'total'=>$product->price * $item["quantity"],
-                    'status'=>1
-                    ]
-                ]);
+            foreach ($request->products as $product) {
+                $customer->cart->products()->syncWithoutDetaching([
+                    $product->id=>[
+                        'quantity'=>$product["quantity"],
+                        'total'=>$product->price * $product["quantity"],
+                        'status'=> CartStatus::ACTIVE
+                        ]
+                    ]);
+            }
             $response["message"] = "Successfully Updated the Product";
             $response["data"] = $customer->cart->products;
             $response["error"] = false;
@@ -112,8 +118,9 @@ class CartManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($customer, $product)
+    public function destroy($product)
     {
+        $customer = Auth::user();
         $response = [];
         try {
             $customer->cart->products->where('product_code',$product->product_code)

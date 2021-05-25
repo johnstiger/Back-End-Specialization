@@ -3,6 +3,7 @@
 namespace App\Managers\Orders;
 
 use App\Managers\Template\Template;
+use App\Services\Status\OrderStatus;
 use App\Validations\Orders\OrderValidation;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,8 +18,13 @@ class OrderManager
         $this->template = $template;
     }
 
-    public function create($user)
+    /**
+     * Create Order from current user
+     * return json
+     */
+    public function create()
     {
+        $user = Auth::user();
         $response = [];
         try {
             $user->orders()->create();
@@ -32,12 +38,16 @@ class OrderManager
         return $response;
     }
 
-    public function store($request, $user)
+    /**
+     * Creating Order with product from current user
+     * return json
+     */
+    public function store($request)
     {
         $response = [];
         $total = 0;
         $rules = $this->check->validation($request);
-
+        $user = Auth::user();
         try {
             if($rules->fails()){
                 $response["message"] = $rules->errors();
@@ -55,7 +65,13 @@ class OrderManager
                     ]);
                     $total += $data["subtotal"];
                 }
-                $user->orders->last()->update(['total'=>$total,'payment_method'=>$request->payment_method]);
+                $user->orders->last()->update(
+                    [
+                        'total'=>$total,
+                        'payment_method'=>$request->payment_method,
+                        'status' => OrderStatus::PENDING
+                    ]
+                );
                 $response["message"] = "Success";
                 $response["data"] = $user->orders->last()->products;
                 $response["order"] = $user->orders->last();
@@ -68,15 +84,112 @@ class OrderManager
         return $response;
     }
 
-    public function show($user)
+    /**
+     * Displaying Order from current user
+     * return json
+     */
+    public function show()
     {
+        $user = Auth::user();
         if($user->orders->isEmpty()){
             $response = $this->template->NoData();
         }else{
             $response = $this->template->show($user->orders()->first()->with('products')->get());
         }
+        return $response;
+    }
+
+    /**
+     * Confirming Order from customer
+     * Admin side
+     * return json
+     */
+    public function confirmedOrder($user)
+    {
+        $response = [];
+        try {
+            if($user){
+                $user->orders->last()->update(['status'=>OrderStatus::CONFIRMED]);
+                $response["message"] = "Successfully Confirmed Order";
+                $response["error"] = false;
+            }else{
+                $response["message"] = "Sorry Confirmation has a problem";
+                $response["error"] = true;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+        return $response;
+    }
+
+    /**
+     * Declining Order from customer
+     * Admin side
+     * return json
+     */
+    public function declinedOrder($user)
+    {
+        try {
+            if($user){
+                $user->orders->last()->update(['status'=>OrderStatus::DECLINED]);
+                $response["message"] = "Successfully Declined Order";
+                $response["error"] = false;
+            }else{
+                $response["message"] = "Sorry Declining Order has a Problem";
+                $response["error"] = true;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
 
         return $response;
+    }
+
+    /**
+     * Canceling Order from current user
+     * return json
+     */
+    public function cancelledOrder()
+    {
+        $user = Auth::user();
+        $order = $user->orders->last();
+        try {
+            if($user){
+                if($order->status != OrderStatus::CONFIRMED || $order->status != OrderStatus::DECLINED){
+                    $order->update(['status'=>OrderStatus::CANCEL]);
+                    $response["message"] = "Successfully Cancel Your Order";
+                    $response["error"] = false;
+                }else{
+                    $response["message"] = "Order is already confirmed, can't Cancel!";
+                    $response["error"] = true;
+                }
+            }else{
+                $response["message"] = "No User Found!";
+                $response["error"] = true;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
+    }
+
+    public function showPending()
+    {
+
+    }
+
+    public function showConfirmed()
+    {
+
+    }
+
+    public function showCancelled()
+    {
+
     }
 }
 

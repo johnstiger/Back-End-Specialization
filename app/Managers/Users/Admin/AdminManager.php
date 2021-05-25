@@ -4,7 +4,8 @@ namespace App\Managers\Users\Admin;
 
 use App\Managers\Template\Template;
 use App\Validations\Users\Admin\AdminValidation;
-use App\Models\User;
+use App\Services\Data\DataServices;
+use APP\Services\Status\UserStatus;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -12,11 +13,12 @@ class AdminManager
 {
     protected $template;
     protected $check;
-
-    public function __construct(Template $template, AdminValidation $check)
+    protected $services;
+    public function __construct(Template $template, AdminValidation $check, DataServices $services)
     {
         $this->template = $template;
         $this->check = $check;
+        $this->services = $services;
     }
 
     /**
@@ -26,7 +28,7 @@ class AdminManager
      */
     public function customers()
     {
-        $customer = User::where('is_admin',0)->get();
+        $customer = $this->services->allCustomers();
         return $this->template->index($customer);
     }
 
@@ -37,7 +39,7 @@ class AdminManager
      */
     public function admins()
     {
-        $admins = User::where('is_admin',1)->get();
+        $admins = $this->services->allAdmins();
         return $this->template->index($admins);
     }
 
@@ -58,10 +60,10 @@ class AdminManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $customer = $request->all();
-                $customer["password"] = Hash::make($request->password);
-                $customer["is_admin"] = true;
-                $data = User::create($customer);
+                $admin = $request->all();
+                $admin["password"] = Hash::make($request->password);
+                $admin["is_admin"] = UserStatus::ADMIN;
+                $data = $this->services->createUser($admin);
                 $response["message"] = "Successfully Added ".$data->firstname." ".$data->lastname."in Admin.";
                 $response["data"] = $data;
                 $response["error"] = false;

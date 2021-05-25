@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Orders\OrderManager;
+use App\Models\Users\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -31,9 +31,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $user = Auth::user();
-        $response = $this->manager->create($user);
-        return response()->json($response);
+        return response()->json($this->manager->create());
     }
 
     /**
@@ -44,9 +42,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
-        $response = $this->manager->store($request, $user);
-        return response()->json($response);
+        return response()->json($this->manager->store($request));
     }
 
     /**
@@ -57,9 +53,7 @@ class OrderController extends Controller
      */
     public function show()
     {
-        $user = Auth::user();
-        $response = $this->manager->show($user);
-        return response()->json($response);
+        return response()->json($this->manager->show());
     }
 
     /**
@@ -68,9 +62,9 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function cancelOrder()
     {
-        //
+        return response()->json($this->manager->cancelledOrder());
     }
 
     /**
@@ -80,9 +74,9 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function confirmed(User $user)
     {
-        //
+        return response()->json($this->manager->confirmedOrder($user));
     }
 
     /**
@@ -91,8 +85,8 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function cancel()
+    public function declined(User $user)
     {
-        //
+        return response()->json($this->manager->declinedOrder($user));
     }
 }

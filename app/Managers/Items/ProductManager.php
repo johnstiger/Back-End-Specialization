@@ -3,6 +3,7 @@
 namespace App\Managers\Items;
 
 use App\Managers\Template\Template;
+use App\Models\Category;
 use App\Validations\Items\ProductValidation as ItemsProductValidation;
 use App\Models\Product;
 
@@ -24,8 +25,7 @@ class ProductManager
      */
     public function index()
     {
-        $products = Product::where('status',1)->get();
-        return $this->template->index($products);
+        return $this->template->index(Category::with('products')->get());
     }
 
 

@@ -48,7 +48,7 @@ Route::namespace('Guest')->group(function(){
 
 // User
 Route::middleware('auth:sanctum')->group(function(){
-    Route::namespace('Guest')->group(function(){
+    Route::namespace('Guest')->middleware('admin')->group(function(){
         Route::prefix('search')->group(function(){
             Route::post('/customers','SearchEngineController@Customers');
             Route::post('/admin','SearchEngineController@Admins');
@@ -75,6 +75,7 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::delete('/delete/{product}','CategoryController@destroy');
             });
             Route::prefix('customer')->group(function(){
+                Route::get('/myProfile/{customer}','CustomerController@show');
                 Route::put('/information','CustomerController@update');
                 Route::post('/address/{customer}','CustomerController@address');
             });

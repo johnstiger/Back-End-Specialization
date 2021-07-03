@@ -12,7 +12,8 @@
         "laravel/framework": "^8.12",
         "laravel/sanctum": "^2.9",
         "laravel/tinker": "^2.5",
-        "fakerphp/faker": "^1.9.1"
+        "fakerphp/faker": "^1.9.1",
+        "fzaninotto/faker": "~1.5"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

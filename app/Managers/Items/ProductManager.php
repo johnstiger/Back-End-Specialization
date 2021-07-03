@@ -83,6 +83,7 @@ class ProductManager
     {
         $response = $this->template->show($product);
         $response["comments"] = $product->comments;
+        $response["sizes"] = $product->sizes;
         return $response;
     }
 

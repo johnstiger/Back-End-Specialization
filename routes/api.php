@@ -59,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::namespace('User')->group(function(){
         Route::namespace('Admin')->middleware('admin')->group(function(){
             Route::prefix('admin')->group(function(){
+                Route::get('/dashboard','DashboardController@index');
                 Route::get('/customers','AdminController@customers');
                 Route::get('/admins','AdminController@index');
                 Route::get('/show/{admin}','AdminController@show');

@@ -2,6 +2,8 @@
 
 namespace App\Services\Data;
 
+use App\Models\Category;
+use App\Models\Order;
 use App\Models\User;
 
 class DataServices
@@ -24,6 +26,16 @@ class DataServices
     public function getAdmin($request)
     {
         return User::where('is_admin',1)->where('email',$request->email)->first();
+    }
+
+    public function Categories()
+    {
+       return Category::all();
+    }
+
+    public function pendingOrdes()
+    {
+        return Order::where('status',0)->get();
     }
 
 }

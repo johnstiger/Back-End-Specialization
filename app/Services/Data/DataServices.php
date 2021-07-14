@@ -34,6 +34,11 @@ class DataServices
        return Category::all();
     }
 
+    public function categoriesProducts()
+    {
+        return Category::with('products')->get();
+    }
+
     public function pendingOrdes()
     {
         return Order::where('status',0)->get();

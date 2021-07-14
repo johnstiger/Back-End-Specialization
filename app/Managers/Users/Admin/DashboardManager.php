@@ -2,16 +2,10 @@
 
 namespace App\Managers\Users\Admin;
 
-use App\Managers\Template\Template;
 use App\Models\Order;
-use App\Models\Product;
-use App\Validations\Users\Admin\AdminValidation;
-use App\Models\User;
 use App\Services\Data\DataServices;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class DashboardManager
 {

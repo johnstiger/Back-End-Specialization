@@ -59,6 +59,11 @@ class DataServices
         return Order::where('status',1)->count();
     }
 
+    public function products()
+    {
+        return Product::where('status',1)->get();
+    }
+
 }
 
 

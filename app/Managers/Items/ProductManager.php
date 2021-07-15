@@ -27,7 +27,7 @@ class ProductManager
      */
     public function index()
     {
-        return $this->template->index($this->services->categoriesProducts());
+        return $this->template->index($this->services->products());
     }
 
 

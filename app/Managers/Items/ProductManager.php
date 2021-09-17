@@ -25,7 +25,8 @@ class ProductManager
      */
     public function index()
     {
-        return $this->template->index(Category::with('products')->get());
+        // return $this->template->index(Category::with('products')->get());
+        return $this->template->index(Product::with('category')->get());
     }
 
 

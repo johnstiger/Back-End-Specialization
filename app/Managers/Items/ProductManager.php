@@ -49,19 +49,18 @@ class ProductManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $product = $request->only(['name','category_id','part', 'price','status','description','image']);
+                $product = $request->only(['name','category_id', 'price','status','description','image']);
+                // $product = $request->only(['name','category_id','part', 'price','status','description','image']);
                 if($request->hasFile('image')){
                    $product["image"] = $this->uploadImage($request->file('image'));
                 }
                 $newProduct = Product::create($product);
-                foreach($request->sizes as $data){
                     $newProduct->sizes()->syncWithoutDetaching([
-                        $data["size_id"] => [
-                            'unit_measure' => $data["unit_measure"],
-                            'avail_unit_measure' => $data["unit_measure"]
+                        $request->sizes => [
+                            'unit_measure' => $request["unit_measure"],
+                            'avail_unit_measure' => $request["unit_measure"]
                         ]
                     ]);
-                }
 
                 $response["message"] = "Successfully Added ".$newProduct->name." in Product!";
                 $response["data"] = $newProduct;
@@ -159,9 +158,15 @@ class ProductManager
      */
     public function uploadImage($request)
     {
-        $path = public_path().'upload/images/store';
-        $request->move($path,$request->getClientOriginalName());
-        return $path;
+        $filename = $request->getClientOriginalName();
+        $extension = $request->getClientOriginalExtension();
+        $picture = date('His').'-'.$filename;
+        $request->move(public_path('img'), $picture);
+
+        return $picture;
+        // $path = public_path().'upload/images/store';
+        // $request->move($path,$request->getClientOriginalName());
+        // return $path;
     }
 }
 

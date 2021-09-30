@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::prefix('search')->group(function(){
             Route::post('/customers','SearchEngineController@Customers');
             Route::post('/admin','SearchEngineController@Admins');
+            Route::post('/items','SearchEngineController@Products');
             Route::post('/category','SearchEngineController@Category');
         });
         Route::any('/logout','AuthController@logout');

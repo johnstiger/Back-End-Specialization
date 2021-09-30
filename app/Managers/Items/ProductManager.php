@@ -26,7 +26,7 @@ class ProductManager
     public function index()
     {
         // return $this->template->index(Category::with('products')->get());
-        return $this->template->index(Product::with('category')->get());
+        return $this->template->index(Product::with(['category','sizes'])->get());
     }
 
 
@@ -83,6 +83,7 @@ class ProductManager
     {
         $response = $this->template->show($product);
         $response["comments"] = $product->comments;
+        $response["sizes"] = $product->sizes;
         return $response;
     }
 
@@ -112,21 +113,28 @@ class ProductManager
                         'part',
                         'status',
                         'description',
-                        'image'
+                        'image',
+                        'category_id'
                     ]
                 );
                 if($request->hasFile('image')){
                     $item["image"] = $this->uploadImage($request->file('image'));
                 }
                 $product->update($item);
-                foreach($request->sizes as $data){
-                    $product->sizes()->syncWithoutDetaching([
-                        $data["size_id"] => [
-                            'unit_measure' => $data["unit_measure"],
-                            'avail_unit_measure' => $data["unit_measure"]
-                        ]
-                    ]);
-                }
+                $product->sizes()->syncWithoutDetaching([
+                    $request->sizes => [
+                        'unit_measure' => $request["unit_measure"],
+                        'avail_unit_measure' => $request["unit_measure"]
+                    ]
+                ]);
+                // foreach($request->sizes as $data){
+                //     $product->sizes()->syncWithoutDetaching([
+                //         $data["size_id"] => [
+                //             'unit_measure' => $data["unit_measure"],
+                //             'avail_unit_measure' => $data["unit_measure"]
+                //         ]
+                //     ]);
+                // }
                 $response["message"] = "Successfully Updated ".$product->name;
                 $response["data"] = $product;
                 $response["error"] = false;

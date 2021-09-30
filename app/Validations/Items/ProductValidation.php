@@ -15,7 +15,7 @@ class ProductValidation
     public function validation($request)
     {
         $rules = Validator::make($request->all(),[
-            'name' => 'required|regex:/^[\pL\s\-]+$/u',
+            'name' => 'required',
             'unit_measure' => 'required|numeric',
             'price' => 'required|numeric',
             'category_id' => 'required',

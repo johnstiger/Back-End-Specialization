@@ -23,9 +23,9 @@ class SearchManager
     public function Products($request)
     {
         $products = Product::where('name','like',"%{$request->get('data')}%")
-                                ->orWhere('price','like',"%{$request->get('data')}%")
+                                ->orWhere('price','like',"%{$request->get('data')}%")->with(['category','sizes'])
                                 ->get();
-        return $this->template($products, $request->all());
+        return $this->template($products, $request);
     }
 
     public function productByCategory($request, $category)
@@ -61,9 +61,11 @@ class SearchManager
         try {
             if($request->isEmpty()){
                 $response["message"] = $value->get('data')." is not Found";
+                $response["found"] = false;
             }else{
                 $response["message"] = "Successfully search data";
                 $response["data"] = $request;
+                $response["found"] = true;
                 $response["error"] = false;
             }
         } catch (\Exception $error) {

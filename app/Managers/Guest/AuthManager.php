@@ -109,9 +109,14 @@ class AuthManager
     {
         $response = [];
         try {
-            Auth::user()->currentAccessToken()->delete();
-            $response["message"] = "Logout Successfully";
-            $response["error"] = false;
+            $user = Auth::user();
+            if($user){
+                Auth::user()->currentAccessToken()->delete();
+                $response["message"] = "Logout Successfully";
+                $response["error"] = false;
+            }else{
+                $response["error"] = true;
+            }
         } catch (\Exception $error) {
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;

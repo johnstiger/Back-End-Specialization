@@ -5,6 +5,7 @@ namespace App\Managers\Users\Admin;
 use App\Managers\Template\Template;
 use App\Validations\Users\Admin\AdminValidation;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -37,7 +38,8 @@ class AdminManager
      */
     public function admins()
     {
-        $admins = User::where('is_admin',1)->get();
+        $user = Auth::user();
+        $admins = User::where('is_admin',1)->where('email','!=',$user->email)->get();
         return $this->template->index($admins);
     }
 

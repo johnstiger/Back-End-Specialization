@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::post('/items','SearchEngineController@Products');
             Route::post('/category','SearchEngineController@Category');
         });
+        Route::get('/user','AuthController@getUser');
         Route::any('/logout','AuthController@logout');
     });
     Route::namespace('User')->group(function(){

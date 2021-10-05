@@ -4,6 +4,7 @@ namespace App\Services\Data;
 
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 
 class DataServices
@@ -33,9 +34,34 @@ class DataServices
        return Category::all();
     }
 
+    public function categoriesProducts()
+    {
+        return Category::with('products')->get();
+    }
+
     public function pendingOrdes()
     {
         return Order::where('status',0)->get();
+    }
+
+    public function countCostumers()
+    {
+        return User::where('is_admin',0)->count();
+    }
+
+    public function countProducts()
+    {
+        return Product::where('status',1)->count();
+    }
+
+    public function countSales()
+    {
+        return Order::where('status',1)->count();
+    }
+
+    public function products()
+    {
+        return Product::where('status',1)->get();
     }
 
 }

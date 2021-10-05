@@ -5,6 +5,7 @@ namespace App\Managers\Users\Admin;
 use App\Managers\Template\Template;
 use App\Validations\Users\Admin\AdminValidation;
 use App\Models\User;
+use App\Services\Data\DataServices;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -13,11 +14,13 @@ class AdminManager
 {
     protected $template;
     protected $check;
+    protected $services;
 
-    public function __construct(Template $template, AdminValidation $check)
+    public function __construct(Template $template, AdminValidation $check, DataServices $services)
     {
         $this->template = $template;
         $this->check = $check;
+        $this->services = $services;
     }
 
     /**
@@ -27,8 +30,7 @@ class AdminManager
      */
     public function customers()
     {
-        $customer = User::where('is_admin',0)->get();
-        return $this->template->index($customer);
+        return $this->template->index($this->services->allCustomers());
     }
 
     /**

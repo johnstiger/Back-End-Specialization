@@ -57,18 +57,18 @@ class AdminController extends Controller
     * Updating Specific Admin's Informations
     * return json type result
     */
-    public function update(Request $request, User $admin)
+    public function update(Request $request, User $user)
     {
-        return response()->json($this->manager->update($request, $admin));
+        return response()->json($this->manager->update($request, $user));
     }
 
     /*
     * Removing the Specific Admin with SoftDelete
     * return json type result
     */
-    public function destroy(User $admin)
+    public function destroy(User $user)
     {
-        return response()->json($this->manager->destroy($admin));
+        return response()->json($this->manager->destroy($user));
     }
 
 

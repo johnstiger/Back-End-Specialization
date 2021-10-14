@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Managers\Guest\AuthManager;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -25,6 +26,14 @@ class AuthController extends Controller
         return response()->json($this->manager->Attempt($request));
     }
 
+    /*
+    * Login Users
+    * return json type result
+    */
+    public function getUser()
+    {
+        return response()->json(Auth::user());
+    }
     /*
     * Registering Guest to become Customer
     * return json type result

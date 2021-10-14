@@ -5,6 +5,7 @@ namespace App\Managers\Guest;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class SearchManager
 {
@@ -17,15 +18,15 @@ class SearchManager
                                                     ->orWhere('email','like',"%{$request->get('data')}%")
                                                     ->where('is_admin',0)
                                                     ->get();
-        return $this->template($customers, $request->all());
+        return $this->template($customers, $request);
     }
 
     public function Products($request)
     {
         $products = Product::where('name','like',"%{$request->get('data')}%")
-                                ->orWhere('price','like',"%{$request->get('data')}%")
+                                ->orWhere('price','like',"%{$request->get('data')}%")->with(['category','sizes'])
                                 ->get();
-        return $this->template($products, $request->all());
+        return $this->template($products, $request);
     }
 
     public function productByCategory($request, $category)
@@ -33,25 +34,26 @@ class SearchManager
         $foundData = $category->products()->where('name','like',"%{$request->get('data')}%")
                                             ->orWhere('price','like',"%{$request->get('data')}%")
                                             ->get();
-        return $this->template($foundData, $request->all());
+        return $this->template($foundData, $request);
     }
 
     public function Admins($request)
     {
-        $admins = User::where('is_admin',1)->where('lastname','like',"%{$request->get('data')}%")
+        $user = Auth::user();
+        $admins = User::where('is_admin',1)->where('lastname','like',"%{$request->get('data')}%")->where('email','!=',$user->email)
                                             ->orWhere('firstname','like',"%{$request->get('data')}%")
-                                            ->where('is_admin',1)
+                                            ->where('is_admin',1)->where('email','!=',$user->email)
                                             ->orWhere('email','like',"%{$request->get('data')}%")
-                                            ->where('is_admin',1)
+                                            ->where('is_admin',1)->where('email','!=',$user->email)
                                             ->get();
-        return $this->template($admins, $request->all());
+        return $this->template($admins, $request);
     }
 
     public function Category($request)
     {
         $category = Category::where('name','like',"%{$request->get('data')}%")
                     ->get();
-        return $this->template($category, $request->all());
+        return $this->template($category, $request);
     }
 
 
@@ -61,9 +63,11 @@ class SearchManager
         try {
             if($request->isEmpty()){
                 $response["message"] = $value->get('data')." is not Found";
+                $response["found"] = false;
             }else{
                 $response["message"] = "Successfully search data";
                 $response["data"] = $request;
+                $response["found"] = true;
                 $response["error"] = false;
             }
         } catch (\Exception $error) {

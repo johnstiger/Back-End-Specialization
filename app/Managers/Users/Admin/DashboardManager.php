@@ -27,6 +27,7 @@ class DashboardManager
             $response["weeklyOrders"] = $this->weeklyOrders();
             $response["products"] = $this->services->countProducts();
             $response["sales"] = $this->services->countSales();
+            $response["orders"] = $this->services->countOrders();
             $response["error"] = false;
 
         } catch (\Exception $error) {

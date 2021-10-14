@@ -49,6 +49,11 @@ class DataServices
         return User::where('is_admin',0)->count();
     }
 
+    public function countOrders()
+    {
+        return Order::where('status',1)->count();
+    }
+
     public function countProducts()
     {
         return Product::where('status',1)->count();

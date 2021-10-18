@@ -3,6 +3,7 @@
 namespace App\Managers\Orders;
 
 use App\Managers\Template\Template;
+use App\Services\Data\DataServices;
 use App\Validations\Orders\OrderValidation;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,10 +12,22 @@ class OrderManager
 
     protected $check;
     protected $template;
-    public function __construct(OrderValidation $check, Template $template)
+    protected $service;
+    public function __construct(OrderValidation $check, Template $template, DataServices $service)
     {
         $this->check = $check;
         $this->template = $template;
+        $this->service = $service;
+    }
+
+    public function index()
+    {
+        return $this->template->index($this->service->Orders());
+    }
+
+    public function pendingOrders()
+    {
+        return $this->template->index($this->service->pendingOrders());
     }
 
     public function create()

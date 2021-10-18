@@ -14,6 +14,7 @@ class OrderController extends Controller
     {
         $this->manager = $manager;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,8 +22,19 @@ class OrderController extends Controller
      */
     public function index()
     {
-
+        return $this->manager->index();
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function pendingOrders()
+    {
+        return $this->manager->pendingOrders();
+    }
+
 
     /**
      * Show the form for creating a new resource.

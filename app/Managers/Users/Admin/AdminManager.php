@@ -104,7 +104,6 @@ class AdminManager
             'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
             'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
-            'password' => 'required|min:8',
         ];
 
         if($admin->email != $request->email){
@@ -128,6 +127,32 @@ class AdminManager
             $response["error"] = true;
         }
         return $response;
+    }
+
+    public function resetPassword($request, $admin)
+    {
+        $rules = [
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+            'password_confirmation' => 'required'
+        ];
+
+        $validation = Validator::make($request->all(),$rules);
+
+        try {
+            if($validation->fails()){
+                $response["message"] = $validation->errors();
+                $response["error"] = true;
+            }else{
+                $admin->update($request->all());
+                $response["message"] = "Successfully Updated ".$admin->firstname." ".$admin->lastname."'s Password!";
+                $response["data"] = $admin;
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
     }
 
     /**

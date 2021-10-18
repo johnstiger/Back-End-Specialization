@@ -16,7 +16,7 @@ class DataServices
 
     public function allCustomers()
     {
-        return User::where('is_admin',0)->get();
+        return User::where('is_admin',0)->with('addresses')->get();
     }
 
     public function allAdmins()

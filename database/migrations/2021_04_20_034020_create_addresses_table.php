@@ -22,6 +22,7 @@ class CreateAddressesTable extends Migration
             $table->string('province');
             $table->string('city');
             $table->string('municipality');
+            $table->boolean('active')->default(true);
             $table->string('barangay')->nullable();
             $table->softDeletes();
             $table->timestamps();

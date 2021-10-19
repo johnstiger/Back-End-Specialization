@@ -30,6 +30,27 @@ class OrderManager
         return $this->template->index($this->service->pendingOrders());
     }
 
+    public function orderConfirmed($id, $customer)
+    {
+        try {
+            $response = [];
+            $order = $customer->orders->where('id',$id)->first();
+            if(!$order){
+                $response["message"] = "There is no order to update";
+                $response["error"] = true;
+            }else{
+                $order->update(['status'=>1]);
+                $response["message"] = "Order Confirmed";
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
+    }
+
     public function create()
     {
         $user = Auth::user();

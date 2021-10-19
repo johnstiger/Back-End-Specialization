@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Orders\OrderManager;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,6 +34,16 @@ class OrderController extends Controller
     public function pendingOrders()
     {
         return $this->manager->pendingOrders();
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function confirmOrder(Request $id, User $user)
+    {
+        return $this->manager->orderConfirmed($id, $user);
     }
 
 

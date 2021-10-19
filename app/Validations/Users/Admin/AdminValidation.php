@@ -24,6 +24,17 @@ class AdminValidation
 
         return $rules;
     }
+
+    public function resetPasswordValidation($data)
+    {
+        $rules = Validator::make($data, [
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+            'password_confirmation' => 'required'
+        ]);
+
+        return $rules;
+    }
 }
 
 

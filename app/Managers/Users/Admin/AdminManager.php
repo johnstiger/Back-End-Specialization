@@ -131,28 +131,29 @@ class AdminManager
 
     public function resetPassword($request, $admin)
     {
-        $rules = [
-            'current_password' => 'required',
-            'new_password' => 'required|min:8|confirmed',
-            'password_confirmation' => 'required'
-        ];
-
-        $validation = Validator::make($request->all(),$rules);
-
         try {
-            if($validation->fails()){
-                $response["message"] = $validation->errors();
-                $response["error"] = true;
+            if(Hash::check($request->current_password, $admin->password)){
+                $validation = $this->check->resetPasswordValidation($request->all());
+                if($validation->fails()){
+                    $response["message"] = $validation->errors();
+                    $response["error"] = true;
+                }else{
+                    $admin->update($request->all());
+                    $response["message"] = "Successfully Updated ".$admin->firstname." ".$admin->lastname."'s Password!";
+                    $response["data"] = $admin;
+                    $response["error"] = false;
+                }
             }else{
-                $admin->update($request->all());
-                $response["message"] = "Successfully Updated ".$admin->firstname." ".$admin->lastname."'s Password!";
-                $response["data"] = $admin;
-                $response["error"] = false;
+                $response["message"] = "Current Password is Incorrect!";
+                $response["error"] = true;
             }
+
         } catch (\Exception $error) {
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
+
+        return $response;
     }
 
     /**

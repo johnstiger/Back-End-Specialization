@@ -5,6 +5,7 @@ namespace App\Managers\Users\Admin;
 use App\Managers\Template\Template;
 use App\Validations\Users\Admin\AdminValidation;
 use App\Models\User;
+use App\Services\Data\DataServices;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -13,11 +14,13 @@ class AdminManager
 {
     protected $template;
     protected $check;
+    protected $services;
 
-    public function __construct(Template $template, AdminValidation $check)
+    public function __construct(Template $template, AdminValidation $check, DataServices $services)
     {
         $this->template = $template;
         $this->check = $check;
+        $this->services = $services;
     }
 
     /**
@@ -27,8 +30,7 @@ class AdminManager
      */
     public function customers()
     {
-        $customer = User::where('is_admin',0)->get();
-        return $this->template->index($customer);
+        return $this->template->index($this->services->allCustomers());
     }
 
     /**
@@ -102,7 +104,6 @@ class AdminManager
             'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
             'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
-            'password' => 'required|min:8',
         ];
 
         if($admin->email != $request->email){
@@ -125,6 +126,33 @@ class AdminManager
             $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
+        return $response;
+    }
+
+    public function resetPassword($request, $admin)
+    {
+        try {
+            if(Hash::check($request->current_password, $admin->password)){
+                $validation = $this->check->resetPasswordValidation($request->all());
+                if($validation->fails()){
+                    $response["message"] = $validation->errors();
+                    $response["error"] = true;
+                }else{
+                    $admin->update($request->all());
+                    $response["message"] = "Successfully Updated ".$admin->firstname." ".$admin->lastname."'s Password!";
+                    $response["data"] = $admin;
+                    $response["error"] = false;
+                }
+            }else{
+                $response["message"] = "Current Password is Incorrect!";
+                $response["error"] = true;
+            }
+
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
         return $response;
     }
 

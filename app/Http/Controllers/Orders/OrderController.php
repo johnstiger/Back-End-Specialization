@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Orders\OrderManager;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,6 +15,7 @@ class OrderController extends Controller
     {
         $this->manager = $manager;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,8 +23,29 @@ class OrderController extends Controller
      */
     public function index()
     {
-
+        return $this->manager->index();
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function pendingOrders()
+    {
+        return $this->manager->pendingOrders();
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function confirmOrder(Request $id, User $user)
+    {
+        return $this->manager->orderConfirmed($id, $user);
+    }
+
 
     /**
      * Show the form for creating a new resource.

@@ -3,6 +3,7 @@
 namespace App\Managers\Orders;
 
 use App\Managers\Template\Template;
+use App\Services\Data\DataServices;
 use App\Validations\Orders\OrderValidation;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,10 +12,43 @@ class OrderManager
 
     protected $check;
     protected $template;
-    public function __construct(OrderValidation $check, Template $template)
+    protected $service;
+    public function __construct(OrderValidation $check, Template $template, DataServices $service)
     {
         $this->check = $check;
         $this->template = $template;
+        $this->service = $service;
+    }
+
+    public function index()
+    {
+        return $this->template->index($this->service->Orders());
+    }
+
+    public function pendingOrders()
+    {
+        return $this->template->index($this->service->pendingOrders());
+    }
+
+    public function orderConfirmed($id, $customer)
+    {
+        try {
+            $response = [];
+            $order = $customer->orders->where('id',$id)->first();
+            if(!$order){
+                $response["message"] = "There is no order to update";
+                $response["error"] = true;
+            }else{
+                $order->update(['status'=>1]);
+                $response["message"] = "Order Confirmed";
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
     }
 
     public function create()

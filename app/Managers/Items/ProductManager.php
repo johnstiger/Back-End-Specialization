@@ -3,19 +3,21 @@
 namespace App\Managers\Items;
 
 use App\Managers\Template\Template;
-use App\Models\Category;
 use App\Validations\Items\ProductValidation as ItemsProductValidation;
 use App\Models\Product;
+use App\Services\Data\DataServices;
 
 class ProductManager
 {
     protected $template;
     protected $check;
+    protected $services;
 
-    public function __construct(Template $template, ItemsProductValidation $check)
+    public function __construct(Template $template, ItemsProductValidation $check, DataServices $services)
     {
         $this->template = $template;
         $this->check = $check;
+        $this->services = $services;
     }
 
     /**

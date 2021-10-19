@@ -5,16 +5,19 @@ namespace App\Managers\Items;
 use App\Managers\Template\Template;
 use App\Validations\Items\CategoryValidation;
 use App\Models\Category;
+use App\Services\Data\DataServices;
 
 class CategoryManager
 {
     protected $template;
     protected $check;
+    protected $services;
 
-    public function __construct(Template $template, CategoryValidation $check)
+    public function __construct(Template $template, CategoryValidation $check, DataServices $services)
     {
         $this->template = $template;
         $this->check = $check;
+        $this->services = $services;
     }
 
     /**
@@ -24,8 +27,7 @@ class CategoryManager
      */
     public function index()
     {
-        $categories = Category::with('products')->get();
-        return $this->template->index($categories);
+        return $this->template->index($this->services->categoriesProducts());
     }
 
     /**

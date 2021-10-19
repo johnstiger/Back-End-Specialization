@@ -50,6 +50,8 @@ Route::namespace('Guest')->group(function(){
 Route::middleware('auth:sanctum')->group(function(){
     Route::namespace('Guest')->middleware('admin')->group(function(){
         Route::prefix('search')->group(function(){
+            Route::post('/products','SearchEngineController@Products');
+            Route::post('/products/{category}','SearchEngineController@productByCategory');
             Route::post('/customers','SearchEngineController@Customers');
             Route::post('/admin','SearchEngineController@Admins');
             Route::post('/items','SearchEngineController@Products');
@@ -67,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::get('/show/{admin}','AdminController@show');
                 Route::post('/register','AdminController@store');
                 Route::put('/update/{user}','AdminController@update');
+                Route::put('/resetPassword/{user}','AdminController@updatePassword');
                 Route::delete('/delete/{user}','AdminController@destroy');
             });
         });
@@ -111,6 +114,13 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::post('/newProduct','ProductController@store');
             Route::put('/update/{product}','ProductController@update');
             Route::delete('/delete/{product}','ProductController@destroy');
+        });
+    });
+    Route::namespace('Orders')->middleware('admin')->group(function(){
+        Route::prefix('order')->group(function(){
+            Route::get('/','OrderController@index');
+            Route::get('/pending','OrderController@pendingOrders');
+            Route::put('/confirmed','OrderController@confirmOrder');
         });
     });
 });

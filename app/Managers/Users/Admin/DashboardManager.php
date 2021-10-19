@@ -32,11 +32,12 @@ class DashboardManager
             $categories = $this->services->Categories();
             $response["customers"] = !$customers ? "No Customers Yet" : $customers;
             $response["pendingOrders"] = !$pendingOrders ? "No Pending Orders Yet" : $pendingOrders;
-            $response["categories"] = !$categories ? "No Categories Yet" : $pendingOrders;
+            $response["categories"] = !$categories ? "No Categories Yet" : $categories;
             $response["annuallyOrders"] = $this->ordersAnnually();
             $response["weeklyOrders"] = $this->weeklyOrders();
             $response["products"] = $this->products();
             $response["sales"] = $this->sales();
+            $response["orders"] = $this->orders();
             $response["error"] = false;
 
         } catch (\Exception $error) {
@@ -99,6 +100,11 @@ class DashboardManager
         ->count();
     }
 
+
+    public function orders()
+    {
+        return Order::where('status',1)->count();
+    }
 }
 
 

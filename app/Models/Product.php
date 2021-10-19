@@ -43,5 +43,10 @@ class Product extends Model
         return $this->belongsToMany(Order::class);
     }
 
+    public function salesItem()
+    {
+        return $this->belongsTo(SalesItem::class);
+    }
+
 
 }

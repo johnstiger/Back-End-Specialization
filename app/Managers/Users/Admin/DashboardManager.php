@@ -21,7 +21,7 @@ class DashboardManager
         $response = [];
         try {
             $response["customers"] = $this->services->countCostumers();
-            $response["pendingOrders"] = $this->services->pendingOrdes();
+            $response["pendingOrders"] = $this->services->pendingOrders();
             $response["categories"] = $this->services->Categories();
             $response["annuallyOrders"] = $this->ordersAnnually();
             $response["weeklyOrders"] = $this->weeklyOrders();

@@ -111,6 +111,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::prefix('product')->group(function(){
             Route::get('/all','ProductController@index');
             Route::get('/show/{product}','ProductController@show');
+            Route::post('/saveImage/{product}','ProductController@savingImage');
             Route::post('/newProduct','ProductController@store');
             Route::put('/update/{product}','ProductController@update');
             Route::delete('/delete/{product}','ProductController@destroy');

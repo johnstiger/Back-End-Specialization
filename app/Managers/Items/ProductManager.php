@@ -51,11 +51,9 @@ class ProductManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $product = $request->only(['name','category_id', 'price','status','description','image']);
+                $product = $request->only(['name','category_id', 'price','status','description']);
                 // $product = $request->only(['name','category_id','part', 'price','status','description','image']);
-                if($request->hasFile('image')){
-                   $product["image"] = $this->uploadImage($request->file('image'));
-                }
+
                 $newProduct = Product::create($product);
                     $newProduct->sizes()->syncWithoutDetaching([
                         $request->sizes => [
@@ -73,6 +71,37 @@ class ProductManager
             $response["error"] = true;
         }
         return $response;
+    }
+
+    public function putImage($request, $product)
+    {
+        $rules = $this->check->imageValidation($request);
+
+        $response = [];
+
+        try {
+            if($rules->fails()){
+                $response["message"] = $rules->errors();
+                $response["error"] = true;
+            }else{
+                if($request->hasFile('image')){
+                    $data["image"] = $this->uploadImage($request->file('image'));
+                    $product->update($data);
+                    return $product->update($data);
+                    $response['message'] = "Successfully Updated Image";
+                    $response["error"] = false;
+                }else{
+                    $response["message"] = "No Image Found!";
+                    $response["error"] = true;
+                }
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
+
     }
 
     /**
@@ -170,7 +199,7 @@ class ProductManager
     {
         $filename = $request->getClientOriginalName();
         $extension = $request->getClientOriginalExtension();
-        $picture = date('His').'-'.$filename;
+        $picture = time().'-'.$filename;
         $request->move(public_path('img'), $picture);
 
         return $picture;

@@ -36,6 +36,15 @@ class ProductController extends Controller
     }
 
     /*
+    * Adding new Product Image
+    * return json type result
+    */
+    public function savingImage(Request $request, Product $product)
+    {
+        return response()->json($this->manager->putImage($request, $product));
+    }
+
+    /*
     * Showing Specific Product
     * return json type result
     */

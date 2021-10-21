@@ -34,7 +34,10 @@ class ProductValidation
     {
         $rules = Validator::make($request->all(),[
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        ],[
+            'image.image' => 'The file must be an image'
+        ]
+    );
 
         return $rules;
     }

@@ -87,7 +87,6 @@ class ProductManager
                 if($request->hasFile('image')){
                     $data["image"] = $this->uploadImage($request->file('image'));
                     $product->update($data);
-                    return $product->update($data);
                     $response['message'] = "Successfully Updated Image";
                     $response["error"] = false;
                 }else{
@@ -199,7 +198,7 @@ class ProductManager
     {
         $filename = $request->getClientOriginalName();
         $extension = $request->getClientOriginalExtension();
-        $picture = time().'-'.$filename;
+        $picture = time().'-'.rand(1000,9999).'.'.$extension;
         $request->move(public_path('img'), $picture);
 
         return $picture;

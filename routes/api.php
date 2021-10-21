@@ -69,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::get('/show/{admin}','AdminController@show');
                 Route::post('/register','AdminController@store');
                 Route::put('/update/{user}','AdminController@update');
+                Route::post('/saveImage/{user}','AdminController@savingImage');
                 Route::put('/resetPassword/{user}','AdminController@updatePassword');
                 Route::delete('/delete/{user}','AdminController@destroy');
             });

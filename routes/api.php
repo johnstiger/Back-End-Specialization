@@ -50,8 +50,8 @@ Route::namespace('Guest')->group(function(){
 Route::middleware('auth:sanctum')->group(function(){
     Route::namespace('Guest')->middleware('admin')->group(function(){
         Route::prefix('search')->group(function(){
-            Route::post('/products','SearchEngineController@Products');
-            Route::post('/products/{category}','SearchEngineController@productByCategory');
+            Route::post('/admin/products','SearchEngineController@Products');
+            Route::post('/admin/products/{category}','SearchEngineController@productByCategory');
             Route::post('/customers','SearchEngineController@Customers');
             Route::post('/admin','SearchEngineController@Admins');
             Route::post('/items','SearchEngineController@Products');

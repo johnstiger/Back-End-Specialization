@@ -66,6 +66,11 @@ class DashboardManager
         ->count();
     }
 
+
+    public function orders()
+    {
+        return Order::where('status',1)->count();
+    }
 }
 
 

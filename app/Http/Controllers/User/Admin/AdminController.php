@@ -80,5 +80,9 @@ class AdminController extends Controller
         return response()->json($this->manager->destroy($user));
     }
 
+    public function savingImage(Request $request, User $user)
+    {
+        return response()->json($this->manager->updateImage($request, $user));
+    }
 
 }

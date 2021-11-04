@@ -127,7 +127,8 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::prefix('order')->group(function(){
             Route::get('/','OrderController@index');
             Route::get('/pending','OrderController@pendingOrders');
-            Route::put('/confirmed','OrderController@confirmOrder');
+            Route::put('/confirmed/{user}','OrderController@confirmOrder');
+            Route::put('/declined/{order}/{user}','OrderController@declinedOrder');
         });
     });
 });

@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->float('total')->default('0');
-            $table->boolean('status')->default(false);
+            $table->integer('status')->default('0');
             $table->string('payment_method')->default("not yet set");
             $table->softDeletes();
             $table->timestamps();

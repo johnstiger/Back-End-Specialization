@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Orders\OrderManager;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,9 +42,14 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function confirmOrder(Request $id, User $user)
+    public function confirmOrder(Request $request, User $user)
     {
-        return $this->manager->orderConfirmed($id, $user);
+        return $this->manager->orderConfirmed($request, $user);
+    }
+
+    public function declinedOrder(Order $order, User $user)
+    {
+        return $this->manager->declinedOrder($order, $user);
     }
 
 

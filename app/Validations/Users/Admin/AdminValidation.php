@@ -20,6 +20,7 @@ class AdminValidation
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
             'email' => 'required|unique:users|email',
             'password' => 'required|min:8',
+            'image' => 'required'
         ]);
 
         return $rules;

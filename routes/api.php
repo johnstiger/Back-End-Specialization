@@ -116,6 +116,11 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::post('/newProduct','ProductController@store');
             Route::put('/update/{product}','ProductController@update');
             Route::delete('/delete/{product}','ProductController@destroy');
+            Route::get('/sizes','ProductController@sizes');
+        });
+        Route::prefix('salesItem')->group(function(){
+            Route::get('/', 'SalesItemController@index');
+            Route::post('/{product}','SalesItemController@store');
         });
     });
     Route::namespace('Orders')->middleware('admin')->group(function(){

@@ -6,17 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SalesItem extends Model
+class OnsalesProduct extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
-        'description',
-        'percent_off',
-        'unit_measure',
-        'promo_type',
-        'status',
-        'total',
-        'size'
+        "desciption",
+        "percent_off",
+        "unit_measure",
+        "status",
+        "size",
+        "total"
     ];
 
     public function products()

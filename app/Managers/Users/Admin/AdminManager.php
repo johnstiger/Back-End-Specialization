@@ -110,6 +110,7 @@ class AdminManager
             'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
             'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
+            'image ' => 'required'
         ];
 
         if($admin->email != $request->email){

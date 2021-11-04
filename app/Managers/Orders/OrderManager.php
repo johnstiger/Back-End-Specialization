@@ -30,16 +30,16 @@ class OrderManager
         return $this->template->index($this->service->pendingOrders());
     }
 
-    public function orderConfirmed($id, $customer)
+    public function orderConfirmed($request, $customer)
     {
         try {
             $response = [];
-            $order = $customer->orders->where('id',$id)->first();
+            $order = $customer->orders->where('id',$request[0]['id'])->first();
             if(!$order){
                 $response["message"] = "There is no order to update";
                 $response["error"] = true;
             }else{
-                $order->update(['status'=>1]);
+                $order->update(['status'=>config('const.order.confirmed')]);
                 $response["message"] = "Order Confirmed";
                 $response["error"] = false;
             }
@@ -50,6 +50,29 @@ class OrderManager
 
         return $response;
     }
+
+    public function declinedOrder($order, $customer)
+    {
+        try {
+            $response = [];
+            $order = $customer->orders->where('id',$order->id)->first();
+            if(!$order){
+                $response["message"] = "There is no order to update";
+                $response["error"] = true;
+            }else{
+                $order->update(['status'=>config('const.order.declined')]);
+                $response["message"] = "Order Confirmed";
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
+    }
+
+
 
     public function create()
     {

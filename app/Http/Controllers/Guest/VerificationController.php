@@ -17,7 +17,7 @@ class VerificationController extends Controller
     {
         $id->email_verified_at = now();
         $id->save();
-        return response()->json("Verified");
+        return view('success');
     }
 
     /*

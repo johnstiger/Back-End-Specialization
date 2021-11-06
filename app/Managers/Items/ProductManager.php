@@ -31,6 +31,11 @@ class ProductManager
         return $this->template->index(Product::with(['category','sizes'])->get());
     }
 
+    public function getSizes()
+    {
+        return $this->template->index($this->services->getSizes());
+    }
+
 
     /**
      * Store a newly created resource in storage.

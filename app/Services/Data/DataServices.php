@@ -5,6 +5,8 @@ namespace App\Services\Data;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\SalesItem;
+use App\Models\Sizes;
 use App\Models\User;
 
 class DataServices
@@ -72,6 +74,26 @@ class DataServices
     public function products()
     {
         return Product::where('status',config('const.product.available'))->get();
+    }
+
+    public function salesItem()
+    {
+        return SalesItem::where('status',config('const.sales_item.available'))->with('products')->get();
+    }
+
+    public function getSalesItem($data)
+    {
+        return SalesItem::where('id',$data->id)->with('products')->first();
+    }
+
+    public function getProductToSales($data)
+    {
+        return Product::where('id',$data)->where('status',config('const.sales_item.available'))->first();
+    }
+
+    public function getSizes()
+    {
+        return Sizes::all();
     }
 
 }

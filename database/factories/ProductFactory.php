@@ -27,7 +27,7 @@ class ProductFactory extends Factory
             'price' => $this->faker->randomFloat(2,0,1000),
             'status' => true,
             'description' => $this->faker->text,
-            'image' => 'http://localhost:8000/imgs/unnamed.png'
+            'image' => 'unnamed.png'
         ];
     }
 }

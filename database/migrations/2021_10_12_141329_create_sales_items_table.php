@@ -22,6 +22,7 @@ class CreateSalesItemsTable extends Migration
             $table->string('promo_type');
             $table->string('size');
             $table->boolean('status')->default(true);
+            $table->integer('price');
             $table->integer('total');
             $table->timestamps();
             $table->softDeletes();

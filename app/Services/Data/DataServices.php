@@ -78,12 +78,17 @@ class DataServices
 
     public function salesItem()
     {
-        return SalesItem::where('status',1)->with('products')->get();
+        return SalesItem::where('status',config('const.sales_item.available'))->with('products')->get();
+    }
+
+    public function getSalesItem($data)
+    {
+        return SalesItem::where('id',$data->id)->with('products')->first();
     }
 
     public function getProductToSales($data)
     {
-        return Product::where('id',$data)->where('status',1)->first();
+        return Product::where('id',$data)->where('status',config('const.sales_item.available'))->first();
     }
 
     public function getSizes()

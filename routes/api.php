@@ -120,7 +120,10 @@ Route::middleware('auth:sanctum')->group(function(){
         });
         Route::prefix('salesItem')->group(function(){
             Route::get('/', 'SalesItemController@index');
+            Route::get('/{salesItem}','SalesItemController@show');
             Route::post('/{product}','SalesItemController@store');
+            Route::delete('/remove/{salesItem}','SalesItemController@destroy');
+            Route::put('/update/{salesItem}','SalesItemController@update');
         });
     });
     Route::namespace('Orders')->middleware('admin')->group(function(){
@@ -128,7 +131,7 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::get('/','OrderController@index');
             Route::get('/pending','OrderController@pendingOrders');
             Route::put('/confirmed/{user}','OrderController@confirmOrder');
-            Route::put('/declined/{order}/{user}','OrderController@declinedOrder');
+            Route::put('/declined/{user}','OrderController@declinedOrder');
         });
     });
 });

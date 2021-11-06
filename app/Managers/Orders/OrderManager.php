@@ -51,17 +51,17 @@ class OrderManager
         return $response;
     }
 
-    public function declinedOrder($order, $customer)
+    public function declinedOrder($request, $customer)
     {
         try {
             $response = [];
-            $order = $customer->orders->where('id',$order->id)->first();
+            $order = $customer->orders->where('id',$request[0]['id'])->first();
             if(!$order){
                 $response["message"] = "There is no order to update";
                 $response["error"] = true;
             }else{
                 $order->update(['status'=>config('const.order.declined')]);
-                $response["message"] = "Order Confirmed";
+                $response["message"] = "Order Declined";
                 $response["error"] = false;
             }
         } catch (\Exception $error) {

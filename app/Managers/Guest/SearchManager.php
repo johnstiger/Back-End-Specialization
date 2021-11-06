@@ -56,6 +56,10 @@ class SearchManager
         return $this->template($category, $request);
     }
 
+    public function Orders($request)
+    {
+        // $orders = Order::where('')
+    }
 
     public function template($request, $value)
     {

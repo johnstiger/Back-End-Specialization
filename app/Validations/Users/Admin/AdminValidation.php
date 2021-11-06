@@ -19,8 +19,9 @@ class AdminValidation
             'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
             'email' => 'required|unique:users|email',
-            'password' => 'required|min:8',
-            'image' => 'required'
+            'password' => 'required|min:8|confirmed',
+            'image' => 'required',
+            'password_confirmation' => 'required'
         ]);
 
         return $rules;

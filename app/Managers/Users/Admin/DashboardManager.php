@@ -26,6 +26,7 @@ class DashboardManager
             $response["annuallyOrders"] = $this->ordersAnnually();
             $response["weeklyOrders"] = $this->weeklyOrders();
             $response["products"] = $this->services->countProducts();
+            $response["productSales"] = $this->services->salesItem();
             $response["sales"] = $this->services->countSales();
             $response["orders"] = $this->services->countOrders();
             $response["error"] = false;

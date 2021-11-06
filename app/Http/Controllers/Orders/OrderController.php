@@ -47,9 +47,9 @@ class OrderController extends Controller
         return $this->manager->orderConfirmed($request, $user);
     }
 
-    public function declinedOrder(Order $order, User $user)
+    public function declinedOrder(Request $request, User $user)
     {
-        return $this->manager->declinedOrder($order, $user);
+        return $this->manager->declinedOrder($request, $user);
     }
 
 

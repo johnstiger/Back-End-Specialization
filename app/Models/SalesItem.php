@@ -15,13 +15,14 @@ class SalesItem extends Model
         'unit_measure',
         'promo_type',
         'status',
-        'total',
-        'size'
+        'price',
+        'size',
+        'total'
     ];
 
     public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'product_id', 'id')->with(['category','sizes']);
     }
 
 

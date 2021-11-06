@@ -30,7 +30,6 @@ class SalesItemManager
         $params = $request->all();
         $response = [];
         try {
-            // $product = $this->data->getProductToSales($params->id);
             $rules = $this->validator->salesItemValidation($params);
             if($rules->fails()){
                 $response["message"] = $rules->errors();
@@ -42,16 +41,24 @@ class SalesItemManager
                     }else{
                         $percent = $params['percent_off'];
                     }
-                    $total = ($product->price - $percent)*$params['unit_measure'];
-                    $size = Sizes::where('id',$params['size'])->first();
+                    $price = ($product->price - $percent);
+                    $total = $price*$params['unit_measure'];
+                    $size = $params['size'] == 0 ? "" : Sizes::where('id',$params['size'])->first()->size;
                   $product->salesItem()->create([
                       'description' => $params['description'],
                       'percent_off' => $params['percent_off'],
                       'promo_type'  => $params['promo_type'],
                       'unit_measure'=> $params['unit_measure'],
-                      'size' => $size->size,
+                      'size' => $size,
+                      'price' => $price,
                       'total' => $total
                   ]);
+                  $availUnit = $product->sizes()->first()->pivot->avail_unit_measure;
+                  $product->sizes()->syncWithoutDetaching([
+                        $params["size"] => [
+                            'avail_unit_measure' => $availUnit - $params["unit_measure"]
+                        ]
+                    ]);
                   $response["message"] = "Successfully Added to Sales Item";
                   $response["data"] = $product;
                   $response["error"] = false;
@@ -61,11 +68,49 @@ class SalesItemManager
                 }
             }
         } catch (\Exception $error) {
-            $response["message"] = "Error ".$error;
+            $response["message"] = "Error ".$error->getMessage();
             $response["error"] = true;
         }
 
         return $response;
+    }
+
+
+    public function show($data)
+    {
+        return $this->template->show($this->data->getSalesItem($data));
+    }
+
+    public function update($request, $salesItem)
+    {
+        $response = [];
+        try {
+            $rules = $this->validator->salesItemValidation($request->all());
+            if($rules->fails()){
+                $response["message"] = $rules->errors();
+                $response["error"] = true;
+            }else{
+                if($salesItem){
+                   $salesItem->update($request->all());
+                   $response["message"] = "Successfully updated";
+                   $response["error"] = false;
+                }else{
+                    $response["message"] = "No data found";
+                    $response["error"] = true;
+                }
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
+    }
+
+
+    public function delete($salesItem)
+    {
+        return $this->template->destroy($salesItem);
     }
 
 

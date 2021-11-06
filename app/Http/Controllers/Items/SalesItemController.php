@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Items;
 use App\Http\Controllers\Controller;
 use App\Managers\Items\SalesItemManager;
 use App\Models\Product;
+use App\Models\SalesItem;
 use Illuminate\Http\Request;
 
 class SalesItemController extends Controller
@@ -23,7 +24,7 @@ class SalesItemController extends Controller
      */
     public function index()
     {
-        return $this->data->index();
+        return response()->json($this->data->index());
     }
 
     /**
@@ -44,7 +45,7 @@ class SalesItemController extends Controller
      */
     public function store(Request $request, Product $product)
     {
-        return $this->data->store($request, $product);
+        return response()->json($this->data->store($request, $product));
     }
 
     /**
@@ -53,9 +54,9 @@ class SalesItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(SalesItem $salesItem)
     {
-        //
+        return response()->json($this->data->show($salesItem));
     }
 
     /**
@@ -76,9 +77,9 @@ class SalesItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, SalesItem $salesItem)
     {
-        //
+        return response()->json($this->data->update($request, $salesItem));
     }
 
     /**
@@ -87,8 +88,8 @@ class SalesItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(SalesItem $salesItem)
     {
-        //
+        return response()->json($this->data->delete($salesItem));
     }
 }

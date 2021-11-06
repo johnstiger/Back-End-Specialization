@@ -84,7 +84,7 @@ class AuthManager
                 $customer["password"] = Hash::make($request->password);
                 $data = User::create($customer);
                 $token = $data->createToken('token');
-                $this->send->sendEmailVerification($data, $token->plainTextToken);
+                $data = $this->send->sendEmailVerification($data, $token->plainTextToken);
                 $data->cart()->create();
                 $response["message"] = "Please Verify Your Email Account";
                 $response["data"] = $data;

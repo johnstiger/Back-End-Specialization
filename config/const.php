@@ -15,6 +15,11 @@ return [
     'product' => [
         'available' => 1,
         'not-available' => 0,
+    ],
+
+    'sales_item' => [
+        'available' => 1,
+        'not-available' => 0
     ]
 ];
 

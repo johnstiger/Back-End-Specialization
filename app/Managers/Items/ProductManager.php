@@ -56,9 +56,9 @@ class ProductManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $product = $request->only(['name','category_id', 'price','status','description']);
-                // $product = $request->only(['name','category_id','part', 'price','status','description','image']);
 
+                $product = $request->only(['name','category_id', 'price','status','description']);
+                $product['image'] = $request['fileSource'];
                 $newProduct = Product::create($product);
                     $newProduct->sizes()->syncWithoutDetaching([
                         $request->sizes => [
@@ -152,9 +152,10 @@ class ProductManager
                         'category_id'
                     ]
                 );
-                if($request->hasFile('image')){
-                    $item["image"] = $this->uploadImage($request->file('image'));
-                }
+                $item['image'] = $request['fileSource'];
+                // if($request->hasFile('image')){
+                //     $item["image"] = $this->uploadImage($request->file('image'));
+                // }
                 $product->update($item);
                 $product->sizes()->syncWithoutDetaching([
                     $request->sizes => [

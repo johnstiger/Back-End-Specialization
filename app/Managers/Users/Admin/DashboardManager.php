@@ -49,9 +49,29 @@ class DashboardManager
      */
     public function ordersAnnually()
     {
-       return Order::whereYear('created_at', Carbon::now()->year)
-        ->select(DB::raw("MONTH(created_at) month"), DB::raw("count('month') as order_count"))
-        ->groupby('month')->get();
+    //    return Order::whereYear('created_at', Carbon::now()->year)
+    //     ->select(DB::raw("MONTH(created_at) month"), DB::raw("count('month') as order_count"))
+    //     ->groupby('month')->get();
+
+        $months = [1,2,3,4,5,6,7,8,9,10,11,12];
+
+          $orders = Order::whereYear('created_at',Carbon::now()->year)->where('status',config('const.order.confirmed'))
+          ->get()->mapToGroups(function($items, $key){
+              return [$items->created_at->format('m')=>$items];
+          })->map(function($items, $key){
+              return $items->count();
+          });
+
+          foreach ($months as $month) {
+              $result[$month] = 0;
+              foreach ($orders as $key => $order) {
+                  if($month == $key ){
+                      $result[$month] = $order;
+                  }
+              }
+          }
+
+          return $result;
     }
 
     /**

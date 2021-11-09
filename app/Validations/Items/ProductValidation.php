@@ -19,6 +19,7 @@ class ProductValidation
             'unit_measure' => 'required|numeric',
             'price' => 'required|numeric',
             'category_id' => 'required',
+            'image' => 'required',
             // 'part' => 'required',
             'sizes' => 'required',
             // 'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'

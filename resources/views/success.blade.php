@@ -37,7 +37,7 @@
 
             <p>Well Done!, you successfully verified your email..</p>
 
-            <button id="alertMO">Moving On</button>
+            <a type="button" class="btn btn-primary" id="alertMO">Moving On</a>
 
           </div>
 

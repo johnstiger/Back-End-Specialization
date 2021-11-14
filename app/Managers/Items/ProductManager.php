@@ -60,12 +60,20 @@ class ProductManager
                 $product = $request->only(['name','category_id', 'price','status','description']);
                 $product['image'] = $request['fileSource'];
                 $newProduct = Product::create($product);
+                foreach($request->sizes as $data){
                     $newProduct->sizes()->syncWithoutDetaching([
-                        $request->sizes => [
-                            'unit_measure' => $request["unit_measure"],
-                            'avail_unit_measure' => $request["unit_measure"]
+                        $data["size_id"] => [
+                            'unit_measure' => $data["unit_measure"],
+                            'avail_unit_measure' => $data["unit_measure"]
                         ]
                     ]);
+                }
+                    // $newProduct->sizes()->syncWithoutDetaching([
+                    //     $request->sizes => [
+                    //         'unit_measure' => $request["unit_measure"],
+                    //         'avail_unit_measure' => $request["unit_measure"]
+                    //     ]
+                    // ]);
 
                 $response["message"] = "Successfully Added ".$newProduct->name." in Product!";
                 $response["data"] = $newProduct;

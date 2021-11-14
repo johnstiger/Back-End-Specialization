@@ -29,8 +29,8 @@ Route::namespace('Guest')->group(function(){
     Route::get('/NotVerified','VerificationController@notVerifyEmail')->name('verification.notice');
 
     //LogIn and Register Verification
-    Route::post('/login','AuthController@login')->middleware('cors');
-    Route::post('/register','AuthController@register')->name('verification.send')->middleware('cors');
+    Route::post('/login','AuthController@login');
+    Route::post('/register','AuthController@register')->name('verification.send');
     Route::get('/email/verification/{id}/{token}','VerificationController@verifyEmail')->name('verified');
 
     //Forgot Password using Verification Code

@@ -5,6 +5,7 @@ namespace App\Managers\Orders;
 use App\Managers\Template\Template;
 use App\Services\Data\DataServices;
 use App\Validations\Orders\OrderValidation;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class OrderManager
@@ -40,6 +41,17 @@ class OrderManager
                 $response["error"] = true;
             }else{
                 $order->update(['status'=>config('const.order.confirmed')]);
+                $order->created_at = Carbon::now();
+                $order->save();
+                foreach ($order->products as $product) {
+                    foreach ($product->sizes as $size) {
+                        $product->sizes()->syncWithoutDetaching([
+                            $size["id"] => [
+                                'avail_unit_measure' => $size['pivot']["avail_unit_measure"] - $product['pivot']['quantity'],
+                            ]
+                        ]);
+                    }
+                }
                 $response["message"] = "Order Confirmed";
                 $response["error"] = false;
             }

@@ -16,7 +16,7 @@ class ProductValidation
     {
         $rules = Validator::make($request->all(),[
             'name' => 'required',
-            'unit_measure' => 'required|numeric',
+            // 'unit_measure' => 'required|numeric',
             'price' => 'required|numeric',
             'category_id' => 'required',
             'image' => 'required',

@@ -165,20 +165,20 @@ class ProductManager
                 //     $item["image"] = $this->uploadImage($request->file('image'));
                 // }
                 $product->update($item);
-                $product->sizes()->syncWithoutDetaching([
-                    $request->sizes => [
-                        'unit_measure' => $request["unit_measure"],
-                        'avail_unit_measure' => $request["unit_measure"]
-                    ]
-                ]);
-                // foreach($request->sizes as $data){
-                //     $product->sizes()->syncWithoutDetaching([
-                //         $data["size_id"] => [
-                //             'unit_measure' => $data["unit_measure"],
-                //             'avail_unit_measure' => $data["unit_measure"]
-                //         ]
-                //     ]);
-                // }
+                // $product->sizes()->syncWithoutDetaching([
+                //     $request->sizes => [
+                //         'unit_measure' => $request["unit_measure"],
+                //         'avail_unit_measure' => $request["unit_measure"]
+                //     ]
+                // ]);
+                foreach($request->sizes as $data){
+                    $product->sizes()->syncWithoutDetaching([
+                        $data['pivot']["sizes_id"] => [
+                            'unit_measure' => $data['pivot']["unit_measure"],
+                            'avail_unit_measure' => $data['pivot']["unit_measure"]
+                        ]
+                    ]);
+                }
                 $response["message"] = "Successfully Updated ".$product->name;
                 $response["data"] = $product;
                 $response["error"] = false;

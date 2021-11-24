@@ -42,23 +42,43 @@ class SalesItemManager
                         $percent = $params['percent_off'];
                     }
                     $price = ($product->price - $percent);
-                    $total = $price*$params['unit_measure'];
-                    $size = $params['size'] == 0 ? "" : Sizes::where('id',$params['size'])->first()->size;
-                  $product->salesItem()->create([
-                      'description' => $params['description'],
-                      'percent_off' => $params['percent_off'],
-                      'promo_type'  => $params['promo_type'],
-                      'unit_measure'=> $params['unit_measure'],
-                      'size' => $size,
-                      'price' => $price,
-                      'total' => $total
-                  ]);
-                  $availUnit = $product->sizes()->first()->pivot->avail_unit_measure;
-                  $product->sizes()->syncWithoutDetaching([
-                        $params["size"] => [
-                            'avail_unit_measure' => $availUnit - $params["unit_measure"]
-                        ]
-                    ]);
+                    if(count($params['size']) > 0){
+                        foreach ($params['size'] as $item) {
+                            $total = $price*$item['pivot']['avail_unit_measure'];
+                            $product->sizes()->syncWithoutDetaching([
+                                $item["id"] => [
+                                    'avail_unit_measure' => $item['pivot']['avail_unit_measure']
+                                ]
+                            ]);
+                            $product->salesItem()->create([
+                                'description' => $params['description'],
+                                'percent_off' => $params['percent_off'],
+                                'promo_type'  => $params['promo_type'],
+                                'unit_measure'=> $item['pivot']["sales_item"],
+                                'size' => $item['size'],
+                                'price' => $price,
+                                'total' => $total
+                            ]);
+                        }
+                    }else{
+                        $total = $price*$params['unit_measure'];
+                        $size = $params['size'] == 0 ? "" : Sizes::where('id',$params['size'])->first()->size;
+                        $product->salesItem()->create([
+                            'description' => $params['description'],
+                            'percent_off' => $params['percent_off'],
+                            'promo_type'  => $params['promo_type'],
+                            'unit_measure'=> $params['unit_measure'],
+                            'size' => $size,
+                            'price' => $price,
+                            'total' => $total
+                        ]);
+                        $availUnit = $product->sizes()->first()->pivot->avail_unit_measure;
+                        $product->sizes()->syncWithoutDetaching([
+                              $params["size"] => [
+                                  'avail_unit_measure' => $availUnit - $params["unit_measure"]
+                              ]
+                          ]);
+                    }
                   $response["message"] = "Successfully Added to Sales Item";
                   $response["data"] = $product;
                   $response["error"] = false;

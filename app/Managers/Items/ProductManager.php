@@ -174,8 +174,8 @@ class ProductManager
                 foreach($request->sizes as $data){
                     $product->sizes()->syncWithoutDetaching([
                         $data['pivot']["sizes_id"] => [
-                            'unit_measure' => $data['pivot']["unit_measure"],
-                            'avail_unit_measure' => $data['pivot']["unit_measure"]
+                            'unit_measure' => $data['pivot']["avail_unit_measure"],
+                            'avail_unit_measure' => $data['pivot']["avail_unit_measure"]
                         ]
                     ]);
                 }

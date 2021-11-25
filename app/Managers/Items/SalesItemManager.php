@@ -45,8 +45,10 @@ class SalesItemManager
                     if(count($params['size']) > 0){
                         foreach ($params['size'] as $item) {
                             $total = $price*$item['pivot']['avail_unit_measure'];
+                            $status = $item['pivot']['avail_unit_measure'] > 0 ? true : false;
                             $product->sizes()->syncWithoutDetaching([
                                 $item["id"] => [
+                                    'status' => $status,
                                     'avail_unit_measure' => $item['pivot']['avail_unit_measure']
                                 ]
                             ]);
@@ -73,8 +75,10 @@ class SalesItemManager
                             'total' => $total
                         ]);
                         $availUnit = $product->sizes()->first()->pivot->avail_unit_measure;
+                        $status = $availUnit > 0 ? true : false;
                         $product->sizes()->syncWithoutDetaching([
                               $params["size"] => [
+                                  'status' => $status,
                                   'avail_unit_measure' => $availUnit - $params["unit_measure"]
                               ]
                           ]);

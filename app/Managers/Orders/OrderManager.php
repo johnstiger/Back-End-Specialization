@@ -40,7 +40,7 @@ class OrderManager
                 $response["message"] = "There is no order to update";
                 $response["error"] = true;
             }else{
-                $order->update(['status'=>config('const.order.confirmed')]);
+                $order->update(['status'=>config('const.order.confirmed'),'total'=>$request[0]['total']]);
                 $order->created_at = Carbon::now();
                 $order->save();
                 foreach ($order->products as $product) {
@@ -72,7 +72,7 @@ class OrderManager
                 $response["message"] = "There is no order to update";
                 $response["error"] = true;
             }else{
-                $order->update(['status'=>config('const.order.declined')]);
+                $order->update(['status'=>config('const.order.declined'),'total'=>$request[0]['total']]);
                 $response["message"] = "Order Declined";
                 $response["error"] = false;
             }
@@ -83,8 +83,6 @@ class OrderManager
 
         return $response;
     }
-
-
 
     public function create()
     {
@@ -149,6 +147,30 @@ class OrderManager
 
         return $response;
     }
+
+
+    public function addTrackingCode($request, $customer)
+    {
+        $rules = $this->check->trackingValidation($request);
+        $response = [];
+
+        if($rules->fails()){
+            $response['message'] = $rules->errors();
+            $response['error'] = true;
+        }else{
+            $order = $customer->orders->where('id',$request['order_id'])->first();
+            $order->update(['tracking_code'=>$request['tracking_code']]);
+            $order->delivery()->create([
+                'delivery_date' => Carbon::now()->addDays(7),
+                'name_of_deliver_company' => $request['name_of_deliver_company'],
+            ]);
+            $response['message'] = 'Successfully Added Tracking Code';
+            $response['error'] = false;
+        }
+
+        return $response;
+    }
+
 }
 
 

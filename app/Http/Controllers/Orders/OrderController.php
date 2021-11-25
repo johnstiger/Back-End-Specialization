@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Orders\OrderManager;
-use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -47,6 +45,12 @@ class OrderController extends Controller
         return $this->manager->orderConfirmed($request, $user);
     }
 
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function declinedOrder(Request $request, User $user)
     {
         return $this->manager->declinedOrder($request, $user);
@@ -86,28 +90,6 @@ class OrderController extends Controller
         return response()->json($this->manager->show());
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -115,8 +97,8 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function cancel()
+    public function addingTrackingCode(Request $request, User $user)
     {
-        //
+        return response()->json($this->manager->addTrackingCode($request, $user));
     }
 }

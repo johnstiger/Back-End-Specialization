@@ -13,7 +13,8 @@ class Order extends Model
         'user_id',
         'total',
         'status',
-        'payment_method'
+        'payment_method',
+        'tracking_code'
     ];
 
     public function customer()
@@ -24,5 +25,10 @@ class Order extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class)->with('sizes')->withPivot(["order_id","product_id","quantity","subtotal","size_id"]);
+    }
+
+    public function delivery()
+    {
+        return $this->hasOne(Delivery::class, 'order_id','id');
     }
 }

@@ -48,7 +48,7 @@ class DataServices
 
     public function pendingOrders()
     {
-        return Order::where('status',config('const.order.pending'))->with(['customer','products'])->get();
+        return Order::where('status',config('const.order.pending'))->orWhere('tracking_code',null)->with(['customer','products'])->get();
     }
 
     public function countCostumers()

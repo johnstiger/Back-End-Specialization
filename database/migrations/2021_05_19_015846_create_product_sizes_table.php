@@ -19,6 +19,7 @@ class CreateProductSizesTable extends Migration
             $table->unsignedBigInteger('sizes_id');
             $table->integer('unit_measure');
             $table->integer('avail_unit_measure');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

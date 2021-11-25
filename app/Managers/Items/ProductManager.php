@@ -42,7 +42,7 @@ class ProductManager
                 $product->save();
             }
         }
-        $availableProducts = Product::where('status',1)->with(['category','sizes'])->get();
+        $availableProducts = Product::where('status',config('const.product.available'))->with(['category','sizes'])->get();
         return $this->template->index($availableProducts);
     }
 

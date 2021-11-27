@@ -23,6 +23,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/home','Items\ProductController@index');
 Route::get('/sales','Items\SalesItemController@index');
 Route::get('/dagom/{product}','Items\ProductController@show');
+Route::get('/categories','Items\CategoryController@index');
 
 Route::namespace('Guest')->group(function(){
     // Unauthorized

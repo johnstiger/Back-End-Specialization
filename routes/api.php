@@ -24,6 +24,7 @@ Route::get('/home','Items\ProductController@index');
 Route::get('/sales','Items\SalesItemController@index');
 Route::get('/dagom/{product}','Items\ProductController@show');
 Route::get('/categories','Items\CategoryController@index');
+Route::get('/category/{category}','Items\CategoryController@getCategory');
 
 Route::namespace('Guest')->group(function(){
     // Unauthorized

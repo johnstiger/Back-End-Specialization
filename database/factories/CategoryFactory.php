@@ -23,7 +23,7 @@ class CategoryFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->randomElement($array = array ('Upper Collections',
-                'Lower Collections','Second Collections','Brand New Collections')),
+                'Lower Collections','Second Collections','Summer Collections')),
         ];
     }
 }

@@ -21,6 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // Showing Products
 Route::get('/home','Items\ProductController@index');
+Route::get('/sales','Items\SalesItemController@index');
 Route::get('/dagom/{product}','Items\ProductController@show');
 Route::get('/categories','Items\CategoryController@index');
 
@@ -118,6 +119,7 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::put('/update/{product}','ProductController@update');
             Route::delete('/delete/{product}','ProductController@destroy');
             Route::get('/sizes','ProductController@sizes');
+            Route::put('/notAvailable/{product}','ProductController@notAvailable');
         });
         Route::prefix('salesItem')->group(function(){
             Route::get('/', 'SalesItemController@index');
@@ -133,6 +135,7 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::get('/pending','OrderController@pendingOrders');
             Route::put('/confirmed/{user}','OrderController@confirmOrder');
             Route::put('/declined/{user}','OrderController@declinedOrder');
+            Route::post('/tracking/{user}','OrderController@addingTrackingCode');
         });
     });
 });

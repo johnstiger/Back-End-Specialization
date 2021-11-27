@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->float('total')->default('0');
             $table->integer('status')->default('0');
+            $table->longText('tracking_code')->nullable();
             $table->string('payment_method')->default("not yet set");
             $table->softDeletes();
             $table->timestamps();

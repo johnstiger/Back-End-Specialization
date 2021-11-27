@@ -35,7 +35,7 @@ class Product extends Model
 
     public function sizes()
     {
-        return $this->belongsToMany(Sizes::class)->withPivot(['unit_measure','avail_unit_measure']);
+        return $this->belongsToMany(Sizes::class)->withPivot(['unit_measure','avail_unit_measure','status']);
     }
 
     public function orders()

@@ -25,6 +25,7 @@ class CartManager
         $validation = $this->check->validation($request);
         $response = [];
         $customer = Auth::user();
+        
 
         try {
             if($validation->fails()){
@@ -32,6 +33,7 @@ class CartManager
                 $response["error"] = true;
             }else{
                 $item = $request->all();
+                $item['quantity']= $item['quantity']['unit_measure'];
                 $customer->cart->products()->syncWithoutDetaching([
                     $product->id=>[
                         'quantity'=>$item["quantity"],

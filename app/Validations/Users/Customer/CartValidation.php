@@ -9,7 +9,7 @@ class CartValidation
     public function validation($request)
     {
         $validation = Validator::make($request->all(),[
-            'quantity' => 'required',
+            'quantity' => 'required|min:1',
         ]);
 
         return $validation;

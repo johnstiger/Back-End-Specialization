@@ -21,7 +21,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // Showing Products
 Route::get('/home','Items\ProductController@index');
+Route::get('/sales','Items\SalesItemController@index');
 Route::get('/dagom/{product}','Items\ProductController@show');
+Route::get('/categories','Items\CategoryController@index');
+Route::get('/category/{category}','Items\CategoryController@getCategory');
 
 Route::namespace('Guest')->group(function(){
     // Unauthorized
@@ -29,8 +32,8 @@ Route::namespace('Guest')->group(function(){
     Route::get('/NotVerified','VerificationController@notVerifyEmail')->name('verification.notice');
 
     //LogIn and Register Verification
-    Route::post('/login','AuthController@login');
-    Route::post('/register','AuthController@register')->name('verification.send');
+    Route::post('/login','AuthController@login')->middleware('cors');
+    Route::post('/register','AuthController@register')->middleware('cors')->name('verification.send');
     Route::get('/email/verification/{id}/{token}','VerificationController@verifyEmail')->name('verified');
 
     //Forgot Password using Verification Code
@@ -68,7 +71,7 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::get('/admins','AdminController@index');
                 Route::get('/show/{admin}','AdminController@show');
                 Route::post('/register','AdminController@store');
-                Route::put('/update/{user}','AdminController@update');
+                Route::post('/update/{user}','AdminController@update');
                 Route::post('/saveImage/{user}','AdminController@savingImage');
                 Route::put('/resetPassword/{user}','AdminController@updatePassword');
                 Route::delete('/delete/{user}','AdminController@destroy');
@@ -116,15 +119,27 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::post('/newProduct','ProductController@store');
             Route::put('/update/{product}','ProductController@update');
             Route::delete('/delete/{product}','ProductController@destroy');
+            Route::get('/sizes','ProductController@sizes');
+            Route::put('/notAvailable/{product}','ProductController@notAvailable');
+        });
+        Route::prefix('salesItem')->group(function(){
+            Route::get('/', 'SalesItemController@index');
+            Route::get('/{salesItem}','SalesItemController@show');
+            Route::post('/{product}','SalesItemController@store');
+            Route::delete('/remove/{salesItem}','SalesItemController@destroy');
+            Route::put('/update/{salesItem}','SalesItemController@update');
         });
     });
     Route::namespace('Orders')->middleware('admin')->group(function(){
         Route::prefix('order')->group(function(){
             Route::get('/','OrderController@index');
             Route::get('/pending','OrderController@pendingOrders');
-            Route::put('/confirmed','OrderController@confirmOrder');
+            Route::put('/confirmed/{user}','OrderController@confirmOrder');
+            Route::put('/declined/{user}','OrderController@declinedOrder');
+            Route::post('/tracking/{user}','OrderController@addingTrackingCode');
         });
     });
 });
 
 
+Route::get('/dashboard','User\Admin\DashboardController@ordersAnnually');

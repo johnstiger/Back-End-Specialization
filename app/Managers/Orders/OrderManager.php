@@ -5,6 +5,7 @@ namespace App\Managers\Orders;
 use App\Managers\Template\Template;
 use App\Services\Data\DataServices;
 use App\Validations\Orders\OrderValidation;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class OrderManager
@@ -30,17 +31,49 @@ class OrderManager
         return $this->template->index($this->service->pendingOrders());
     }
 
-    public function orderConfirmed($id, $customer)
+    public function orderConfirmed($request, $customer)
     {
         try {
             $response = [];
-            $order = $customer->orders->where('id',$id)->first();
+            $order = $customer->orders->where('id',$request[0]['id'])->first();
             if(!$order){
                 $response["message"] = "There is no order to update";
                 $response["error"] = true;
             }else{
-                $order->update(['status'=>1]);
+                $order->update(['status'=>config('const.order.confirmed'),'total'=>$request[0]['total']]);
+                $order->created_at = Carbon::now();
+                $order->save();
+                foreach ($order->products as $product) {
+                    foreach ($product->sizes as $size) {
+                        $product->sizes()->syncWithoutDetaching([
+                            $size["id"] => [
+                                'avail_unit_measure' => $size['pivot']["avail_unit_measure"] - $product['pivot']['quantity'],
+                            ]
+                        ]);
+                    }
+                }
                 $response["message"] = "Order Confirmed";
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
+    }
+
+    public function declinedOrder($request, $customer)
+    {
+        try {
+            $response = [];
+            $order = $customer->orders->where('id',$request[0]['id'])->first();
+            if(!$order){
+                $response["message"] = "There is no order to update";
+                $response["error"] = true;
+            }else{
+                $order->update(['status'=>config('const.order.declined'),'total'=>$request[0]['total']]);
+                $response["message"] = "Order Declined";
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
@@ -114,6 +147,30 @@ class OrderManager
 
         return $response;
     }
+
+
+    public function addTrackingCode($request, $customer)
+    {
+        $rules = $this->check->trackingValidation($request);
+        $response = [];
+
+        if($rules->fails()){
+            $response['message'] = $rules->errors();
+            $response['error'] = true;
+        }else{
+            $order = $customer->orders->where('id',$request['order_id'])->first();
+            $order->update(['tracking_code'=>$request['tracking_code']]);
+            $order->delivery()->create([
+                'delivery_date' => Carbon::now()->addDays(7),
+                'name_of_deliver_company' => $request['name_of_deliver_company'],
+            ]);
+            $response['message'] = 'Successfully Added Tracking Code';
+            $response['error'] = false;
+        }
+
+        return $response;
+    }
+
 }
 
 

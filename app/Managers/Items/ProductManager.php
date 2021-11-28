@@ -27,8 +27,28 @@ class ProductManager
      */
     public function index()
     {
-        // return $this->template->index(Category::with('products')->get());
-        return $this->template->index(Product::with(['category','sizes'])->get());
+        $products = Product::with(['category','sizes'])->get();
+        foreach($products as $product){
+            $units = 0;
+            if(!empty($product['sizes'])){
+                foreach ($product['sizes'] as $size) {
+                    if($size['pivot']['avail_unit_measure'] > 0){
+                        $units += $size['pivot']['avail_unit_measure'];
+                    }
+                }
+            }
+            if($units == 0){
+                $product->status = 0;
+                $product->save();
+            }
+        }
+        $availableProducts = Product::where('status',config('const.product.available'))->with(['category','sizes'])->get();
+        return $this->template->index($availableProducts);
+    }
+
+    public function getSizes()
+    {
+        return $this->template->index($this->services->getSizes());
     }
 
 
@@ -51,16 +71,24 @@ class ProductManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             }else{
-                $product = $request->only(['name','category_id', 'price','status','description']);
-                // $product = $request->only(['name','category_id','part', 'price','status','description','image']);
 
+                $product = $request->only(['name','category_id', 'price','status','description']);
+                $product['image'] = $request['fileSource'];
                 $newProduct = Product::create($product);
+                foreach($request->sizes as $data){
                     $newProduct->sizes()->syncWithoutDetaching([
-                        $request->sizes => [
-                            'unit_measure' => $request["unit_measure"],
-                            'avail_unit_measure' => $request["unit_measure"]
+                        $data["size_id"] => [
+                            'unit_measure' => $data["unit_measure"],
+                            'avail_unit_measure' => $data["unit_measure"]
                         ]
                     ]);
+                }
+                    // $newProduct->sizes()->syncWithoutDetaching([
+                    //     $request->sizes => [
+                    //         'unit_measure' => $request["unit_measure"],
+                    //         'avail_unit_measure' => $request["unit_measure"]
+                    //     ]
+                    // ]);
 
                 $response["message"] = "Successfully Added ".$newProduct->name." in Product!";
                 $response["data"] = $newProduct;
@@ -147,24 +175,38 @@ class ProductManager
                         'category_id'
                     ]
                 );
-                if($request->hasFile('image')){
-                    $item["image"] = $this->uploadImage($request->file('image'));
-                }
-                $product->update($item);
-                $product->sizes()->syncWithoutDetaching([
-                    $request->sizes => [
-                        'unit_measure' => $request["unit_measure"],
-                        'avail_unit_measure' => $request["unit_measure"]
-                    ]
-                ]);
-                // foreach($request->sizes as $data){
-                //     $product->sizes()->syncWithoutDetaching([
-                //         $data["size_id"] => [
-                //             'unit_measure' => $data["unit_measure"],
-                //             'avail_unit_measure' => $data["unit_measure"]
-                //         ]
-                //     ]);
+                $item['image'] = $request['fileSource'];
+
+                // if($request->hasFile('image')){
+                //     $item["image"] = $this->uploadImage($request->file('image'));
                 // }
+
+                $product->update($item);
+
+                // $product->sizes()->syncWithoutDetaching([
+                //     $request->sizes => [
+                //         'unit_measure' => $request["unit_measure"],
+                //         'avail_unit_measure' => $request["unit_measure"]
+                //     ]
+                // ]);
+
+                if(!empty($request['deletedSizes'])){
+                    foreach($request['deletedSizes'] as $item){
+                        $product->sizes()->where('id',$item['id'])->wherePivot('sizes_id',$item['id'])->detach();
+                    }
+                }
+
+                foreach($request->sizes as $data){
+                    $status = $data['pivot']['avail_unit_measure'] > 0 ? true : false;
+                    $product->sizes()->syncWithoutDetaching([
+                        $data['pivot']["sizes_id"] => [
+                            'status' => $status,
+                            'unit_measure' => $data['pivot']["avail_unit_measure"],
+                            'avail_unit_measure' => $data['pivot']["avail_unit_measure"]
+                        ]
+                    ]);
+                }
+
                 $response["message"] = "Successfully Updated ".$product->name;
                 $response["data"] = $product;
                 $response["error"] = false;
@@ -206,6 +248,7 @@ class ProductManager
         // $request->move($path,$request->getClientOriginalName());
         // return $path;
     }
+
 }
 
 

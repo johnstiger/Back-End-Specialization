@@ -6,15 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model
+class OnsalesProduct extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
-        'name'
+        "desciption",
+        "percent_off",
+        "unit_measure",
+        "status",
+        "size",
+        "total"
     ];
 
     public function products()
     {
-        return $this->hasMany(Product::class)->where('status',1)->with('sizes');
+        return $this->belongsTo(Product::class);
     }
+
+
 }

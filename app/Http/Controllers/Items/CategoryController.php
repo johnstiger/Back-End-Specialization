@@ -71,4 +71,14 @@ class CategoryController extends Controller
     }
 
 
+    /**
+     * Customer Side
+     */
+
+     public function getCategory(Category $category)
+     {
+         return response()->json($this->manager->getCategoryWithProducts($category));
+     }
+
+
 }

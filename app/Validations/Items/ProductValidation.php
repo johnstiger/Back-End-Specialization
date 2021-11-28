@@ -16,9 +16,10 @@ class ProductValidation
     {
         $rules = Validator::make($request->all(),[
             'name' => 'required',
-            'unit_measure' => 'required|numeric',
+            // 'unit_measure' => 'required|numeric',
             'price' => 'required|numeric',
             'category_id' => 'required',
+            'image' => 'required',
             // 'part' => 'required',
             'sizes' => 'required',
             // 'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
@@ -41,6 +42,20 @@ class ProductValidation
 
         return $rules;
     }
+
+    public function salesItemValidation($request)
+    {
+        $rules = Validator::make($request,[
+            'percent_off' => 'required',
+            'promo_type' => 'required',
+            'unit_measure' => 'required',
+            'description'  => 'required',
+            'size'         => 'required',
+        ]);
+
+        return $rules;
+    }
+
 }
 
 

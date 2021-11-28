@@ -22,6 +22,11 @@ class DashboardController extends Controller
         return response()->json($this->manager->index());
     }
 
+    public function ordersAnnually()
+    {
+        return response()->json($this->manager->ordersAnnually());
+    }
+
 
 
 }

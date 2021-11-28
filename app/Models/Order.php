@@ -13,16 +13,22 @@ class Order extends Model
         'user_id',
         'total',
         'status',
-        'payment_method'
+        'payment_method',
+        'tracking_code'
     ];
 
-    public function customers()
+    public function customer()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsTo(User::class, 'user_id','id');
     }
 
     public function products()
     {
-        return $this->belongsToMany(Product::class)->withPivot(["order_id","product_id","quantity","subtotal"]);
+        return $this->belongsToMany(Product::class)->with('sizes')->withPivot(["order_id","product_id","quantity","subtotal","size_id"]);
+    }
+
+    public function delivery()
+    {
+        return $this->hasOne(Delivery::class, 'order_id','id');
     }
 }

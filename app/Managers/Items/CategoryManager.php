@@ -139,6 +139,11 @@ class CategoryManager
     }
 
 
+    public function getCategoryWithProducts($category)
+    {
+        return $this->template->index($this->services->getCategoryWithProducts($category->id));
+    }
+
 }
 
 

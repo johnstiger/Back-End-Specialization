@@ -13,13 +13,16 @@ class SalesItem extends Model
         'description',
         'percent_off',
         'unit_measure',
+        'promo_type',
         'status',
-        'total',
+        'price',
+        'size',
+        'total'
     ];
 
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsTo(Product::class, 'product_id', 'id')->with(['category','sizes']);
     }
 
 

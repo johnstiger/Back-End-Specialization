@@ -19,9 +19,13 @@ class CreateSalesItemsTable extends Migration
             $table->longText('description')->nullable();
             $table->string('percent_off');
             $table->integer('unit_measure');
-            $table->boolean('status');
+            $table->string('promo_type');
+            $table->string('size');
+            $table->boolean('status')->default(true);
+            $table->integer('price');
             $table->integer('total');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

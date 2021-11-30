@@ -86,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function(){
             });
             Route::prefix('customer')->group(function(){
                 Route::get('/myProfile/{customer}','CustomerController@show');
+                Route::get('/myProfile', 'CustomerController@showAll');
                 Route::put('/information','CustomerController@update');
                 Route::post('/address/{customer}','CustomerController@address');
             });

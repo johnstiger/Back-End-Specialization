@@ -38,7 +38,7 @@ class DataServices
 
     public function categoriesProducts()
     {
-        return Category::with('products')->get();
+        return Category::with('products','products.sizes')->get();
     }
 
     public function Orders()
@@ -48,7 +48,26 @@ class DataServices
 
     public function pendingOrders()
     {
-        return Order::where('status',config('const.order.pending'))->orWhere('tracking_code',null)->with(['customer','products'])->get();
+        return Order::where('status',config('const.order.pending'))
+        ->orWhere('tracking_code',null)->where('status',config('const.order.confirmed'))
+        ->with(['customer','products'])->get();
+    }
+
+    public function getPendingNotification()
+    {
+        return Order::where('view',0)->get();
+    }
+
+    public function updateViewPending()
+    {
+        $update = \DB::table('orders')->update(
+            ['view'=>true]
+        );
+        $data = [];
+        if($update == 0){
+            $data = Order::first();
+        }
+        return $data;
     }
 
     public function countCostumers()
@@ -68,7 +87,12 @@ class DataServices
 
     public function countSales()
     {
-        return Order::where('status',config('const.order.confirmed'))->count();
+        $orders = Order::where('status',config('const.order.confirmed'))->get();
+        $totalMoney = 0;
+        foreach ($orders as $order) {
+            $totalMoney += $order->total;
+        }
+        return $totalMoney;
     }
 
     public function products()
@@ -98,7 +122,7 @@ class DataServices
 
     public function getCategoryWithProducts($id)
     {
-        return Category::where('id',$id)->with('products')->get();
+        return Category::where('id',$id)->with('products','products.sizes')->get();
     }
 
 }

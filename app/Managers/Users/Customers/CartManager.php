@@ -136,6 +136,14 @@ class CartManager
         return $response;
     }
 
+
+    public function countProducts()
+    {
+        $user = Auth::user();
+        return $user->cart->products()->count();
+    }
+
+
 }
 
 

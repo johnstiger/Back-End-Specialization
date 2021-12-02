@@ -35,6 +35,17 @@ class OrderController extends Controller
         return $this->manager->pendingOrders();
     }
 
+
+    public function getNotification()
+    {
+        return response()->json($this->manager->notification());
+    }
+
+    public function viewPendingOrders()
+    {
+        return response()->json($this->manager->updatePendingOrder());
+    }
+
     /**
      * Display a listing of the resource.
      *

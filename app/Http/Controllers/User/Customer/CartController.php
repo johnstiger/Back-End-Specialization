@@ -54,4 +54,9 @@ class CartController extends Controller
     {
         return response()->json($this->manager->destroy($product));
     }
+
+    public function countProductsInCart()
+    {
+        return response()->json($this->manager->countProducts());
+    }
 }

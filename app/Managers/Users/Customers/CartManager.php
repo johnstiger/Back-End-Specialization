@@ -33,11 +33,12 @@ class CartManager
                 $response["error"] = true;
             }else{
                 $item = $request->all();
-                $item['quantity']= $item['quantity']['unit_measure'];
+                // $item['quantity']= $item['quantity']['unit_measure'];
                 $customer->cart->products()->syncWithoutDetaching([
                     $product->id=>[
-                        'quantity'=>$item["quantity"],
-                        'total'=>$product->price * $item["quantity"],
+                        'quantity'=>$item["unit_measure"],
+                        'sizeId'=>$item["sizeId"],
+                        'total'=>$product->price * $item["unit_measure"],
                         'status'=>1
                         ]
                     ]);

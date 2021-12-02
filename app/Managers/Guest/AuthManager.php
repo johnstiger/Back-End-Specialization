@@ -135,10 +135,9 @@ class AuthManager
     public function SendCode($request)
     {
         $response = [];
-
         $rules = $this->check->sendEmail($request);
 
-        if($rules->fails){
+        if($rules->fails()){
             $response["message"] = $rules->errors();
             $response["error"] = true;
         }else{

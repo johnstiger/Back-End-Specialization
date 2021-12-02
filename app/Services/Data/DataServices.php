@@ -122,7 +122,7 @@ class DataServices
 
     public function getCategoryWithProducts($id)
     {
-        return Category::where('id',$id)->with('products')->get();
+        return Category::where('id',$id)->with('products','products.sizes')->get();
     }
 
 }

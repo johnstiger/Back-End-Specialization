@@ -25,6 +25,11 @@ class CategoryController extends Controller
         return response()->json($this->manager->index());
     }
 
+    public function getCategories()
+    {
+        return response()->json($this->manager->index());
+    }
+
     /*
     * Adding new Category
     * return json type result

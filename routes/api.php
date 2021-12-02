@@ -23,8 +23,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/home','Items\ProductController@index');
 Route::get('/sales','Items\SalesItemController@index');
 Route::get('/dagom/{product}','Items\ProductController@show');
-Route::get('/categories','Items\CategoryController@index');
-Route::get('/category/{category}','Items\CategoryController@getCategory');
+Route::get('/allCategory','Items\CategoryController@index');
+Route::get('/getCategory/{category}','Items\CategoryController@getCategory');
 
 Route::namespace('Guest')->group(function(){
     // Unauthorized
@@ -79,6 +79,7 @@ Route::middleware('auth:sanctum')->group(function(){
         });
         Route::namespace('Customer')->middleware('verified')->group(function(){
             Route::prefix('cart')->group(function(){
+                Route::get('/count','CartController@countProductsInCart');
                 Route::get('/show','CartController@show');
                 Route::post('/add/{product}','CartController@store');
                 Route::put('/update/{product}','CartController@update');
@@ -105,7 +106,7 @@ Route::middleware('auth:sanctum')->group(function(){
     });
     Route::namespace('Items')->middleware('admin')->group(function(){
         Route::prefix('category')->group(function(){
-            Route::get('/all','CategoryController@index');
+            Route::get('/getProducts','CategoryController@getCategories');
             Route::get('/show/{category}','CategoryController@show');
             Route::post('/newCategory','CategoryController@store');
             Route::post('/newCategoryProduct/{category}','CategoryController@storeProduct');
@@ -134,6 +135,8 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::prefix('order')->group(function(){
             Route::get('/','OrderController@index');
             Route::get('/pending','OrderController@pendingOrders');
+            Route::get('/notification','OrderController@getNotification');
+            Route::get('/updateView','OrderController@viewPendingOrders');
             Route::put('/confirmed/{user}','OrderController@confirmOrder');
             Route::put('/declined/{user}','OrderController@declinedOrder');
             Route::post('/tracking/{user}','OrderController@addingTrackingCode');

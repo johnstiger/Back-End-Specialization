@@ -115,6 +115,20 @@ class SalesItemManager
                 $response["error"] = true;
             }else{
                 if($salesItem){
+                    $size = $salesItem->products->sizes->first();
+                    if($salesItem->unit_measure > $request['unit_measure']){
+                        $salesItem->products->sizes()->syncWithoutDetaching([
+                            $size->id=>[
+                                'avail_unit_measure' => $size->avail_unit_measure + $request['unit_measure']
+                            ]
+                        ]);
+                    }else if ($salesItem->unit_measure < $request['unit_measure']){
+                        $salesItem->products->sizes()->syncWithoutDetaching([
+                            $size->id=>[
+                                'avail_unit_measure' => $size->avail_unit_measure - $request['unit_measure']
+                            ]
+                        ]);
+                    }
                    $salesItem->update($request->all());
                    $response["message"] = "Successfully updated";
                    $response["error"] = false;

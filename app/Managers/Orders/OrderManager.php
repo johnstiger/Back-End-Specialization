@@ -31,6 +31,16 @@ class OrderManager
         return $this->template->index($this->service->pendingOrders());
     }
 
+    public function notification()
+    {
+        return $this->template->index($this->service->getPendingNotification());
+    }
+
+    public function updatePendingOrder()
+    {
+        return $this->template->show($this->service->updateViewPending());
+    }
+
     public function orderConfirmed($request, $customer)
     {
         try {

@@ -26,7 +26,22 @@ class CustomerManager
      */
     public function show($customer)
     {
-        return $this->template->show($customer);
+        $response = [];
+        try {
+            if(!$customer){
+                $response["message"] = "No data found!";
+            }else{
+                $response["message"] = "Success";
+                $response["data"] = $customer;
+                $response["address"] = $customer->addresses->where('active',1)->first();
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
     }
 
     /**

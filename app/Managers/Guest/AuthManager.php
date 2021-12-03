@@ -162,8 +162,9 @@ class AuthManager
                             'code' => $code
                         ]);
                     }
-                    $response["message"] = "We sent reset password link in your Email";
+                    $response["message"] = "We sent code in your Email";
                     $response["error"] = false;
+                    $response["data"] = $user;
                 }
             } catch (\Exception $error) {
                 $response["message"] = "Error ".$error->getMessage();
@@ -178,9 +179,10 @@ class AuthManager
     public function VerifyCode($request, $user)
     {
         $response = [];
-        $time = $user->verificationCode->created_at->diff(now())->format('%i');
+        $time = $user->verificationCode->updated_at->diff(now())->format('%i');
         $code = $user->verificationCode->code;
-        if($time > 5){
+
+        if($time > 10){
             $response["message"] = "This code is already expired!";
             $response["error"] = true;
         }else{
@@ -206,7 +208,8 @@ class AuthManager
             $response["message"] = $validation->errors();
             $response["error"] = true;
         }else{
-            $user->update($request->all());
+            $newPassword = Hash::make($request->password);
+            $user->update(['password'=>$newPassword]);
             $response["message"] = "Successfully Reseting Your Password";
             $response["error"] = false;
         }

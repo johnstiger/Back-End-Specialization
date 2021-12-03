@@ -37,6 +37,14 @@ class CustomerController extends Controller
         return response()->json($this->manager->update($request));
     }
 
+
+    public function resetPassword(Request $request)
+    {
+        return response()->json($this->manager->resetPassword($request));
+    }
+
+
+
    /*
     * Adding new Address of the Customer
     * return json type result

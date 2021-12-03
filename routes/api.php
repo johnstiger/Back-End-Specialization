@@ -89,6 +89,7 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::get('/myProfile/{customer}','CustomerController@show');
                 Route::put('/information','CustomerController@update');
                 Route::post('/address/{customer}','CustomerController@address');
+                Route::post('/reset-password','CustomerController@resetPassword');
             });
             Route::prefix('comment')->group(function(){
                 Route::post('/create/{product}','CommentController@store');

@@ -72,7 +72,7 @@ class CartManager
             }
             else{
                 $response["message"] = "Success";
-                $response["data"] = $customer->cart->products;
+                $response["data"] = $customer->cart->products()->with('sizes')->get();
                 $response["error"] = false;
             }
         } catch (\Exception $e) {

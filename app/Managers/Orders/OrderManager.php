@@ -152,7 +152,7 @@ class OrderManager
         if($user->orders->isEmpty()){
             $response = $this->template->NoData();
         }else{
-            $response = $this->template->show($user->orders()->first()->with('products')->get());
+            $response = $this->template->show($user->orders()->with('products')->get());
         }
 
         return $response;

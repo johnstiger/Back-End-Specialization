@@ -141,7 +141,25 @@ class CategoryManager
 
     public function getCategoryWithProducts($category)
     {
-        return $this->template->index($this->services->getCategoryWithProducts($category->id));
+        $response = [];
+        try {
+
+            $productsCollection = collect([]);
+            $category = Category::with('products', 'products.sizes')->find($category->id);
+
+            $category->products
+                ->filter(fn ($product) => $product->status == 1)
+                ->each(fn ($product) => $productsCollection->push($product));
+            $response['message'] = "Success";
+            $response["products"] = $productsCollection;
+            $response["category"] = $category->name;
+            $response["error"] = false;
+        } catch (\Exception $error) {
+            $response["message"] = "Error ".$error->getMessage();
+            $response["error"] = true;
+        }
+
+        return $response;
     }
 
 }

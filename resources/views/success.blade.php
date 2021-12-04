@@ -37,7 +37,7 @@
 
             <p>Well Done!, you successfully verified your email..</p>
 
-            <a type="button" href="dev-santafe-dagom.herokuapp.com/login" class="btn btn-primary" id="alertMO">Moving On</a>
+            <a type="button" href="http://dev-santafe-dagom.herokuapp.com/login" class="btn btn-primary" id="alertMO">Moving On</a>
 
           </div>
 

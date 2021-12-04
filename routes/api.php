@@ -95,6 +95,9 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::post('/create/{product}','CommentController@store');
                 Route::post('/delete/{product}','CommentController@destroy');
             });
+            Route::prefix('orders')->group(function() {
+                Route::get('/', 'CustomerController@orders');
+            });
         });
     });
     Route::namespace('Orders')->group(function(){

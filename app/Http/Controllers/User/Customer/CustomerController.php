@@ -54,4 +54,12 @@ class CustomerController extends Controller
         return response()->json($this->manager->address($request));
     }
 
+    /**
+     * Orders resources
+     * @param Request $request
+     * @return Response $response
+     */
+    public function orders(Request $request) {
+        return response()->json($this->manager->orders($request));
+    }
 }

@@ -120,11 +120,6 @@ class DataServices
         return Sizes::all();
     }
 
-    public function getCategoryWithProducts($id)
-    {
-        return Category::where('id',$id)->with('products','products.sizes')->get();
-    }
-
 }
 
 

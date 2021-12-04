@@ -5,16 +5,19 @@ namespace App\Managers\Users\Customers;
 use App\Managers\Template\Template;
 use App\Validations\Users\Customer\CustomerValidation;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Data\DataServices;
 
 class CustomerManager
 {
     protected $template;
     protected $check;
+    protected $dataServices;
 
-    public function __construct(Template $template, CustomerValidation $check)
+    public function __construct(Template $template, CustomerValidation $check, DataServices $dataServices)
     {
         $this->template = $template;
         $this->check = $check;
+        $this->dataServices = $dataServices;
     }
 
     /**
@@ -90,7 +93,10 @@ class CustomerManager
         return $response;
     }
 
+    public function orders($request)
+    {
+        $orders  = $this->dataServices->getOrdersByUser($request);
+        return $this->template->index($orders);
+    }
 }
-
-
 ?>

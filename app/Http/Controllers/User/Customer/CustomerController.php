@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Users\Customers\CustomerManager;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -74,4 +75,11 @@ class CustomerController extends Controller
     {
         return response()->json($this->manager->allReceivedOrders());
     }
+
+    public function removeItem(Request $request, Order $order)
+    {
+        return response()->json($this->manager->removeItemOrder($request,$order));
+    }
+
+
 }

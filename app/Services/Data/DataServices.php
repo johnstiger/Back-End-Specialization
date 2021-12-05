@@ -121,7 +121,7 @@ class DataServices
     }
 
     public function getOrdersByUser($data) {
-        return Order::orderBy('created_at', 'desc')->where('user_id', $data->user_id)->with('products', 'delivery')->get();
+        return Order::orderBy('created_at', 'desc')->where('user_id', $data->user_id)->where('status','<=',2)->with('products', 'delivery')->get();
     }
 
 }

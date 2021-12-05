@@ -157,5 +157,20 @@ class CustomerManager
         $order = Order::where('status',3)->with('products','delivery')->where('user_id',$user->id)->get();
         return $order;
     }
+
+
+    public function removeItemOrder($request, $orderId)
+    {
+        $response = [];
+        $user = Auth::user();
+        $order = $user->orders()->where('id',$orderId->id)->first();
+        $order->products()->detach($request["data"]);
+        $response["message"] = "Successfully removed Item";
+        $response["error"] = false;
+
+        return $response;
+    }
+
+
 }
 ?>

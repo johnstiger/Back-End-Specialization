@@ -192,7 +192,7 @@ class ProductManager
 
                 if(!empty($request['deletedSizes'])){
                     foreach($request['deletedSizes'] as $item){
-                        $product->sizes()->where('id',$item['id'])->wherePivot('sizes_id',$item['id'])->detach();
+                        $product->sizes()->where('id',$item['size_id'])->wherePivot('sizes_id',$item['size_id'])->detach();
                     }
                 }
 

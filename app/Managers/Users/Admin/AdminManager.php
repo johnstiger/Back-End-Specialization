@@ -72,7 +72,7 @@ class AdminManager
                 $customer["password"] = Hash::make($request->password);
                 $customer["is_admin"] = true;
                 $data = User::create($customer);
-                $response["message"] = "Successfully Added ".$data->firstname." ".$data->lastname."in Admin.";
+                $response["message"] = "Successfully Added ".$data->firstname." ".$data->lastname." in Admin.";
                 $response["data"] = $data;
                 $response["error"] = false;
             }

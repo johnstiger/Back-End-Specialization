@@ -45,14 +45,19 @@ class AuthManager
                     $response["message"] = "Email or Password is incorrect!";
                     $response["error"] = true;
                 }else{
-                    $token = $user->createToken('token');
-                    if(!$user->cart){
-                        $user->cart()->create();
+                    if(!$user->is_admin && $user->email_verified_at == null){
+                        $response["message"] = "Please Verify Your Email First";
+                        $response["error"] = true;
+                    }else{
+                        $token = $user->createToken('token');
+                        if(!$user->cart){
+                            $user->cart()->create();
+                        }
+                        $response["message"] = "Successfully login";
+                        $response["data"] = $user;
+                        $response["access_token"] = $token->plainTextToken;
+                        $response["error"] = false;
                     }
-                    $response["message"] = "Successfully login";
-                    $response["data"] = $user;
-                    $response["access_token"] = $token->plainTextToken;
-                    $response["error"] = false;
                 }
             }
         } catch (\Exception $error) {
@@ -87,7 +92,7 @@ class AuthManager
                 $token = $data->createToken('token');
                 $this->send->sendEmailVerification($data, $token->plainTextToken);
                 $data->cart()->create();
-                $response["message"] = "Please Verify Your Email Account";
+                $response["message"] = "We sent an Email Verification to your email, please verify your email";
                 $response["data"] = $data;
                 $response["access_token"] = $token->plainTextToken;
                 $response["error"] = false;

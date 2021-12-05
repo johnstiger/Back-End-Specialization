@@ -26,7 +26,7 @@ class UserFactory extends Factory
         return [
             'firstname' => "Admin",
             'lastname' => "Admin",
-            'email' => "dagom@gmail.com",
+            'email' => "dagomuser@gmail.com",
             'email_verified_at' => now(),
             'contact_number' => $this->faker->phoneNumber,
             'is_admin' => true,

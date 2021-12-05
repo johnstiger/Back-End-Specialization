@@ -88,7 +88,10 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::prefix('customer')->group(function(){
                 Route::get('/myProfile/{customer}','CustomerController@show');
                 Route::put('/information','CustomerController@update');
+                Route::get('/address/{customerId}/all','CustomerController@findAllCustomerAddress');
+                Route::get('/address/{id}','CustomerController@findById');
                 Route::post('/address/{customer}','CustomerController@address');
+                Route::put('/address/{id}','CustomerController@updateAddress');
                 Route::post('/reset-password','CustomerController@resetPassword');
             });
             Route::prefix('comment')->group(function(){

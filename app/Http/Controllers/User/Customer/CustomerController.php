@@ -45,7 +45,7 @@ class CustomerController extends Controller
 
 
 
-   /*
+    /*
     * Adding new Address of the Customer
     * return json type result
     */
@@ -53,5 +53,23 @@ class CustomerController extends Controller
     {
         return response()->json($this->manager->address($request));
     }
+    /**
+     * Find all customer addresses
+     *
+     * @param mixed $customerId current user id
+     */
+    public function findAllCustomerAddress($customerId)
+    {
+        return response()->json($this->manager->findAllAddress($customerId));
+    }
 
+    public function findById($id)
+    {
+        return response()->json($this->manager->findAddressById($id));
+    }
+
+    public function updateAddress(Request $request, $id)
+    {
+        return response()->json($this->manager->updateAddress($request, $id));
+    }
 }

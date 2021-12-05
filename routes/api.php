@@ -61,7 +61,7 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::post('/category','SearchEngineController@Category');
         });
         Route::get('/user','AuthController@getUser');
-        Route::any('/logout','AuthController@logout');
+        Route::get('/logout','AuthController@logout');
     });
     Route::namespace('User')->group(function(){
         Route::namespace('Admin')->middleware('admin')->group(function(){

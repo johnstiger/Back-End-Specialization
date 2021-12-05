@@ -97,6 +97,7 @@ Route::middleware('auth:sanctum')->group(function(){
             });
             Route::prefix('orders')->group(function() {
                 Route::get('/', 'CustomerController@orders');
+                Route::get('/receivedOrders','CustomerController@showReceivedOrders');
             });
         });
     });
@@ -138,6 +139,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::namespace('Orders')->middleware('admin')->group(function(){
         Route::prefix('order')->group(function(){
             Route::get('/','OrderController@index');
+            Route::get('/received/{order}','OrderController@receivedOrder');
             Route::get('/pending','OrderController@pendingOrders');
             Route::get('/notification','OrderController@getNotification');
             Route::get('/updateView','OrderController@viewPendingOrders');

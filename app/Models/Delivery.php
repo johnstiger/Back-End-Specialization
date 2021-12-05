@@ -14,6 +14,10 @@ class Delivery extends Model
         'name_of_deliver_company',
     ];
 
+    protected $cast = [
+        'delivery_recieve_date' => 'h:m:i',
+    ];
+
     public function orders()
     {
         return $this->hasMany(Order::class);

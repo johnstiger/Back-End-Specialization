@@ -3,6 +3,7 @@
 namespace App\Managers\Users\Customers;
 
 use App\Managers\Template\Template;
+use App\Models\Order;
 use App\Validations\Users\Customer\CustomerValidation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -147,6 +148,14 @@ class CustomerManager
     {
         $orders  = $this->dataServices->getOrdersByUser($request);
         return $this->template->index($orders);
+    }
+
+
+    public function allReceivedOrders()
+    {
+        $user = Auth::user();
+        $order = Order::where('status',3)->with('products','delivery')->where('user_id',$user->id)->get();
+        return $order;
     }
 }
 ?>

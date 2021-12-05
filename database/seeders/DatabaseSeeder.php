@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        \App\Models\User::factory(10)->create();
         // \App\Models\Product::factory(10)->create();
-        // \App\Models\Category::factory(4)->create();
-        // \App\Models\Sizes::factory(6)->create();
+        \App\Models\Category::factory(4)->create();
+        \App\Models\Sizes::factory(6)->create();
         // \App\Models\Order::factory(6)->create();
 
         // $products = Product::all()->map(function ($product) {

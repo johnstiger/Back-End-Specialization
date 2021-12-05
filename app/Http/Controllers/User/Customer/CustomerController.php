@@ -26,6 +26,12 @@ class CustomerController extends Controller
         return response()->json($this->manager->show($customer));
     }
 
+    public function showAll()
+    {
+        // return response()->json($this->manager->show($customer));
+        return User::all();
+    }
+
 
     /*
     * Updating the Specific Customer's

@@ -19,7 +19,8 @@ class Cart extends Model
             [
                 'quantity',
                 'total',
-                'status'
+                'status',
+                'sizeId'
             ]
         );
     }

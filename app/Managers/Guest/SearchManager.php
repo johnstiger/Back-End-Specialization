@@ -70,7 +70,7 @@ class SearchManager
                 $response["message"] = $value->get('data')." is not Found";
                 $response["found"] = false;
             }else{
-                $response["message"] = "Successfully search data";
+                $response["message"] = "Search result for ".$value->get('data');
                 $response["data"] = $request;
                 $response["found"] = true;
                 $response["error"] = false;

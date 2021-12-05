@@ -9,7 +9,8 @@ return [
     'order' => [
         'pending' => 0,
         'confirmed' => 1,
-        'declined' => 2
+        'declined' => 2,
+        "received" => 3
     ],
 
     'product' => [

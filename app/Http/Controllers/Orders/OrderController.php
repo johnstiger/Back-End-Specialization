@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Orders\OrderManager;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -112,4 +113,11 @@ class OrderController extends Controller
     {
         return response()->json($this->manager->addTrackingCode($request, $user));
     }
+
+
+    public function receivedOrder(Order $order)
+    {
+        return response()->json($this->manager->received($order));
+    }
+
 }

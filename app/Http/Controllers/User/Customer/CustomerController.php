@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Managers\Users\Customers\CustomerManager;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,12 @@ class CustomerController extends Controller
     public function show(User $customer)
     {
         return response()->json($this->manager->show($customer));
+    }
+
+    public function showAll()
+    {
+        // return response()->json($this->manager->show($customer));
+        return User::all();
     }
 
 
@@ -71,5 +78,25 @@ class CustomerController extends Controller
     public function updateAddress(Request $request, $id)
     {
         return response()->json($this->manager->updateAddress($request, $id));
+    }
+
+    /**
+     * Orders resources
+     * @param Request $request
+     * @return Response $response
+     */
+    public function orders(Request $request) {
+        return response()->json($this->manager->orders($request));
+    }
+
+
+    public function showReceivedOrders()
+    {
+        return response()->json($this->manager->allReceivedOrders());
+    }
+
+    public function removeItem(Request $request, Order $order)
+    {
+        return response()->json($this->manager->removeItemOrder($request,$order));
     }
 }

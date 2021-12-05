@@ -181,6 +181,18 @@ class OrderManager
         return $response;
     }
 
+
+    public function received($order)
+    {
+        $response = [];
+        $order->update(['status'=>3]);
+        $order->delivery()->update(['delivery_recieve_date'=>Carbon::now()]);
+        $response["message"] = "Successfully Received Order";
+        $response["error"] = false;
+        return $response;
+    }
+
+
 }
 
 

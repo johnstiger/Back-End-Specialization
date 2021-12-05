@@ -26,6 +26,12 @@ class CustomerController extends Controller
         return response()->json($this->manager->show($customer));
     }
 
+    public function showAll()
+    {
+        // return response()->json($this->manager->show($customer));
+        return User::all();
+    }
+
 
     /*
     * Updating the Specific Customer's
@@ -54,4 +60,18 @@ class CustomerController extends Controller
         return response()->json($this->manager->address($request));
     }
 
+    /**
+     * Orders resources
+     * @param Request $request
+     * @return Response $response
+     */
+    public function orders(Request $request) {
+        return response()->json($this->manager->orders($request));
+    }
+
+
+    public function showReceivedOrders()
+    {
+        return response()->json($this->manager->allReceivedOrders());
+    }
 }

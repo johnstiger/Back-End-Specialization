@@ -83,10 +83,11 @@ Route::middleware('auth:sanctum')->group(function(){
                 Route::get('/show','CartController@show');
                 Route::post('/add/{product}','CartController@store');
                 Route::put('/update/{product}','CartController@update');
-                Route::delete('/delete/{product}','CategoryController@destroy');
+                Route::post('/delete/{product}','CartController@destroy');
             });
             Route::prefix('customer')->group(function(){
                 Route::get('/myProfile/{customer}','CustomerController@show');
+                Route::get('/myProfile', 'CustomerController@showAll');
                 Route::put('/information','CustomerController@update');
                 Route::post('/address/{customer}','CustomerController@address');
                 Route::post('/reset-password','CustomerController@resetPassword');
@@ -94,6 +95,10 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::prefix('comment')->group(function(){
                 Route::post('/create/{product}','CommentController@store');
                 Route::post('/delete/{product}','CommentController@destroy');
+            });
+            Route::prefix('orders')->group(function() {
+                Route::get('/', 'CustomerController@orders');
+                Route::get('/receivedOrders','CustomerController@showReceivedOrders');
             });
         });
     });
@@ -135,6 +140,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::namespace('Orders')->middleware('admin')->group(function(){
         Route::prefix('order')->group(function(){
             Route::get('/','OrderController@index');
+            Route::get('/received/{order}','OrderController@receivedOrder');
             Route::get('/pending','OrderController@pendingOrders');
             Route::get('/notification','OrderController@getNotification');
             Route::get('/updateView','OrderController@viewPendingOrders');

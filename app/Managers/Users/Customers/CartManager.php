@@ -25,6 +25,7 @@ class CartManager
         $validation = $this->check->validation($request);
         $response = [];
         $customer = Auth::user();
+        
 
         try {
             if($validation->fails()){
@@ -32,10 +33,12 @@ class CartManager
                 $response["error"] = true;
             }else{
                 $item = $request->all();
+                // $item['quantity']= $item['quantity']['unit_measure'];
                 $customer->cart->products()->syncWithoutDetaching([
                     $product->id=>[
-                        'quantity'=>$item["quantity"],
-                        'total'=>$product->price * $item["quantity"],
+                        'quantity'=>$item["unit_measure"],
+                        'sizeId'=>$item["sizeId"],
+                        'total'=>$product->price * $item["unit_measure"],
                         'status'=>1
                         ]
                     ]);
@@ -69,7 +72,7 @@ class CartManager
             }
             else{
                 $response["message"] = "Success";
-                $response["data"] = $customer->cart->products;
+                $response["data"] = $customer->cart->products()->with('sizes')->get();
                 $response["error"] = false;
             }
         } catch (\Exception $e) {

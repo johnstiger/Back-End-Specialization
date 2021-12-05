@@ -120,8 +120,9 @@ class DataServices
         return Sizes::all();
     }
 
+    public function getOrdersByUser($data) {
+        return Order::orderBy('created_at', 'desc')->where('user_id', $data->user_id)->with('products', 'delivery')->get();
+    }
+
 }
-
-
-
 ?>

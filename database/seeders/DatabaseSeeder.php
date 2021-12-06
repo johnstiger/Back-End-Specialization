@@ -16,38 +16,38 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-        // \App\Models\Product::factory(10)->create();
-        // \App\Models\Category::factory(4)->create();
-        // \App\Models\Sizes::factory(6)->create();
-        // \App\Models\Order::factory(6)->create();
+        \App\Models\User::factory(10)->create();
+        \App\Models\Product::factory(10)->create();
+        \App\Models\Category::factory(4)->create();
+        \App\Models\Sizes::factory(6)->create();
+        \App\Models\Order::factory(6)->create();
 
-        // $products = Product::all()->map(function ($product) {
-        //     return $product->id;
-        // })->all();
-        // $orders = Order::all()->map(function ($order) {
-        //     return $order->id;
-        // })->all();
+        $products = Product::all()->map(function ($product) {
+            return $product->id;
+        })->all();
+        $orders = Order::all()->map(function ($order) {
+            return $order->id;
+        })->all();
 
-        // $sizes = Sizes::all()->map(function ($size) {
-        //     return $size->id;
-        // })->all();
+        $sizes = Sizes::all()->map(function ($size) {
+            return $size->id;
+        })->all();
 
-        // for ($i = 0;$i < 100; $i++) {
-        //     shuffle($orders);
-        //     shuffle($products);
-        //     shuffle($sizes);
-        //     $or = $orders[0];
-        //     $pr = $products[0];
-        //     $sz = $sizes[0];
-        //     \DB::table('order_product')->insert([
-        //         'order_id' => $or,
-        //         'size_id'  => $sz,
-        //         'product_id' => $pr,
-        //         'quantity' => 5,
-        //         'subtotal' => 6,
-        //     ]);
-        // }
+        for ($i = 0;$i < 100; $i++) {
+            shuffle($orders);
+            shuffle($products);
+            shuffle($sizes);
+            $or = $orders[0];
+            $pr = $products[0];
+            $sz = $sizes[0];
+            \DB::table('order_product')->insert([
+                'order_id' => $or,
+                'size_id'  => $sz,
+                'product_id' => $pr,
+                'quantity' => 5,
+                'subtotal' => 6,
+            ]);
+        }
 
         // $orders = Order::where('user_id', 8003)->get('id');
         // $orders->each(function($orderId) {

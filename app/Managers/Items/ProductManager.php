@@ -140,7 +140,7 @@ class ProductManager
     public function show($product)
     {
         $response = $this->template->show($product);
-        $response["comments"] = $product->comments;
+        $response["comments"] = $product->comments()->with('user')->get();
         $response["sizes"] = $product->sizes;
         return $response;
     }

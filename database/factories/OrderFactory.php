@@ -31,7 +31,7 @@ class OrderFactory extends Factory
         return [
             'user_id' => $this->faker->randomElement($userIds->all()),
             'total' => $this->faker->randomElement([5,6,2,7]),
-            'tracking_code' => $this->faker->firstname . ' ' . $this->faker->lastname,
+            'tracking_code' => null,
         ];
     }
 }

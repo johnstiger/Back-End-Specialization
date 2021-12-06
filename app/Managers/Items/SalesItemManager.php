@@ -148,6 +148,12 @@ class SalesItemManager
 
     public function delete($salesItem)
     {
+        $size =  $salesItem->products->sizes->first();
+        $salesItem->products->sizes()->syncWithoutDetaching([
+        $size->id=>[
+            'avail_unit_measure' => $size->pivot->avail_unit_measure + $salesItem->unit_measure
+        ]
+        ]);
         return $this->template->destroy($salesItem);
     }
 

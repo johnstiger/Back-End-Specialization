@@ -3,6 +3,8 @@
 namespace App\Managers\Users\Customers;
 
 use App\Managers\Template\Template;
+use App\Models\Address;
+use App\Models\User;
 use App\Models\Order;
 use App\Validations\Users\Customer\CustomerValidation;
 use Illuminate\Support\Facades\Auth;
@@ -32,16 +34,16 @@ class CustomerManager
     {
         $response = [];
         try {
-            if(!$customer){
+            if (!$customer) {
                 $response["message"] = "No data found!";
-            }else{
+            } else {
                 $response["message"] = "Success";
                 $response["data"] = $customer;
-                $response["address"] = $customer->addresses->where('active',1)->first();
+                $response["address"] = $customer->addresses->where('active', 1)->first();
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
+            $response["message"] = "Error " . $error->getMessage();
             $response["error"] = true;
         }
 
@@ -61,10 +63,10 @@ class CustomerManager
         $rules = $this->check->validation($request);
         $customer = Auth::user();
         try {
-            if($rules->fails()){
+            if ($rules->fails()) {
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
-            }else{
+            } else {
                 $data = $request->all();
                 // if($request->hasFile('image')){
                 //     $data["image"] = $this->url->uploadImage($request->file('image'));
@@ -74,7 +76,7 @@ class CustomerManager
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
+            $response["message"] = "Error " . $error->getMessage();
             $response["error"] = true;
         }
 
@@ -83,36 +85,36 @@ class CustomerManager
 
     public function resetPassword($request)
     {
-       $response = [];
-       $customer = Auth::user();
-       try {
+        $response = [];
+        $customer = Auth::user();
+        try {
             $rules = $this->check->checkCurrentPasswordField($request);
-            if($rules->fails()){
+            if ($rules->fails()) {
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
-            }else{
-                if(Hash::check($request->current_password, $customer->password)){
+            } else {
+                if (Hash::check($request->current_password, $customer->password)) {
                     $validation = $this->check->resetPassword($request);
-                    if($validation->fails()){
+                    if ($validation->fails()) {
                         $response["message"] = $validation->errors();
                         $response["error"] = true;
-                    }else{
+                    } else {
                         $newPassword = Hash::make($request->password);
-                        $customer->update(['password'=>$newPassword]);
+                        $customer->update(['password' => $newPassword]);
                         $response["message"] = "Successfully changed password";
                         $response["error"] = false;
                     }
-                }else{
+                } else {
                     $response["message"] = "Current password doesn't match";
                     $response["error"] = true;
                 }
             }
-       } catch (\Exception $err) {
-            $response["message"] = "Error ".$err->getMessage();
+        } catch (\Exception $err) {
+            $response["message"] = "Error " . $err->getMessage();
             $response["error"] = true;
-       }
+        }
 
-       return $response;
+        return $response;
     }
 
     /**
@@ -128,22 +130,74 @@ class CustomerManager
         $customer = Auth::user();
         $rules = $this->check->addressValidation($request);
         try {
-            if($rules->fails()){
+            if ($rules->fails()) {
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
-            }else{
+            } else {
                 $response["message"] = "Successfully Added Address";
                 $response["data"] = $customer->addresses()->create($request->all());
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
-            $response["message"] = "Error ".$error;
+            $response["message"] = "Error " . $error;
             $response["error"] = true;
         }
 
         return $response;
     }
 
+    public function findAllAddress($userId)
+    {
+        $response = [];
+        try {
+
+            $response["message"] = "Successfully Fetch Addresses";
+            $response["data"] = User::findOrFail($userId)->addresses;
+            $response["error"] = false;
+        } catch (\Exception $error) {
+            $response["message"] = "Error " . $error;
+            $response["error"] = true;
+        }
+
+        return $response;
+    }
+
+    public function findAddressById($id)
+    {
+        $response = [];
+        try {
+
+            $response["message"] = "Successfully Fetch Address";
+            $response["data"] = Address::findOrFail($id);
+            $response["error"] = false;
+        } catch (\Exception $error) {
+            $response["message"] = "Error " . $error;
+            $response["error"] = true;
+        }
+
+        return $response;
+    }
+
+    public function updateAddress($request, $id)
+    {
+        $response = [];
+        $rules = $this->check->addressValidation($request);
+        try {
+            if ($rules->fails()) {
+                $response["message"] = $rules->errors();
+                $response["error"] = true;
+            } else {
+                $response["message"] = "Successfully Updated Address";
+                $response["data"] = Address::findOrFail($id)->update($request->all());
+                $response["error"] = false;
+            }
+        } catch (\Exception $error) {
+            $response["message"] = "Error " . $error;
+            $response["error"] = true;
+        }
+
+        return $response;
+    }
     public function orders($request)
     {
         $orders  = $this->dataServices->getOrdersByUser($request);
@@ -173,4 +227,3 @@ class CustomerManager
 
 
 }
-?>

@@ -42,7 +42,7 @@ class EmailVerfication extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->view('Email',['customer' => $this->user, 'token'=>$this->token]);
+        return (new MailMessage)->view('email',['customer' => $this->user, 'token'=>$this->token]);
     }
 
     /**

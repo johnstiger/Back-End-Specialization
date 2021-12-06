@@ -92,15 +92,15 @@ class AuthManager
                 $token = $data->createToken('token');
                 $this->send->sendEmailVerification($data, $token->plainTextToken);
                 $data->cart()->create();
-                // \DB::commit();
+                \DB::commit();
                 $response["message"] = "We sent an Email Verification to your email, please verify your email";
                 $response["data"] = $data;
                 $response["access_token"] = $token->plainTextToken;
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
-            // \DB::rollBack();
-            $response["message"] = "Error ".$error->getMessage();
+            \DB::rollBack();
+            $response["message"] = "Error ".$error;
             $response["error"] = true;
         }
 

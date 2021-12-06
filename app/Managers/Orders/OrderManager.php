@@ -45,12 +45,12 @@ class OrderManager
     {
         try {
             $response = [];
-            $order = $customer->orders->where('id',$request[0]['id'])->first();
-            if(!$order){
+            $order = $customer->orders->where('id', $request[0]['id'])->first();
+            if (!$order) {
                 $response["message"] = "There is no order to update";
                 $response["error"] = true;
-            }else{
-                $order->update(['status'=>config('const.order.confirmed'),'total'=>$request[0]['total']]);
+            } else {
+                $order->update(['status' => config('const.order.confirmed'), 'total' => $request[0]['total']]);
                 $order->created_at = Carbon::now();
                 $order->save();
                 foreach ($order->products as $product) {
@@ -66,7 +66,7 @@ class OrderManager
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
+            $response["message"] = "Error " . $error->getMessage();
             $response["error"] = true;
         }
 
@@ -77,17 +77,17 @@ class OrderManager
     {
         try {
             $response = [];
-            $order = $customer->orders->where('id',$request[0]['id'])->first();
-            if(!$order){
+            $order = $customer->orders->where('id', $request[0]['id'])->first();
+            if (!$order) {
                 $response["message"] = "There is no order to update";
                 $response["error"] = true;
-            }else{
-                $order->update(['status'=>config('const.order.declined'),'total'=>$request[0]['total']]);
+            } else {
+                $order->update(['status' => config('const.order.declined'), 'total' => $request[0]['total']]);
                 $response["message"] = "Order Declined";
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
+            $response["message"] = "Error " . $error->getMessage();
             $response["error"] = true;
         }
 
@@ -103,7 +103,7 @@ class OrderManager
             $response["message"] = "Order is now Ready";
             $response["data"] = $user->orders;
         } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
+            $response["message"] = "Error " . $error->getMessage();
             $response["error"] = true;
         }
 
@@ -117,30 +117,36 @@ class OrderManager
         $rules = $this->check->validation($request);
         $user = Auth::user();
         try {
-            if($rules->fails()){
+            if ($rules->fails()) {
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
-            }else{
-                if($user->orders->isEmpty()){
+            } else {
+                if ($user->orders->isEmpty()) {
                     $this->create($user);
                 }
-                foreach($request->data as $data){
+                foreach ($request->data as $data) {
                     $user->orders->last()->products()->syncWithoutDetaching([
                         $data["product_id"] => [
                             'quantity' => $data["quantity"],
-                            'subtotal' => $data["subtotal"]
+                            'subtotal' => $data["subtotal"],
+                            'size_id' => $data['size_id']
                         ]
                     ]);
                     $total += $data["subtotal"];
                 }
-                $user->orders->last()->update(['total'=>$total,'payment_method'=>$request->payment_method]);
+                $user->orders->last()->update([
+                    'total' => $total,
+                    'payment_method' => $request->payment_method,
+                    'address_id' => $request->address_id
+                ]);
+
                 $response["message"] = "Success";
                 $response["data"] = $user->orders->last()->products;
                 $response["order"] = $user->orders->last();
                 $response["error"] = false;
             }
         } catch (\Exception $error) {
-            $response["message"] = "Error ".$error->getMessage();
+            $response["message"] = "Error " . $error->getMessage();
             $response["error"] = true;
         }
         return $response;
@@ -149,9 +155,9 @@ class OrderManager
     public function show()
     {
         $user = Auth::user();
-        if($user->orders->isEmpty()){
+        if ($user->orders->isEmpty()) {
             $response = $this->template->NoData();
-        }else{
+        } else {
             $response = $this->template->show($user->orders()->with('products')->get());
         }
 
@@ -164,12 +170,12 @@ class OrderManager
         $rules = $this->check->trackingValidation($request);
         $response = [];
 
-        if($rules->fails()){
+        if ($rules->fails()) {
             $response['message'] = $rules->errors();
             $response['error'] = true;
-        }else{
-            $order = $customer->orders->where('id',$request['order_id'])->first();
-            $order->update(['tracking_code'=>$request['tracking_code']]);
+        } else {
+            $order = $customer->orders->where('id', $request['order_id'])->first();
+            $order->update(['tracking_code' => $request['tracking_code']]);
             $order->delivery()->create([
                 'delivery_date' => Carbon::now()->addDays(7),
                 'name_of_deliver_company' => $request['name_of_deliver_company'],
@@ -185,15 +191,10 @@ class OrderManager
     public function received($order)
     {
         $response = [];
-        $order->update(['status'=>3]);
-        $order->delivery()->update(['delivery_recieve_date'=>Carbon::now()]);
+        $order->update(['status' => 3]);
+        $order->delivery()->update(['delivery_recieve_date' => Carbon::now()]);
         $response["message"] = "Successfully Received Order";
         $response["error"] = false;
         return $response;
     }
-
-
 }
-
-
-?>

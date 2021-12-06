@@ -76,13 +76,13 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::delete('/delete/{user}', 'AdminController@destroy');
             });
         });
-        Route::namespace('Customer')->middleware('verified')->group(function () {
-            Route::prefix('cart')->group(function () {
-                Route::get('/count', 'CartController@countProductsInCart');
-                Route::get('/show', 'CartController@show');
-                Route::post('/add/{product}', 'CartController@store');
-                Route::put('/update/{product}', 'CartController@update');
-                Route::post('/delete/{product}', 'CartController@destroy');
+        Route::namespace('Customer')->middleware('verified')->group(function(){
+            Route::prefix('cart')->group(function(){
+                Route::get('/count','CartController@countProductsInCart');
+                Route::get('/show','CartController@show');
+                Route::post('/add/{product}','CartController@store');
+                Route::put('/update/{product}','CartController@update');
+                Route::delete('/delete/{product}','CartController@destroy');
             });
             Route::prefix('customer')->group(function () {
                 Route::get('/myProfile/{customer}', 'CustomerController@show');

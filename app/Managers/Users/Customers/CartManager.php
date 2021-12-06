@@ -98,8 +98,8 @@ class CartManager
             $item = $request->all();
             $customer->cart->products()->syncWithoutDetaching([
                 $product->id=>[
-                    'quantity'=>$item["quantity"],
-                    'total'=>$product->price * $item["quantity"],
+                    'quantity'=>$item["pivot"]["quantity"],
+                    'total'=>$product->price * $item["pivot"]["quantity"],
                     'status'=>1
                     ]
                 ]);

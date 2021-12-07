@@ -61,7 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
         Route::get('/user', 'AuthController@getUser');
     });
-    Route::get('/logout', 'AuthController@logout');
+    Route::get('/logout', 'Guest\AuthController@logout');
     Route::namespace('User')->group(function () {
         Route::namespace('Admin')->middleware('admin')->group(function () {
             Route::prefix('admin')->group(function () {

@@ -15,7 +15,7 @@ class CategoryValidation
     public function validation($data)
     {
         $rules = Validator::make($data,[
-            'name' => 'required',
+            'name' => 'required|regex:/^[\pL\s\-]+$/u',
         ]);
         return $rules;
     }

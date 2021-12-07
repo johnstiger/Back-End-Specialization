@@ -42,7 +42,7 @@ class AuthValidation
     public function resetPassword($request)
     {
         $validation = Validator::make($request->all(),[
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|confirmed',
             'password_confirmation' => 'required'
         ]);
 

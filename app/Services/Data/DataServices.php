@@ -18,7 +18,7 @@ class DataServices
 
     public function allCustomers()
     {
-        return User::where('is_admin',config('const.role.customer'))->with('addresses')->get();
+        return User::orderBy('updated_at', 'desc')->where('is_admin',config('const.role.customer'))->with('addresses')->get();
     }
 
     public function allAdmins()
@@ -38,7 +38,7 @@ class DataServices
 
     public function categoriesProducts()
     {
-        return Category::with('products','products.sizes')->get();
+        return Category::orderBy('updated_at', 'desc')->with('products','products.sizes')->get();
     }
 
     public function Orders()
@@ -50,7 +50,7 @@ class DataServices
     {
         return Order::where('status',config('const.order.pending'))
         ->orWhere('tracking_code',null)->where('status',config('const.order.confirmed'))
-        ->with(['customer','products'])->get();
+        ->with(['customer','customer','address','products'])->get();
     }
 
     public function getPendingNotification()
@@ -102,7 +102,7 @@ class DataServices
 
     public function salesItem()
     {
-        return SalesItem::where('status',config('const.sales_item.available'))->with('products')->get();
+        return SalesItem::orderBy('updated_at', 'desc')->where('status',config('const.sales_item.available'))->with('products')->get();
     }
 
     public function getSalesItem($data)

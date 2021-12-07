@@ -47,7 +47,7 @@ class AdminManager
     public function admins()
     {
         $user = Auth::user();
-        $admins = User::where('is_admin', 1)->where('email', '!=', $user->email)->get();
+        $admins = User::orderBy('updated_at', 'desc')->where('is_admin', 1)->where('email', '!=', $user->email)->get();
         return $this->template->index($admins);
     }
 

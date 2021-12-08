@@ -139,6 +139,7 @@ class ProductManager
      */
     public function show($product)
     {
+        $product->sales = $product->salesItem;
         $response = $this->template->show($product);
         $response["comments"] = $product->comments()->with('user')->get();
         $response["sizes"] = $product->sizes;

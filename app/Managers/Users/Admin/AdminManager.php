@@ -8,6 +8,7 @@ use App\Validations\Users\Admin\AdminValidation;
 use App\Models\User;
 use App\Services\Data\DataServices;
 use App\Validations\Items\ProductValidation;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -71,6 +72,7 @@ class AdminManager
                 $customer['image'] = $customer['fileSource'];
                 $customer["password"] = Hash::make($request->password);
                 $customer["is_admin"] = true;
+                $customer["email_verified_at"] = Carbon::now();
                 $data = User::create($customer);
                 $response["message"] = "Successfully Added ".$data->firstname." ".$data->lastname." in Admin.";
                 $response["data"] = $data;

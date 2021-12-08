@@ -133,6 +133,7 @@ class OrderManager
                         ]
                     ]);
                     $total += $data["subtotal"];
+                    $user->cart->products()->detach($data["product_id"]);
                 }
                 $user->orders->last()->update([
                     'total' => $total,

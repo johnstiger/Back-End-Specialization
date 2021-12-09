@@ -43,13 +43,13 @@ class DataServices
 
     public function Orders()
     {
-        return Order::with(['customer','products'])->get();
+        return Order::orderBy('updated_at', 'desc')->with(['customer','products'])->get();
     }
 
     public function pendingOrders()
     {
-        return Order::where('status',config('const.order.pending'))
-        ->orWhere('tracking_code',null)->where('status',config('const.order.confirmed'))
+        return Order::orderBy('updated_at', 'desc')->where('status',config('const.order.pending'))->where('address_id','!=',null)
+        ->orWhere('tracking_code',null)->where('status',config('const.order.confirmed'))->where('address_id','!=',null)
         ->with(['customer','customer','address','products'])->get();
     }
 
@@ -121,7 +121,7 @@ class DataServices
     }
 
     public function getOrdersByUser($data) {
-        return Order::orderBy('created_at', 'desc')->where('user_id', $data->user_id)->where('status','<=',2)->with('products', 'delivery')->get();
+        return Order::orderBy('updated_at', 'desc')->where('user_id', $data->user_id)->where('status','<=',2)->where('address_id','!=',null)->with('products', 'delivery')->get();
     }
 
 }

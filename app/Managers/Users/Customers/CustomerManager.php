@@ -208,7 +208,7 @@ class CustomerManager
     public function allReceivedOrders()
     {
         $user = Auth::user();
-        $order = Order::where('status',3)->with('products','delivery')->where('user_id',$user->id)->get();
+        $order = Order::orderBy('updated_at', 'desc')->where('status',3)->with('products','delivery')->where('user_id',$user->id)->get();
         return $order;
     }
 

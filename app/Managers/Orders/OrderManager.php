@@ -4,6 +4,7 @@ namespace App\Managers\Orders;
 
 use App\Managers\Template\Template;
 use App\Services\Data\DataServices;
+use App\Services\Mail\SendEmailServices;
 use App\Validations\Orders\OrderValidation;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +15,13 @@ class OrderManager
     protected $check;
     protected $template;
     protected $service;
-    public function __construct(OrderValidation $check, Template $template, DataServices $service)
+    protected $email;
+    public function __construct(OrderValidation $check, Template $template, DataServices $service, SendEmailServices $email)
     {
         $this->check = $check;
         $this->template = $template;
         $this->service = $service;
+        $this->email = $email;
     }
 
     public function index()
@@ -55,9 +58,10 @@ class OrderManager
                 $order->save();
                 foreach ($order->products as $product) {
                     foreach ($product->sizes as $size) {
+                        $available = $size['pivot']["avail_unit_measure"] > $product['pivot']['quantity'] ? $size['pivot']["avail_unit_measure"] - $product['pivot']['quantity'] : 0;
                         $product->sizes()->syncWithoutDetaching([
                             $size["id"] => [
-                                'avail_unit_measure' => $size['pivot']["avail_unit_measure"] - $product['pivot']['quantity'],
+                                'avail_unit_measure' => $available,
                             ]
                         ]);
                     }
@@ -116,6 +120,11 @@ class OrderManager
         $total = 0;
         $rules = $this->check->validation($request);
         $user = Auth::user();
+
+        $name_of_receiver = env('NAME_OF_RECEIVER', 'Daryl Criz Angel Rayco');
+        $contact_number = env('CONTACT_NUMBER','09856421355');
+        $gCash_account = env('G_CASH_ACCOUNT','09856421355');
+
         try {
             if ($rules->fails()) {
                 $response["message"] = $rules->errors();
@@ -140,7 +149,19 @@ class OrderManager
                     'payment_method' => $request->payment_method,
                     'address_id' => $request->address_id
                 ]);
-
+                $number = '';
+                $mode = '';
+                $through = '';
+                if($request->payment_method == "palawan"){
+                    $number = $contact_number;
+                    $mode = "Contact Number";
+                    $through = "Palawan Express";
+                }else{
+                    $number = $gCash_account;
+                    $mode = "GCash Account";
+                    $through = "GCash";
+                }
+                $this->email->sendPaymentDetails($user, $name_of_receiver, $number, $mode, $through);
                 $response["message"] = "Success";
                 $response["data"] = $user->orders->last()->products;
                 $response["order"] = $user->orders->last();
@@ -176,7 +197,7 @@ class OrderManager
             $response['error'] = true;
         } else {
             $order = $customer->orders->where('id', $request['order_id'])->first();
-            $order->update(['tracking_code' => $request['tracking_code']]);
+            $order->update(['tracking_code' => $request['tracking_code'],'total'=>$request["shipping_fee"]+$order->total]);
             $order->delivery()->create([
                 'delivery_date' => Carbon::now()->addDays(7),
                 'name_of_deliver_company' => $request['name_of_deliver_company'],

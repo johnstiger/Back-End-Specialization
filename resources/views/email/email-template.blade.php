@@ -64,7 +64,7 @@
                     </tr> <!-- COPY -->
                     <tr>
                         <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;"><a href="{{ url('api/email/verification/'.$customer->id.'/'.$token.'') }}" target="_blank" style="color: #C7988E;">https://santafe-dagom.herokuapp.com/{{$customer->id}}/{{$token}}</a></p>
+                            <p style="margin: 0;"><a href="{{ url('api/email/verification/'.$customer->id.'/'.$token.'') }}" target="_blank" style="color: #C7988E;">http://santafe-dagom.herokuapp.com/api/email/verification/{{$customer->id}}/{{$token}}</a></p>
                         </td>
                     </tr>
                     <tr>

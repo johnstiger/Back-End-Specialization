@@ -17,4 +17,4 @@ Route::get('/', function () {
     return view('/');
 });
 
-Route::get('/https://santafe-dagom.herokuapp.com/{id}/{token}','VerificationController@verifyEmail')->name('validate');
+Route::get('/http://santafe-dagom.herokuapp.com/api/email/verification/{id}/{token}','VerificationController@verifyEmail')->name('validate');

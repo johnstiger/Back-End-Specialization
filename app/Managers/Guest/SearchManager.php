@@ -23,9 +23,9 @@ class SearchManager
 
     public function Products($request)
     {
-        $products = Product::where('name','like',"%{$request->get('data')}%")
+        $products = Product::where('name','like','%'.$request->get('data').'%')
                                 ->where('status',config('const.product.available'))
-                                ->orWhere('price','like',"%{$request->get('data')}%")
+                                ->orWhere('price','like','%'.$request->get('data').'%')
                                 ->where('status',config('const.product.available'))
                                 ->with(['category','sizes'])
                                 ->get();

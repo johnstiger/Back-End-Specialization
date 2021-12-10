@@ -23,7 +23,7 @@ class SearchManager
 
     public function Products($request)
     {
-        $products = Product::where('name','like','%'.$request->get('data').'%')
+        $products = Product::where('name','ILIKE','%'.$request->get('data').'%')
                                 ->where('status',true)
                                 ->with(['category','sizes'])
                                 ->get();

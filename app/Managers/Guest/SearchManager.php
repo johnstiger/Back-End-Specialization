@@ -25,8 +25,6 @@ class SearchManager
     {
         $products = Product::where('name','like','%'.$request->get('data').'%')
                                 ->where('status',true)
-                                ->orWhere('price','like','%'.$request->get('data').'%')
-                                ->where('status',true)
                                 ->with(['category','sizes'])
                                 ->get();
         return $this->template($products, $request);

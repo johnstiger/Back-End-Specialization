@@ -26,6 +26,7 @@ class ProductFactory extends Factory
             'name' => $this->faker->firstName,
             'price' => $this->faker->randomFloat(2,0,1000),
             'status' => true,
+            'is_sale' => $this->faker->randomElement([true, false]),
             'description' => $this->faker->text,
             'image' => 'unnamed.png'
         ];

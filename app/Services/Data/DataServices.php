@@ -50,7 +50,7 @@ class DataServices
     {
         return Order::orderBy('updated_at', 'desc')->where('status',config('const.order.pending'))->where('address_id','!=',null)
         ->orWhere('tracking_code',null)->where('status',config('const.order.confirmed'))->where('address_id','!=',null)
-        ->with(['customer','customer','address','products'])->get();
+        ->with(['customer','customer','address','products','products.sizes'])->get();
     }
 
     public function getPendingNotification()
@@ -102,12 +102,14 @@ class DataServices
 
     public function salesItem()
     {
-        return SalesItem::orderBy('updated_at', 'desc')->where('status',config('const.sales_item.available'))->with('products')->get();
+        // return SalesItem::orderBy('updated_at', 'desc')->where('status',config('const.sales_item.available'))->with('products')->get();
+        return Product::orderBy('updated_at','desc')->where('is_sale',true)->where('promo_price','!=',null)->with('category','sizes')->get();
     }
 
     public function getSalesItem($data)
     {
-        return SalesItem::where('id',$data->id)->with('products')->first();
+        // return SalesItem::where('id',$data->id)->with('products')->first();
+        return Product::where('id',$data->id)->with('sizes')->first();
     }
 
     public function getProductToSales($data)
@@ -121,7 +123,21 @@ class DataServices
     }
 
     public function getOrdersByUser($data) {
-        return Order::orderBy('updated_at', 'desc')->where('user_id', $data->user_id)->where('status','<=',2)->where('address_id','!=',null)->with('products', 'delivery')->get();
+        return Order::orderBy('updated_at', 'desc')
+        ->where('user_id', $data->user_id)
+        ->where('status','<=',2)
+        ->where('address_id','!=',null)
+        ->with('products', 'delivery')
+        ->get();
+    }
+
+    public function getAllOrderByUser($data)
+    {
+        return Order::orderBy('updated_at', 'desc')
+        ->where('user_id', $data->user_id)
+        ->where('address_id','!=',null)
+        ->with('products', 'delivery')
+        ->get();
     }
 
 }

@@ -204,6 +204,12 @@ class CustomerManager
         return $this->template->index($orders);
     }
 
+    public function ordersByUser($request)
+    {
+        $orders = $this->dataServices->getAllOrderByUser($request);
+        return $this->template->index($orders);
+    }
+
 
     public function allReceivedOrders()
     {

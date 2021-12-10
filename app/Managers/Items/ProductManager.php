@@ -42,7 +42,7 @@ class ProductManager
                 $product->save();
             }
         }
-        $availableProducts = Product::orderBy('updated_at', 'desc')->where('status',config('const.product.available'))->with(['category','sizes'])->get();
+        $availableProducts = Product::orderBy('updated_at', 'desc')->where('is_sale',false)->where('status',config('const.product.available'))->with(['category','sizes'])->get();
         return $this->template->index($availableProducts);
     }
 

@@ -18,7 +18,6 @@ class CreateAddressesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('contact_number');
             $table->integer('postal_code');
-            $table->string('region');
             $table->string('province');
             $table->string('city');
             $table->string('municipality');

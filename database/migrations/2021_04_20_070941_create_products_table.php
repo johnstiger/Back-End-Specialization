@@ -20,7 +20,11 @@ class CreateProductsTable extends Migration
             $table->float('price');
             $table->string('part')->nullable();
             $table->boolean('status')->default(true);
+            $table->boolean('is_sale')->default(false);
             $table->longText('description')->nullable();
+            $table->integer('promo_price')->nullable();
+            $table->integer('sale_price')->nullable();
+            $table->string('promo_type')->nullable();
             $table->longText('image')->nullable();
             $table->softDeletes();
             $table->timestamps();

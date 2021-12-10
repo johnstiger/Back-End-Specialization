@@ -25,7 +25,6 @@ class CartManager
         $validation = $this->check->validation($request);
         $response = [];
         $customer = Auth::user();
-        
 
         try {
             if($validation->fails()){
@@ -33,12 +32,13 @@ class CartManager
                 $response["error"] = true;
             }else{
                 $item = $request->all();
+                $price = $product->is_sale ? $product->sale_price : $product->price;
                 // $item['quantity']= $item['quantity']['unit_measure'];
                 $customer->cart->products()->syncWithoutDetaching([
                     $product->id=>[
                         'quantity'=>$item["unit_measure"],
                         'sizeId'=>$item["sizeId"],
-                        'total'=>$product->price * $item["unit_measure"],
+                        'total'=>$price * $item["unit_measure"],
                         'status'=>1
                         ]
                     ]);
@@ -92,14 +92,22 @@ class CartManager
      */
     public function update($request, $product)
     {
-        $customer =Auth::user();
+        $customer = Auth::user();
         $response = [];
         try {
             $item = $request->all();
+            $price = $product->is_sale ? $product->sale_price : $product->price;
+
+            $size = $product->sizes->where('id',$item["pivot"]["sizeId"])->first();
+
+            if($size->pivot->avail_unit_measure < $item["pivot"]["quantity"]){
+                $item["pivot"]["quantity"] = $size->pivot->avail_unit_measure;
+            }
+
             $customer->cart->products()->syncWithoutDetaching([
                 $product->id=>[
                     'quantity'=>$item["pivot"]["quantity"],
-                    'total'=>$product->price * $item["pivot"]["quantity"],
+                    'total'=>$price * $item["pivot"]["quantity"],
                     'status'=>1
                     ]
                 ]);
@@ -125,7 +133,7 @@ class CartManager
         $customer = Auth::user();
         $response = [];
         try {
-            $customer->cart->products->where('product_code',$product->product_code)
+            $customer->cart->products->where('id',$product->id)
             ->first()->pivot->delete();
             $response["message"] = "Successfully Remove Product";
             $response["error"] = false;

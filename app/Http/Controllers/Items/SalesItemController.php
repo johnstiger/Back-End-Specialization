@@ -44,11 +44,14 @@ class SalesItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(SalesItem $salesItem)
+    // public function show(SalesItem $salesItem)
+    // {
+    //     return response()->json($this->data->show($salesItem));
+    // }
+    public function show(Product $salesItem)
     {
         return response()->json($this->data->show($salesItem));
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -56,18 +59,25 @@ class SalesItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SalesItem $salesItem)
+    // public function update(Request $request, SalesItem $salesItem)
+    // {
+    //     return response()->json($this->data->update($request, $salesItem));
+    // }
+    public function update(Request $request, Product $salesItem)
     {
         return response()->json($this->data->update($request, $salesItem));
     }
-
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SalesItem $salesItem)
+    // public function destroy(SalesItem $salesItem)
+    // {
+    //     return response()->json($this->data->delete($salesItem));
+    // }
+    public function destroy(Product $salesItem)
     {
         return response()->json($this->data->delete($salesItem));
     }

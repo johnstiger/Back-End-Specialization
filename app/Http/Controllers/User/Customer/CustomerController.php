@@ -89,6 +89,11 @@ class CustomerController extends Controller
         return response()->json($this->manager->orders($request));
     }
 
+    public function getOrderByUser(Request $request)
+    {
+        return response()->json($this->manager->ordersByUser($request));
+    }
+
 
     public function showReceivedOrders()
     {

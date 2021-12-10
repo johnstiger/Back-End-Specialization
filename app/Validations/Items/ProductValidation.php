@@ -56,6 +56,29 @@ class ProductValidation
         return $rules;
     }
 
+    public function specificValidation($request)
+    {
+        $rules = Validator::make($request,[
+            'percent_off' => 'required',
+            'promo_type' => 'required',
+            'description'  => 'required',
+            'size'         => 'required',
+        ]);
+
+        return $rules;
+    }
+
+    public function updateSaleValidation($request)
+    {
+        $rules = Validator::make($request,[
+            'percent_off' => 'required',
+            'promo_type' => 'required',
+            'description' => 'required'
+        ]);
+
+        return $rules;
+    }
+
 }
 
 

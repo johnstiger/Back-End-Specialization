@@ -99,7 +99,8 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::post('/delete/{product}', 'CommentController@destroy');
             });
             Route::prefix('orders')->group(function () {
-                Route::get('/all/{user_id}', 'CustomerController@orders');
+                Route::get('/all/{user_id}', 'CustomerController@getOrderByUser');
+                Route::get('/delivery/{user_id}', 'CustomerController@orders');
                 Route::get('/receivedOrders', 'CustomerController@showReceivedOrders');
                 Route::post('/removeOrder/{order}', 'CustomerController@removeItem');
             });

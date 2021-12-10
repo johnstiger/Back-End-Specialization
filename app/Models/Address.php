@@ -12,7 +12,6 @@ class Address extends Model
     protected $fillable = [
         'contact_number',
         'postal_code',
-        'region',
         'province',
         'city',
         'municipality',

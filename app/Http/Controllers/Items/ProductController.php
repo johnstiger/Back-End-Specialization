@@ -25,6 +25,11 @@ class ProductController extends Controller
         return response()->json($this->manager->index());
     }
 
+    public function indexOther()
+    {
+        return response()->json($this->manager->index(true));
+    }
+
     public function sizes()
     {
         return response()->json($this->manager->getSizes());

@@ -21,6 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // Showing Products
 Route::get('/home', 'Items\ProductController@index');
+Route::get('/allItem','Items\ProductController@indexOther');
 Route::get('/sales', 'Items\SalesItemController@index');
 Route::get('/dagom/{product}', 'Items\ProductController@show');
 Route::get('/allCategory', 'Items\CategoryController@index');

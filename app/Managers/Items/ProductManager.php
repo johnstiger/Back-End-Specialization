@@ -25,7 +25,7 @@ class ProductManager
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($other = false)
     {
         $products = Product::with(['category','sizes'])->get();
         foreach($products as $product){
@@ -42,7 +42,11 @@ class ProductManager
                 $product->save();
             }
         }
-        $availableProducts = Product::orderBy('updated_at', 'desc')->where('is_sale',false)->where('status',config('const.product.available'))->with(['category','sizes'])->get();
+        if(!$other){
+            $availableProducts = Product::orderBy('updated_at', 'desc')->where('is_sale',false)->where('status',config('const.product.available'))->with(['category','sizes'])->get();
+        }else{
+            $availableProducts = Product::orderBy('updated_at', 'desc')->where('status',config('const.product.available'))->with(['category','sizes'])->get();
+        }
         return $this->template->index($availableProducts);
     }
 

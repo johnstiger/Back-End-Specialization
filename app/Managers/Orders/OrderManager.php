@@ -95,6 +95,9 @@ class OrderManager
                             ]
                         ]);
                     }
+                    $product->update([
+                        'status' => 1
+                    ]);
                 }
                 $order->update(['status' => config('const.order.declined'), 'total' => $request[0]['total']]);
                 $response["message"] = "Order Declined";

@@ -233,6 +233,11 @@ class CustomerManager
                 'avail_unit_measure' => $size->pivot->avail_unit_measure + $request["data"]["quantity"],
                 ]
         ]);
+
+        $product->update([
+            'status' => 1
+        ]);
+
         $order->products()->detach($request["data"]["product_id"]);
         $response["message"] = "Successfully removed Item";
         $response["error"] = false;

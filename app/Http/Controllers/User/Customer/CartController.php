@@ -50,9 +50,9 @@ class CartController extends Controller
     * Inside the Cart
     * return json type result
     */
-    public function destroy(Product $product)
+    public function destroy(Request $request, Product $product)
     {
-        return response()->json($this->manager->destroy($product));
+        return response()->json($this->manager->destroy( $request, $product));
     }
 
     public function countProductsInCart()

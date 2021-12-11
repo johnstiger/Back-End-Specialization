@@ -83,7 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::get('/show','CartController@show');
                 Route::post('/add/{product}','CartController@store');
                 Route::put('/update/{product}','CartController@update');
-                Route::delete('/delete/{product}','CartController@destroy');
+                Route::post('/delete/{product}','CartController@destroy');
             });
             Route::prefix('customer')->group(function () {
                 Route::get('/myProfile/{customer}', 'CustomerController@show');

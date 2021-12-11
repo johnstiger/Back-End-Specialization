@@ -78,7 +78,9 @@ class CartManager
             }
             else{
                 $response["message"] = "Success";
-                $response["data"] = $customer->cart->products()->with('sizes')->get();
+                $response["data"] = $customer->cart->products()->with('sizes')->whereHas('sizes',function($query){
+                    $query->where('avail_unit_measure','>',0);
+                })->get();
                 $response["error"] = false;
             }
         } catch (\Exception $e) {
@@ -105,16 +107,26 @@ class CartManager
             $price = $product->is_sale ? $product->sale_price : $product->price;
 
             $size = $product->sizes->where('id',$item["pivot"]["sizeId"])->first();
-            $available = $size->pivot->avail_unit_measure;
+            $avail = 0;
+            if($item["pivot"]["newQuantity"] >= $item["pivot"]["quantity"]){
+                // Minus in product display
+                $avail = $size->pivot->avail_unit_measure - ($item["pivot"]["newQuantity"] - $item["pivot"]["quantity"]);
 
-            if($size->pivot->avail_unit_measure < $item["pivot"]["quantity"]){
-                $item["pivot"]["quantity"] = $size->pivot->avail_unit_measure;
+            }else{
+                // Add in product display
+                $test =  $item["pivot"]["quantity"] - $item["pivot"]["newQuantity"] ;
+                $avail = $size->pivot->avail_unit_measure + $test;
             }
 
+            $product->sizes()->syncWithoutDetaching([
+                $size->id => [
+                    'avail_unit_measure' =>$avail,
+                ]
+            ]);
             $customer->cart->products()->syncWithoutDetaching([
                 $product->id=>[
-                    'quantity'=>$item["pivot"]["quantity"],
-                    'total'=>$price * $item["pivot"]["quantity"],
+                    'quantity'=>$item["pivot"]["newQuantity"],
+                    'total'=>$price * $item["pivot"]["newQuantity"],
                     'status'=>1
                     ]
                 ]);
@@ -135,13 +147,21 @@ class CartManager
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy( $product)
+    public function destroy( $request, $product)
     {
         $customer = Auth::user();
         $response = [];
         try {
+            $size = $product->sizes->where('id',$request["pivot"]["sizeId"])->first();
+            $product->sizes()->syncWithoutDetaching([
+                $size->id => [
+                    'avail_unit_measure' => $request["pivot"]["quantity"] + $size->pivot->avail_unit_measure
+                ]
+            ]);
+
             $customer->cart->products->where('id',$product->id)
             ->first()->pivot->delete();
+
             $response["message"] = "Successfully Remove Product";
             $response["error"] = false;
         } catch (\Exception $e) {
@@ -155,7 +175,9 @@ class CartManager
     public function countProducts()
     {
         $user = Auth::user();
-        return $user->cart->products()->count();
+        return $user->cart->products()->with('sizes')->whereHas('sizes',function($query){
+            $query->where('avail_unit_measure','>',0);
+        })->count();;
     }
 
 

@@ -56,16 +56,16 @@ class OrderManager
                 $order->update(['status' => config('const.order.confirmed'), 'total' => $request[0]['total']]);
                 $order->created_at = Carbon::now();
                 $order->save();
-                foreach ($order->products as $product) {
-                    foreach ($product->sizes as $size) {
-                        $available = $size['pivot']["avail_unit_measure"] > $product['pivot']['quantity'] ? $size['pivot']["avail_unit_measure"] - $product['pivot']['quantity'] : 0;
-                        $product->sizes()->syncWithoutDetaching([
-                            $size["id"] => [
-                                'avail_unit_measure' => $available,
-                            ]
-                        ]);
-                    }
-                }
+                // foreach ($order->products as $product) {
+                //     foreach ($product->sizes as $size) {
+                //         $available = $size['pivot']["avail_unit_measure"] > $product['pivot']['quantity'] ? $size['pivot']["avail_unit_measure"] - $product['pivot']['quantity'] : 0;
+                //         $product->sizes()->syncWithoutDetaching([
+                //             $size["id"] => [
+                //                 'avail_unit_measure' => $available,
+                //             ]
+                //         ]);
+                //     }
+                // }
                 $response["message"] = "Order Confirmed";
                 $response["error"] = false;
             }
@@ -86,6 +86,16 @@ class OrderManager
                 $response["message"] = "There is no order to update";
                 $response["error"] = true;
             } else {
+                foreach ($order->products as $product) {
+                    foreach ($product->sizes as $size) {
+                        $available = $size['pivot']["avail_unit_measure"] + $product['pivot']['quantity'];
+                        $product->sizes()->syncWithoutDetaching([
+                            $size["id"] => [
+                                'avail_unit_measure' => $available,
+                            ]
+                        ]);
+                    }
+                }
                 $order->update(['status' => config('const.order.declined'), 'total' => $request[0]['total']]);
                 $response["message"] = "Order Declined";
                 $response["error"] = false;
@@ -130,9 +140,11 @@ class OrderManager
                 $response["message"] = $rules->errors();
                 $response["error"] = true;
             } else {
+
                 if ($user->orders->isEmpty()) {
                     $this->create($user);
                 }
+
                 foreach ($request->data as $data) {
                     $user->orders->last()->products()->syncWithoutDetaching([
                         $data["product_id"] => [
@@ -144,14 +156,27 @@ class OrderManager
                     $total += $data["subtotal"];
                     $user->cart->products()->detach($data["product_id"]);
                 }
+
                 $user->orders->last()->update([
                     'total' => $total,
                     'payment_method' => $request->payment_method,
                     'address_id' => $request->address_id
                 ]);
+
+                if($request->data[0]["checkout"]){
+                    $product = $user->orders->last()->products->where('id',$request->data[0]["product_id"])->first();
+                    $size = $product->sizes->where('id',$request->data[0]["size_id"])->first();
+                    $product->sizes()->syncWithoutDetaching([
+                        $request->data[0]["size_id"] => [
+                            'avail_unit_measure' => $size->pivot->avail_unit_measure - $request->data[0]["quantity"],
+                            ]
+                    ]);
+                }
+
                 $number = '';
                 $mode = '';
                 $through = '';
+
                 if($request->payment_method == "palawan"){
                     $number = $contact_number;
                     $mode = "Contact Number";
@@ -161,6 +186,7 @@ class OrderManager
                     $mode = "GCash Account";
                     $through = "GCash";
                 }
+
                 $this->email->sendPaymentDetails($user, $name_of_receiver, $number, $mode, $through);
                 $response["message"] = "Success";
                 $response["data"] = $user->orders->last()->products;

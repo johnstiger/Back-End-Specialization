@@ -222,9 +222,18 @@ class CustomerManager
     public function removeItemOrder($request, $orderId)
     {
         $response = [];
+
         $user = Auth::user();
         $order = $user->orders()->where('id',$orderId->id)->first();
-        $order->products()->detach($request["data"]);
+        $product = $user->orders->last()->products->where('id',$request["data"]["product_id"])->first();
+        $size = $product->sizes->where('id',$request["data"]["size_id"])->first();
+
+        $product->sizes()->syncWithoutDetaching([
+            $size->id => [
+                'avail_unit_measure' => $size->pivot->avail_unit_measure + $request["data"]["quantity"],
+                ]
+        ]);
+        $order->products()->detach($request["data"]["product_id"]);
         $response["message"] = "Successfully removed Item";
         $response["error"] = false;
 

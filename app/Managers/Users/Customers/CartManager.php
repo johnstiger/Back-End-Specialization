@@ -78,9 +78,7 @@ class CartManager
             }
             else{
                 $response["message"] = "Success";
-                $response["data"] = $customer->cart->products()->with('sizes')->whereHas('sizes',function($query){
-                    $query->where('avail_unit_measure','>',0);
-                })->get();
+                $response["data"] = $customer->cart->products()->with('sizes')->get();
                 $response["error"] = false;
             }
         } catch (\Exception $e) {

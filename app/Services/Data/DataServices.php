@@ -104,7 +104,9 @@ class DataServices
     {
         // return SalesItem::orderBy('updated_at', 'desc')->where('status',config('const.sales_item.available'))->with('products')->get();
         return Product::orderBy('updated_at','desc')->where('is_sale',true)->where('promo_price','!=',null)->with('category','sizes')
-        ->get();
+        ->whereHas('sizes',function($query){
+            $query->where('avail_unit_measure','>',0);
+        })->get();
     }
 
     public function getSalesItem($data)

@@ -42,6 +42,12 @@ class CartManager
                         'status'=>1
                         ]
                     ]);
+                $size = $product->sizes->where('id',$item["sizeId"])->first();
+                $product->sizes()->syncWithoutDetaching([
+                    $item["sizeId"] => [
+                        'avail_unit_measure' => $size->pivot->avail_unit_measure - $item["unit_measure"],
+                    ]
+                ]);
                 $response["message"] = "Successfully Added New Product in Cart";
                 $response["data"] = $customer->cart->products;
                 $response["error"] = false;
@@ -99,6 +105,7 @@ class CartManager
             $price = $product->is_sale ? $product->sale_price : $product->price;
 
             $size = $product->sizes->where('id',$item["pivot"]["sizeId"])->first();
+            $available = $size->pivot->avail_unit_measure;
 
             if($size->pivot->avail_unit_measure < $item["pivot"]["quantity"]){
                 $item["pivot"]["quantity"] = $size->pivot->avail_unit_measure;

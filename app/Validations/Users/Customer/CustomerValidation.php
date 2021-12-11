@@ -42,6 +42,7 @@ class CustomerValidation
         $rules = Validator::make($request->all(),[
             'contact_number' => 'required|regex:/(09)[0-9]{9}/|max:11',
             'postal_code' => 'required',
+            'region' => 'required',
             'province' => 'required',
             'city' => 'required',
             'municipality' => 'required',

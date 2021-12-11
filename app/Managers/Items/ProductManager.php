@@ -43,7 +43,7 @@ class ProductManager
             }
         }
         if(!$other){
-            $availableProducts = Product::orderBy('updated_at', 'desc')->where('is_sale',false)->where('status',config('const.product.available'))->with(['category','sizes'])->get();
+            $availableProducts = Product::orderBy('updated_at', 'desc')->where('is_sale', 0)->where('status',config('const.product.available'))->with(['category','sizes'])->get();
         }else{
             $availableProducts = Product::orderBy('updated_at', 'desc')->where('status',config('const.product.available'))->with(['category','sizes'])->get();
         }

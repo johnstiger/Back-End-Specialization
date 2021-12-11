@@ -34,6 +34,7 @@ class CartManager
                 $item = $request->all();
                 $price = $product->is_sale ? $product->sale_price : $product->price;
                 // $item['quantity']= $item['quantity']['unit_measure'];
+
                 $customer->cart->products()->syncWithoutDetaching([
                     $product->id=>[
                         'quantity'=>$item["unit_measure"],
@@ -151,10 +152,15 @@ class CartManager
         $response = [];
         try {
             $size = $product->sizes->where('id',$request["pivot"]["sizeId"])->first();
+
             $product->sizes()->syncWithoutDetaching([
                 $size->id => [
                     'avail_unit_measure' => $request["pivot"]["quantity"] + $size->pivot->avail_unit_measure
-                ]
+                    ]
+                ]);
+
+            $product->update([
+                'status'=>1
             ]);
 
             $customer->cart->products->where('id',$product->id)

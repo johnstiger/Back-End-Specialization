@@ -175,9 +175,7 @@ class CartManager
     public function countProducts()
     {
         $user = Auth::user();
-        return $user->cart->products()->with('sizes')->whereHas('sizes',function($query){
-            $query->where('avail_unit_measure','>',0);
-        })->count();;
+        return $user->cart->products()->count();
     }
 
 

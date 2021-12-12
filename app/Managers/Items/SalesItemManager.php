@@ -103,7 +103,7 @@ class SalesItemManager
                     }else{
                         $percent = $params['percent_off'];
                     }
-                    $price = ($salesItem->price - $percent);
+                    $price = (int)($salesItem->price - $percent);
 
                    $salesItem->update([
                     'description' => $params['description'],

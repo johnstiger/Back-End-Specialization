@@ -26,10 +26,10 @@ class UserFactory extends Factory
         return [
             'firstname' => "Admin",
             'lastname' => "Admin",
-            'email' => $this->faker->email,
+            'email' => 'dagom@gmail.com',
             'email_verified_at' => now(),
-            'contact_number' => $this->faker->phoneNumber,
-            'is_admin' => $this->faker->randomElement([true, false]),
+            'contact_number' => '0965235555',
+            'is_admin' => true,
             'password' => Hash::make('dagomPassword'),
             'remember_token' => Str::random(10),
         ];
